@@ -89,9 +89,9 @@ function buildTree(users) {
   const map = {};
   const roots = [];
 
-  // ID 포함 안전 버전
+  // 안전: id 없는 노드는 아예 버림
   users.forEach(u => {
-    if (u.id) {
+    if (u.id && u.id.trim()) {
       map[u.id] = {
         id: u.id,
         name: `${u.이름} (${u.직책}, ${u.팀})`,
@@ -100,16 +100,18 @@ function buildTree(users) {
     }
   });
 
-  // 부모 연결
   users.forEach(u => {
-    if (u.manager_id && map[u.manager_id] && map[u.id]) {
-      map[u.manager_id].children.push(map[u.id]);
-    } else if (map[u.id]) {
-      roots.push(map[u.id]);
+    const childNode = map[u.id];
+    const parentNode = map[u.manager_id];
+
+    if (childNode && u.manager_id && parentNode) {
+      parentNode.children.push(childNode);
+    } else if (childNode) {
+      roots.push(childNode);
     }
   });
 
   const result = roots.length === 1 ? roots[0] : roots;
-  console.log('✅ buildTree 결과:', JSON.stringify(result, null, 2));
+  console.log('✅ Final tree:', JSON.stringify(result, null, 2));
   return result;
 }
