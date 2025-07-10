@@ -20,7 +20,8 @@ export default function App() {
     const data = await db.get('orgchart', 'tree');
     if (data) {
       console.log('📦 IndexedDB에서 불러옴:', data);
-      setTreeData(data);
+      const tree = buildTree(data); // ✅ 원본 → 트리 다시 생성!
+      setTreeData(tree);
     } else {
       // ✅ 없으면 public/users.csv 가져오기
       const response = await fetch('/users.csv');
@@ -30,8 +31,9 @@ export default function App() {
         header: true,
         complete: async (results) => {
           console.log('🌱 기본 CSV:', results.data);
-          const tree = buildTree(results.data);
-          await saveData(tree);
+          const users = results.data;
+          await saveData(users); // ✅ 원본 users 배열 저장!
+          const tree = buildTree(users);
           setTreeData(tree);
         },
       });
@@ -64,8 +66,7 @@ export default function App() {
     <div style={{ padding: '2rem' }}>
       <h1>조직도 (CSV 버전)</h1>
 
-      {/* ✅ ✅ ✅ 관리자 업로드 버튼 제거됨 */}
-      {/* ✅ ✅ ✅ 초기화 버튼은 표시 */}
+      {/* ✅ 초기화 버튼 */}
       <button onClick={resetData}>🔄 데이터 초기화</button>
 
       {treeData && (
@@ -104,5 +105,5 @@ function buildTree(users) {
     }
   });
 
-  return roots.length === 1 ? roots[0] : roots; // 루트 하나면 하나만 반환
+  return roots.length === 1 ? roots[0] : roots;
 }
