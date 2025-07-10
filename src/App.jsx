@@ -5,19 +5,12 @@ import { openDB } from 'idb';
 
 export default function App() {
   const [treeData, setTreeData] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  // 1) 관리자 모드 감지
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === import.meta.env.VITE_ADMIN_KEY) {
-      setIsAdmin(true);
-    }
-
     loadData();
   }, []);
 
-  // 2) IndexedDB 에서 데이터 불러오기
+  // 1️⃣ IndexedDB에서 데이터 불러오기
   async function loadData() {
     const db = await openDB('OrgChartDB', 1, {
       upgrade(db) {
@@ -26,11 +19,26 @@ export default function App() {
     });
     const data = await db.get('orgchart', 'tree');
     if (data) {
+      console.log('📦 IndexedDB에서 불러옴:', data);
       setTreeData(data);
+    } else {
+      // ✅ 없으면 public/users.csv 가져오기
+      const response = await fetch('/users.csv');
+      const text = await response.text();
+
+      Papa.parse(text, {
+        header: true,
+        complete: async (results) => {
+          console.log('🌱 기본 CSV:', results.data);
+          const tree = buildTree(results.data);
+          await saveData(tree);
+          setTreeData(tree);
+        },
+      });
     }
   }
 
-  // 3) IndexedDB에 저장
+  // 2️⃣ IndexedDB에 저장
   async function saveData(data) {
     const db = await openDB('OrgChartDB', 1, {
       upgrade(db) {
@@ -40,44 +48,32 @@ export default function App() {
     await db.put('orgchart', data, 'tree');
   }
 
-  // 4) CSV 업로드 핸들러
-  function handleFileUpload(event) {
-    const file = event.target.files[0];
-    Papa.parse(file, {
-      header: true,
-      complete: async (results) => {
-        console.log('CSV 결과:', results.data);
-        const users = results.data;
-
-        // CSV → 트리로 변환
-        const tree = buildTree(users);
-
-        // 저장
-        await saveData(tree);
-
-        // 화면 갱신
-        setTreeData(tree);
+  // 3️⃣ IndexedDB 초기화 버튼
+  async function resetData() {
+    const db = await openDB('OrgChartDB', 1, {
+      upgrade(db) {
+        db.createObjectStore('orgchart');
       },
     });
+    await db.delete('orgchart', 'tree');
+    console.log('✅ IndexedDB 초기화됨');
+    window.location.reload();
   }
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>조직도 (CSV 버전)</h1>
 
-      {isAdmin && (
-        <div>
-          <p>✅ 관리자 모드</p>
-          <input type="file" accept=".csv" onChange={handleFileUpload} />
-        </div>
-      )}
+      {/* ✅ ✅ ✅ 관리자 업로드 버튼 제거됨 */}
+      {/* ✅ ✅ ✅ 초기화 버튼은 표시 */}
+      <button onClick={resetData}>🔄 데이터 초기화</button>
 
       {treeData && (
         <OrgChart data={treeData} />
       )}
 
       {!treeData && (
-        <p>조직도 데이터가 없습니다. (관리자가 CSV를 업로드하면 저장됩니다)</p>
+        <p>조직도 데이터가 없습니다.<br/> (처음 접속 시 public/users.csv 로 자동 로드됩니다)</p>
       )}
     </div>
   );
@@ -108,5 +104,5 @@ function buildTree(users) {
     }
   });
 
-  return roots.length === 1 ? roots[0] : roots; // 루트 하나면 하나만
+  return roots.length === 1 ? roots[0] : roots; // 루트 하나면 하나만 반환
 }
