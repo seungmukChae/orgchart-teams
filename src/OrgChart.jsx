@@ -1,15 +1,21 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data }) {
   const [highlightedPath, setHighlightedPath] = useState([]);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const containerRef = useRef(null);
 
-  const containerStyles = {
-    width: '100%',
-    height: '600px',
-    border: '1px solid #ccc',
-    marginTop: '2rem',
-  };
+  // 📌 처음 로딩 시 container 크기에 맞게 트리 중앙 정렬
+  useEffect(() => {
+    if (containerRef.current) {
+      const dimensions = containerRef.current.getBoundingClientRect();
+      setTranslate({
+        x: dimensions.width / 2,
+        y: 50,
+      });
+    }
+  }, []);
 
   // 부모 경로 찾기
   const findPathToRoot = useCallback((nodeId, nodeMap) => {
@@ -38,20 +44,22 @@ export default function OrgChart({ data }) {
     return map;
   };
 
-  // 클릭 시
+  // 클릭 시 상위 강조
   const handleClick = useCallback(
     (nodeDatum) => {
-      console.log('✅ Clicked:', nodeDatum);
+      const nodeId = nodeDatum.data.id; // ✅ 반드시 data.id
+      console.log('✅ Clicked:', nodeId);
       const nodeMap = flattenTree(data);
-      const path = findPathToRoot(nodeDatum.id, nodeMap);
+      const path = findPathToRoot(nodeId, nodeMap);
       console.log('✅ Path:', path);
       setHighlightedPath(path);
     },
     [data, findPathToRoot]
   );
 
+  // 커스텀 노드 렌더링 (텍스트 가독성 개선)
   const renderCustomNode = ({ nodeDatum }) => {
-    const id = nodeDatum.id; // 반드시 nodeDatum.id 사용
+    const id = nodeDatum.data.id; // ✅ 반드시 data.id
     const isHighlighted = highlightedPath.includes(id);
 
     return (
@@ -67,8 +75,8 @@ export default function OrgChart({ data }) {
           textAnchor="middle"
           style={{
             fontSize: '12px',
-            fill: isHighlighted ? '#007bff' : '#000',
-            fontWeight: isHighlighted ? 'bold' : 'normal',
+            fill: isHighlighted ? '#007bff' : '#333',
+            fontWeight: 'normal',
           }}
         >
           {nodeDatum.name}
@@ -78,12 +86,20 @@ export default function OrgChart({ data }) {
   };
 
   return (
-    <div style={containerStyles}>
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: 'calc(100vh - 200px)',
+        border: '1px solid #ccc',
+        marginTop: '2rem',
+      }}
+    >
       <Tree
         data={data}
         orientation="vertical"
         renderCustomNodeElement={renderCustomNode}
-        translate={{ x: 500, y: 50 }}
+        translate={translate}
         nodeSize={{ x: 200, y: 100 }}
       />
     </div>
