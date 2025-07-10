@@ -24,7 +24,7 @@ export default function App() {
       setTreeData(tree);
     } else {
       // ✅ 없으면 public/users.csv 가져오기
-      const response = await fetch('/users.csv');
+      const response = await fetch(`${import.meta.env.BASE_URL}users.csv`);
       const text = await response.text();
 
       Papa.parse(text, {
