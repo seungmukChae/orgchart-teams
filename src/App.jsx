@@ -86,7 +86,7 @@ function buildTree(users) {
 
   users.forEach(u => {
     map[u.id] = {
-      name: `${u.이름} (${u.직책})`,
+      name: `${u.이름} (${u.직책}, ${u.팀})`,
       children: [],
     };
   });
