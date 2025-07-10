@@ -11,7 +11,7 @@ export default function OrgChart({ data }) {
     marginTop: '2rem',
   };
 
-  // 상위 부모 경로 찾기
+  // 부모 경로 찾기
   const findPathToRoot = useCallback((nodeId, nodeMap) => {
     const path = [];
     let currentId = nodeId;
@@ -29,7 +29,7 @@ export default function OrgChart({ data }) {
     return path;
   }, []);
 
-  // 트리를 평탄화 해서 ID-노드 맵 만들기
+  // 트리를 평탄화해서 ID 맵
   const flattenTree = (node, map = {}, parentId = null) => {
     map[node.id] = { ...node, manager_id: parentId };
     if (node.children && node.children.length > 0) {
@@ -38,28 +38,37 @@ export default function OrgChart({ data }) {
     return map;
   };
 
+  // 클릭 시
   const handleClick = useCallback(
-    (nodeData) => {
+    (nodeDatum) => {
+      console.log('✅ Clicked:', nodeDatum);
       const nodeMap = flattenTree(data);
-      const path = findPathToRoot(nodeData.__rd3t.id, nodeMap);
+      const path = findPathToRoot(nodeDatum.id, nodeMap);
+      console.log('✅ Path:', path);
       setHighlightedPath(path);
     },
     [data, findPathToRoot]
   );
 
   const renderCustomNode = ({ nodeDatum }) => {
-    const id = nodeDatum.__rd3t.id;
+    const id = nodeDatum.id; // 반드시 nodeDatum.id 사용
     const isHighlighted = highlightedPath.includes(id);
 
     return (
-      <g onClick={() => handleClick(nodeDatum)}>
-        <circle r="10" fill={isHighlighted ? '#007bff' : '#ccc'} />
+      <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer' }}>
+        <circle
+          r={12}
+          fill={isHighlighted ? '#007bff' : '#ccc'}
+          stroke="#333"
+          strokeWidth="1"
+        />
         <text
-          y={20}
+          y={24}
           textAnchor="middle"
           style={{
             fontSize: '12px',
-            fill: isHighlighted ? '#007bff' : '#999',
+            fill: isHighlighted ? '#007bff' : '#000',
+            fontWeight: isHighlighted ? 'bold' : 'normal',
           }}
         >
           {nodeDatum.name}
