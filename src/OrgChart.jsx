@@ -61,8 +61,8 @@ export default function OrgChart({ data }) {
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = !!selectedId && id === selectedId; // ✅ null 방지!
-    console.log(`🪵 Node ID: ${id} | selectedId: ${selectedId} | isSelected: ${isSelected}`);
+    const isSelected = !!selectedId && id === selectedId;
+  
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
   
     return (
@@ -71,58 +71,41 @@ export default function OrgChart({ data }) {
           r={14}
           fill={isHighlighted ? '#007bff' : '#ccc'}
           stroke="#333"
-          strokeWidth="0"
+          strokeWidth="1"
         />
+        {/* 이름 */}
         <text
           y={24}
           textAnchor="middle"
           style={{
+            all: 'unset', // ✅ 모든 상속 해제!
             fontFamily: 'Arial, sans-serif',
-            fontSize: '11px',
+            fontSize: '12px',
             fill: isHighlighted ? '#007bff' : '#333',
             fontWeight: isSelected === true ? 'bold' : 'normal',
-            fontStyle: 'normal',
+            textAnchor: 'middle',
           }}
         >
           {nodeDatum.이름}
         </text>
+        {/* 직책, 팀 */}
         <text
           y={42}
           textAnchor="middle"
           style={{
+            all: 'unset',
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
             fontWeight: isSelected === true ? 'bold' : 'normal',
-            fontStyle: 'normal',
+            textAnchor: 'middle',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
         </text>
       </g>
     );
-    
   };
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100%',
-        height: 'calc(100vh - 200px)',
-        border: '1px solid #ccc',
-        marginTop: '2rem',
-      }}
-    >
-      <Tree
-        data={data}
-        orientation="vertical"
-        renderCustomNodeElement={renderCustomNode}
-        translate={translate}
-        nodeSize={{ x: 200, y: 120 }}
-      />
-    </div>
-  );
   
 }
 
