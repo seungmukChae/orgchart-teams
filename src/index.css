@@ -66,3 +66,21 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* ✅ react-d3-tree 조직도 전용 초기화 추가 */
+svg {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+}
+
+svg text {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+  fill: #000; /* 기본 색 고정 */
+}
+
+g text {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+  fill: #000;
+}
