@@ -97,8 +97,8 @@ export default function OrgChart({ data }) {
             fontWeight: id === selectedId ? 'bold' : 'normal', // ✅ 선택된 노드만 bold!
             }}
 >
-  ({nodeDatum.직책}, {nodeDatum.팀})
-</text>
+           ({nodeDatum.직책}, {nodeDatum.팀})
+          </text>
       </g>
     );
   };
