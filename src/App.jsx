@@ -112,6 +112,13 @@ function buildTree(users) {
     }
   });
 
+  Object.values(map).forEach(node => {
+    if (node.children.length > 0 && !node.법인) {
+      // 하위 노드 중 첫 번째의 법인으로 부모 노드에 세팅
+      node.법인 = node.children[0].법인;
+    }
+  });
+
   const result = roots.length === 1 ? roots[0] : roots;
   console.log('✅ Final tree:', JSON.stringify(result, null, 2));
   return result;
