@@ -95,6 +95,7 @@ function buildTree(users) {
         이름: u.이름,
         직책: u.직책,
         팀: u.팀,
+        법인: u.법인,
         children: [],
       };
     }
