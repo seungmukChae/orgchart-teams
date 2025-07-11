@@ -80,7 +80,8 @@ export default function OrgChart({ data }) {
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: isSelected ? 'bold' : 'normal', // ✅
+            fontWeight: isSelected === true ? 'bold' : 'normal',
+            fontStyle: 'normal',
           }}
         >
           {nodeDatum.이름}
@@ -92,7 +93,8 @@ export default function OrgChart({ data }) {
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: isSelected ? 'bold' : 'normal', // ✅
+            fontWeight: isSelected === true ? 'bold' : 'normal',
+            fontStyle: 'normal',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
