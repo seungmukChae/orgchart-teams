@@ -62,7 +62,7 @@ export default function OrgChart({ data }) {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
     const isSelected = !!selectedId && id === selectedId; // ✅ null 방지!
-  
+    console.log(`🪵 Node ID: ${id} | selectedId: ${selectedId} | isSelected: ${isSelected}`);
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
   
     return (
