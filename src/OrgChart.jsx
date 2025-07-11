@@ -71,7 +71,7 @@ export default function OrgChart({ data }) {
           r={14}
           fill={isHighlighted ? '#007bff' : '#ccc'}
           stroke="#333"
-          strokeWidth="1"
+          strokeWidth="0"
         />
         <text
           y={24}
