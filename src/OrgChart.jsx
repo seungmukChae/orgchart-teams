@@ -7,7 +7,7 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
-  // 📌 중앙 정렬
+  // 중앙 정렬
   useEffect(() => {
     if (containerRef.current) {
       const dimensions = containerRef.current.getBoundingClientRect();
@@ -36,7 +36,7 @@ export default function OrgChart({ data }) {
     return path;
   }, []);
 
-  // 트리를 평탄화해서 ID 맵
+  // 평탄화
   const flattenTree = (node, map = {}, parentId = null) => {
     map[node.id] = { ...node, manager_id: parentId };
     if (node.children && node.children.length > 0) {
@@ -45,7 +45,7 @@ export default function OrgChart({ data }) {
     return map;
   };
 
-  // 클릭 시 상위 강조 & 선택 ID 설정
+  // 클릭 핸들러
   const handleClick = useCallback(
     (nodeDatum) => {
       const nodeId = nodeDatum.id;
@@ -57,6 +57,24 @@ export default function OrgChart({ data }) {
     [data, findPathToRoot]
   );
 
+  // ✅ 법인별 색상 정의
+  const getCircleColor = (nodeDatum) => {
+    const isTopNode = ['1', '2', '3', '4'].includes(nodeDatum.id);
+    if (isTopNode) {
+      return '#007bff'; // 회장/고문/사장/부사장은 무조건 파랑
+    }
+    switch (nodeDatum.법인) {
+      case 'Seoul':
+        return '#007bff'; // 파랑
+      case 'ETP':
+        return '#28a745'; // 녹색
+      case 'BVT':
+        return '#dc3545'; // 빨강
+      default:
+        return '#ccc';    // 기본 회색
+    }
+  };
+
   // 커스텀 노드 렌더링
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
@@ -64,16 +82,16 @@ export default function OrgChart({ data }) {
     const isSelected = !!selectedId && id === selectedId;
 
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
+    const circleColor = getCircleColor(nodeDatum);
 
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
         <circle
           r={14}
-          fill={isHighlighted ? '#007bff' : '#ccc'}
+          fill={circleColor}
           stroke="#333"
           strokeWidth="1"
         />
-        {/* 이름 */}
         <text
           y={24}
           textAnchor="middle"
@@ -87,7 +105,6 @@ export default function OrgChart({ data }) {
         >
           {nodeDatum.이름}
         </text>
-        {/* 직책, 팀 */}
         <text
           y={42}
           textAnchor="middle"
