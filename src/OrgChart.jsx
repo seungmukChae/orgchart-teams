@@ -61,10 +61,10 @@ export default function OrgChart({ data }) {
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = id === selectedId;
-
+    const isSelected = selectedId && id === selectedId; // ✅ null 방지!
+  
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
-
+  
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
         <circle
@@ -73,7 +73,6 @@ export default function OrgChart({ data }) {
           stroke="#333"
           strokeWidth="1"
         />
-        {/* 이름 */}
         <text
           y={24}
           textAnchor="middle"
@@ -81,12 +80,11 @@ export default function OrgChart({ data }) {
             fontFamily: 'Arial, sans-serif',
             fontSize: '13px',
             fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: id === selectedId ? 'bold' : 'normal', // ✅ 선택된 노드만 bold!
-           }}
->
+            fontWeight: isSelected ? 'bold' : 'normal', // ✅
+          }}
+        >
           {nodeDatum.이름}
         </text>
-        {/* 직책, 팀 */}
         <text
           y={42}
           textAnchor="middle"
@@ -94,11 +92,11 @@ export default function OrgChart({ data }) {
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: id === selectedId ? 'bold' : 'normal', // ✅ 선택된 노드만 bold!
-            }}
->
-           ({nodeDatum.직책}, {nodeDatum.팀})
-          </text>
+            fontWeight: isSelected ? 'bold' : 'normal', // ✅
+          }}
+        >
+          ({nodeDatum.직책}, {nodeDatum.팀})
+        </text>
       </g>
     );
   };
