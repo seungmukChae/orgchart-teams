@@ -61,7 +61,7 @@ export default function OrgChart({ data }) {
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = selectedId && id === selectedId; // ✅ null 방지!
+    const isSelected = !!selectedId && id === selectedId; // ✅ null 방지!
   
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
   
@@ -99,6 +99,7 @@ export default function OrgChart({ data }) {
         </text>
       </g>
     );
+    
   };
 
   return (
@@ -120,4 +121,6 @@ export default function OrgChart({ data }) {
       />
     </div>
   );
+  
 }
+
