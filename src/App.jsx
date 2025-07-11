@@ -89,7 +89,7 @@ function buildTree(users) {
   const map = {};
   const roots = [];
 
-  // 안전: id 없는 노드는 아예 버림
+  // 1️⃣ 안전: ID 없는 노드 무시
   users.forEach(u => {
     if (u.id && u.id.trim()) {
       map[u.id] = {
@@ -100,11 +100,16 @@ function buildTree(users) {
     }
   });
 
+  // 2️⃣ 부모 연결 (자기참조 방지)
   users.forEach(u => {
     const childNode = map[u.id];
     const parentNode = map[u.manager_id];
 
-    if (childNode && u.manager_id && parentNode) {
+    if (
+      childNode &&
+      parentNode &&
+      u.manager_id !== u.id // ✅ 자기 자신이 상사로 지정되면 무시
+    ) {
       parentNode.children.push(childNode);
     } else if (childNode) {
       roots.push(childNode);
