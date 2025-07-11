@@ -3,10 +3,11 @@ import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data }) {
   const [highlightedPath, setHighlightedPath] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
-  // 📌 처음 로딩 시 container 크기에 맞게 트리 중앙 정렬
+  // 중앙 정렬
   useEffect(() => {
     if (containerRef.current) {
       const dimensions = containerRef.current.getBoundingClientRect();
@@ -35,7 +36,7 @@ export default function OrgChart({ data }) {
     return path;
   }, []);
 
-  // 트리를 평탄화해서 ID 맵
+  // 트리를 평탄화
   const flattenTree = (node, map = {}, parentId = null) => {
     map[node.id] = { ...node, manager_id: parentId };
     if (node.children && node.children.length > 0) {
@@ -44,52 +45,56 @@ export default function OrgChart({ data }) {
     return map;
   };
 
-  // 클릭 시 상위 강조
+  // 클릭 핸들러
   const handleClick = useCallback(
     (nodeDatum) => {
       const nodeId = nodeDatum.id;
-      console.log('✅ Clicked:', nodeId);
       const nodeMap = flattenTree(data);
       const path = findPathToRoot(nodeId, nodeMap);
-      console.log('✅ Path:', path);
       setHighlightedPath(path);
+      setSelectedId(nodeId);
     },
     [data, findPathToRoot]
   );
 
-  // 커스텀 노드 렌더링 (가독성 개선, 두 줄)
+  // 커스텀 노드
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
+    const isSelected = id === selectedId;
+
+    const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
 
     return (
-      <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer' }}>
+      <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
         <circle
-          r={12}
+          r={14}
           fill={isHighlighted ? '#007bff' : '#ccc'}
           stroke="#333"
           strokeWidth="1"
         />
-        {/* 이름 (위 줄) */}
+        {/* 이름 */}
         <text
-          y={20}
+          y={24}
           textAnchor="middle"
           style={{
-            fontSize: '12px',
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '13px',
             fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: 'normal',
+            fontWeight: isSelected ? 'bold' : 'normal',
           }}
         >
           {nodeDatum.이름}
         </text>
-        {/* 직책, 팀 (아래 줄) */}
+        {/* 직책, 팀 */}
         <text
-          y={36}
+          y={42}
           textAnchor="middle"
           style={{
-            fontSize: '10px',
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: 'normal',
+            fontWeight: isSelected ? 'bold' : 'normal',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
@@ -113,7 +118,7 @@ export default function OrgChart({ data }) {
         orientation="vertical"
         renderCustomNodeElement={renderCustomNode}
         translate={translate}
-        nodeSize={{ x: 200, y: 100 }}
+        nodeSize={{ x: 200, y: 120 }}
       />
     </div>
   );
