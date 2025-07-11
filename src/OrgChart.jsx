@@ -4,6 +4,7 @@ import Tree from 'react-d3-tree';
 export default function OrgChart({ data }) {
   const [highlightedPath, setHighlightedPath] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedCorp, setSelectedCorp] = useState(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
@@ -48,7 +49,7 @@ export default function OrgChart({ data }) {
   // 법인별 색상 반환
   const getCorpColor = (corp) => {
     if (!corp) return '#6c757d'; // null 방지
-  
+
     switch (corp.trim().toUpperCase()) {
       case 'SEOUL':
         return '#007bff'; // 파랑
@@ -70,11 +71,13 @@ export default function OrgChart({ data }) {
         // 동일 노드를 다시 클릭하면 해제
         setHighlightedPath([]);
         setSelectedId(null);
+        setSelectedCorp(null); // ✅ 리셋!
       } else {
         const nodeMap = flattenTree(data);
         const path = findPathToRoot(nodeId, nodeMap);
         setHighlightedPath(path);
         setSelectedId(nodeId);
+        setSelectedCorp(nodeDatum.법인); // ✅ 선택한 노드의 법인 기억
       }
     },
     [data, selectedId, findPathToRoot]
@@ -87,10 +90,10 @@ export default function OrgChart({ data }) {
 
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
 
-    // 강조 색상 결정
+    // 강조 색상: 경로에 포함되면 클릭한 노드의 법인 색, 아니면 연회색
     const fillColor = isHighlighted
-      ? getCorpColor(nodeDatum.법인)
-      : '#ccc'; // 기본 연회색
+      ? getCorpColor(selectedCorp) // ✅ 선택한 노드의 법인색
+      : '#ccc';
 
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
