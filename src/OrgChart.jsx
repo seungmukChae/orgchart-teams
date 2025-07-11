@@ -59,9 +59,13 @@ export default function OrgChart({ data }) {
 
   // 커스텀 노드 렌더링 (가독성 개선)
   const renderCustomNode = ({ nodeDatum }) => {
-    const id = nodeDatum.id; // ✅ data.id 아님!
+    const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-
+  
+    // 이름, 직책, 팀 분리
+    const [namePart, extraPart] = nodeDatum.name.split(' (');
+    const extra = extraPart ? extraPart.replace(')', '') : '';
+  
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer' }}>
         <circle
@@ -70,8 +74,9 @@ export default function OrgChart({ data }) {
           stroke="#333"
           strokeWidth="1"
         />
+        {/* 이름 (위 줄) */}
         <text
-          y={24}
+          y={20}
           textAnchor="middle"
           style={{
             fontSize: '12px',
@@ -79,8 +84,22 @@ export default function OrgChart({ data }) {
             fontWeight: 'normal',
           }}
         >
-          {nodeDatum.name}
+          {namePart}
         </text>
+        {/* 직책, 팀 (아래 줄) */}
+        {extra && (
+          <text
+            y={36}
+            textAnchor="middle"
+            style={{
+              fontSize: '10px',
+              fill: isHighlighted ? '#007bff' : '#555',
+              fontWeight: 'normal',
+            }}
+          >
+            ({extra})
+          </text>
+        )}
       </g>
     );
   };

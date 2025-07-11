@@ -92,7 +92,7 @@ function buildTree(users) {
     if (u.id && u.id.trim()) {
       map[u.id] = {
         id: u.id,
-        name: `${u.이름}\n(${u.직책}, ${u.팀})`,
+        name: `${u.이름}(${u.직책}, ${u.팀})`,
         children: [],
       };
     } else {
