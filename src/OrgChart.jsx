@@ -7,7 +7,7 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
-  // 중앙 정렬
+  // 📌 중앙 정렬
   useEffect(() => {
     if (containerRef.current) {
       const dimensions = containerRef.current.getBoundingClientRect();
@@ -36,7 +36,7 @@ export default function OrgChart({ data }) {
     return path;
   }, []);
 
-  // 트리를 평탄화
+  // 트리를 평탄화해서 ID 맵
   const flattenTree = (node, map = {}, parentId = null) => {
     map[node.id] = { ...node, manager_id: parentId };
     if (node.children && node.children.length > 0) {
@@ -45,7 +45,7 @@ export default function OrgChart({ data }) {
     return map;
   };
 
-  // 클릭 핸들러
+  // 클릭 시 상위 강조 & 선택 ID 설정
   const handleClick = useCallback(
     (nodeDatum) => {
       const nodeId = nodeDatum.id;
@@ -57,17 +57,14 @@ export default function OrgChart({ data }) {
     [data, findPathToRoot]
   );
 
-  // 커스텀 노드
+  // 커스텀 노드 렌더링
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = !!selectedId && id === selectedId; // ✅ 안전!
-  
-    // ✅ 디버그 로그 찍기
-    console.log(`🪵 Node ID: ${id} | selectedId: ${selectedId} | isSelected: ${isSelected}`);
-  
+    const isSelected = !!selectedId && id === selectedId;
+
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
-  
+
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
         <circle
@@ -76,26 +73,30 @@ export default function OrgChart({ data }) {
           stroke="#333"
           strokeWidth="1"
         />
+        {/* 이름 */}
         <text
           y={24}
           textAnchor="middle"
+          dominantBaseline="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
-            fontSize: '11px',
+            fontSize: '12px',
             fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: isSelected ? 'bold' : 'normal',
+            fontWeight: isSelected === true ? 'bold' : 'normal',
           }}
         >
           {nodeDatum.이름}
         </text>
+        {/* 직책, 팀 */}
         <text
           y={42}
           textAnchor="middle"
+          dominantBaseline="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: isSelected ? 'bold' : 'normal',
+            fontWeight: isSelected === true ? 'bold' : 'normal',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
@@ -103,5 +104,24 @@ export default function OrgChart({ data }) {
       </g>
     );
   };
-}
 
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: 'calc(100vh - 200px)',
+        border: '1px solid #ccc',
+        marginTop: '2rem',
+      }}
+    >
+      <Tree
+        data={data}
+        orientation="vertical"
+        renderCustomNodeElement={renderCustomNode}
+        translate={translate}
+        nodeSize={{ x: 200, y: 120 }}
+      />
+    </div>
+  );
+}
