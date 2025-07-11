@@ -62,10 +62,6 @@ export default function OrgChart({ data }) {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
   
-    // 이름, 직책, 팀 분리
-    const [namePart, extraPart] = nodeDatum.name.split(' (');
-    const extra = extraPart ? extraPart.replace(')', '') : '';
-  
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer' }}>
         <circle
@@ -84,43 +80,20 @@ export default function OrgChart({ data }) {
             fontWeight: 'normal',
           }}
         >
-          {namePart}
+          {nodeDatum.이름}
         </text>
         {/* 직책, 팀 (아래 줄) */}
-        {extra && (
-          <text
-            y={36}
-            textAnchor="middle"
-            style={{
-              fontSize: '10px',
-              fill: isHighlighted ? '#007bff' : '#555',
-              fontWeight: 'normal',
-            }}
-          >
-            ({extra})
-          </text>
-        )}
+        <text
+          y={36}
+          textAnchor="middle"
+          style={{
+            fontSize: '10px',
+            fill: isHighlighted ? '#007bff' : '#555',
+            fontWeight: 'normal',
+          }}
+        >
+          ({nodeDatum.직책}, {nodeDatum.팀})
+        </text>
       </g>
     );
   };
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100%',
-        height: 'calc(100vh - 200px)',
-        border: '1px solid #ccc',
-        marginTop: '2rem',
-      }}
-    >
-      <Tree
-        data={data}
-        orientation="vertical"
-        renderCustomNodeElement={renderCustomNode}
-        translate={translate}
-        nodeSize={{ x: 200, y: 100 }}
-      />
-    </div>
-  );
-}

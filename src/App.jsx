@@ -92,11 +92,11 @@ function buildTree(users) {
     if (u.id && u.id.trim()) {
       map[u.id] = {
         id: u.id,
-        name: `${u.이름}(${u.직책}, ${u.팀})`,
+        이름: u.이름,
+        직책: u.직책,
+        팀: u.팀,
         children: [],
       };
-    } else {
-      console.warn('🚨 ID 없음:', u);
     }
   });
 
@@ -104,11 +104,7 @@ function buildTree(users) {
     const childNode = map[u.id];
     const parentNode = map[u.manager_id];
 
-    if (
-      childNode &&
-      parentNode &&
-      u.manager_id !== u.id
-    ) {
+    if (childNode && parentNode && u.manager_id !== u.id) {
       parentNode.children.push(childNode);
     } else if (childNode) {
       roots.push(childNode);
