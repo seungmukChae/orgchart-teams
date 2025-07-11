@@ -75,30 +75,30 @@ export default function OrgChart({ data }) {
         />
         {/* 이름 */}
         <text
-          y={42}
+          y={24}
           textAnchor="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
             fontSize: '13px',
             fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: isSelected ? 'bold' : 'normal',
-          }}
-        >
+            fontWeight: id === selectedId ? 'bold' : 'normal', // ✅ 선택된 노드만 bold!
+           }}
+>
           {nodeDatum.이름}
         </text>
         {/* 직책, 팀 */}
         <text
-          y={24}
+          y={42}
           textAnchor="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: isSelected ? 'bold' : 'normal',
-          }}
-        >
-          ({nodeDatum.직책}, {nodeDatum.팀})
-        </text>
+            fontWeight: id === selectedId ? 'bold' : 'normal', // ✅ 선택된 노드만 bold!
+            }}
+>
+  ({nodeDatum.직책}, {nodeDatum.팀})
+</text>
       </g>
     );
   };
