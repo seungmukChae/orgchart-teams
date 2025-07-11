@@ -47,15 +47,17 @@ export default function OrgChart({ data }) {
 
   // 법인별 색상 반환
   const getCorpColor = (corp) => {
-    switch (corp) {
-      case 'Seoul':
+    if (!corp) return '#6c757d'; // null 방지
+  
+    switch (corp.trim().toUpperCase()) {
+      case 'SEOUL':
         return '#007bff'; // 파랑
       case 'ETP':
         return '#28a745'; // 녹색
       case 'BVT':
         return '#dc3545'; // 빨강
       default:
-        return '#6c757d'; // 기본 회색
+        return '#6c757d'; // 기본 연회색
     }
   };
 
