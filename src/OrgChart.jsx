@@ -75,7 +75,7 @@ export default function OrgChart({ data }) {
         />
         {/* 이름 */}
         <text
-          y={24}
+          y={42}
           textAnchor="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
@@ -88,7 +88,7 @@ export default function OrgChart({ data }) {
         </text>
         {/* 직책, 팀 */}
         <text
-          y={42}
+          y={24}
           textAnchor="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
