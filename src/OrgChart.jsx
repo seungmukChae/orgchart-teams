@@ -47,7 +47,7 @@ export default function OrgChart({ data }) {
   // 클릭 시 상위 강조
   const handleClick = useCallback(
     (nodeDatum) => {
-      const nodeId = nodeDatum.id; // ✅ nodeDatum.id (data.id 아님!)
+      const nodeId = nodeDatum.id;
       console.log('✅ Clicked:', nodeId);
       const nodeMap = flattenTree(data);
       const path = findPathToRoot(nodeId, nodeMap);
@@ -57,11 +57,11 @@ export default function OrgChart({ data }) {
     [data, findPathToRoot]
   );
 
-  // 커스텀 노드 렌더링 (가독성 개선)
+  // 커스텀 노드 렌더링 (가독성 개선, 두 줄)
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-  
+
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer' }}>
         <circle
@@ -97,3 +97,24 @@ export default function OrgChart({ data }) {
       </g>
     );
   };
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: 'calc(100vh - 200px)',
+        border: '1px solid #ccc',
+        marginTop: '2rem',
+      }}
+    >
+      <Tree
+        data={data}
+        orientation="vertical"
+        renderCustomNodeElement={renderCustomNode}
+        translate={translate}
+        nodeSize={{ x: 200, y: 100 }}
+      />
+    </div>
+  );
+}
