@@ -78,7 +78,7 @@ export default function OrgChart({ data }) {
           textAnchor="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
-            fontSize: '5px',
+            fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#333',
             fontWeight: isSelected ? 'bold' : 'normal', // ✅
           }}
