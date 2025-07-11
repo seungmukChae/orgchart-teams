@@ -61,7 +61,10 @@ export default function OrgChart({ data }) {
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = !!selectedId && id === selectedId;
+    const isSelected = !!selectedId && id === selectedId; // ✅ 안전!
+  
+    // ✅ 디버그 로그 찍기
+    console.log(`🪵 Node ID: ${id} | selectedId: ${selectedId} | isSelected: ${isSelected}`);
   
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
   
@@ -73,30 +76,26 @@ export default function OrgChart({ data }) {
           stroke="#333"
           strokeWidth="1"
         />
-        {/* 이름 */}
         <text
           y={24}
           textAnchor="middle"
-          dominantBaseline="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
-            fontSize: '12px',
+            fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: isSelected === true ? 'bold' : 'normal',
+            fontWeight: isSelected ? 'bold' : 'normal',
           }}
         >
           {nodeDatum.이름}
         </text>
-        {/* 직책, 팀 */}
         <text
           y={42}
           textAnchor="middle"
-          dominantBaseline="middle"
           style={{
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: isSelected === true ? 'bold' : 'normal',
+            fontWeight: isSelected ? 'bold' : 'normal',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
