@@ -36,7 +36,7 @@ export default function OrgChart({ data }) {
     return path;
   }, []);
 
-  // 평탄화
+  // 트리를 평탄화
   const flattenTree = (node, map = {}, parentId = null) => {
     map[node.id] = { ...node, manager_id: parentId };
     if (node.children && node.children.length > 0) {
@@ -45,25 +45,9 @@ export default function OrgChart({ data }) {
     return map;
   };
 
-  // 클릭 핸들러
-  const handleClick = useCallback(
-    (nodeDatum) => {
-      const nodeId = nodeDatum.id;
-      const nodeMap = flattenTree(data);
-      const path = findPathToRoot(nodeId, nodeMap);
-      setHighlightedPath(path);
-      setSelectedId(nodeId);
-    },
-    [data, findPathToRoot]
-  );
-
-  // ✅ 법인별 색상 정의
-  const getCircleColor = (nodeDatum) => {
-    const isTopNode = ['1', '2', '3', '4'].includes(nodeDatum.id);
-    if (isTopNode) {
-      return '#007bff'; // 회장/고문/사장/부사장은 무조건 파랑
-    }
-    switch (nodeDatum.법인) {
+  // 법인별 색상 반환
+  const getCorpColor = (corp) => {
+    switch (corp) {
       case 'Seoul':
         return '#007bff'; // 파랑
       case 'ETP':
@@ -71,27 +55,50 @@ export default function OrgChart({ data }) {
       case 'BVT':
         return '#dc3545'; // 빨강
       default:
-        return '#ccc';    // 기본 회색
+        return '#6c757d'; // 기본 회색
     }
   };
 
-  // 커스텀 노드 렌더링
+  // 클릭 핸들러
+  const handleClick = useCallback(
+    (nodeDatum) => {
+      const nodeId = nodeDatum.id;
+
+      if (nodeId === selectedId) {
+        // 동일 노드를 다시 클릭하면 해제
+        setHighlightedPath([]);
+        setSelectedId(null);
+      } else {
+        const nodeMap = flattenTree(data);
+        const path = findPathToRoot(nodeId, nodeMap);
+        setHighlightedPath(path);
+        setSelectedId(nodeId);
+      }
+    },
+    [data, selectedId, findPathToRoot]
+  );
+
+  // 커스텀 노드
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = !!selectedId && id === selectedId;
 
     const opacity = selectedId ? (isHighlighted ? 1 : 0.3) : 1;
-    const circleColor = getCircleColor(nodeDatum);
+
+    // 강조 색상 결정
+    const fillColor = isHighlighted
+      ? getCorpColor(nodeDatum.법인)
+      : '#ccc'; // 기본 연회색
 
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
         <circle
           r={14}
-          fill={circleColor}
+          fill={fillColor}
           stroke="#333"
           strokeWidth="1"
         />
+        {/* 이름 */}
         <text
           y={24}
           textAnchor="middle"
@@ -99,12 +106,13 @@ export default function OrgChart({ data }) {
           style={{
             fontFamily: 'Arial, sans-serif',
             fontSize: '12px',
-            fill: isHighlighted ? '#007bff' : '#333',
-            fontWeight: isSelected === true ? 'bold' : 'normal',
+            fill: '#333',
+            fontWeight: isHighlighted ? 'bold' : 'normal',
           }}
         >
           {nodeDatum.이름}
         </text>
+        {/* 직책, 팀 */}
         <text
           y={42}
           textAnchor="middle"
@@ -112,8 +120,8 @@ export default function OrgChart({ data }) {
           style={{
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
-            fill: isHighlighted ? '#007bff' : '#555',
-            fontWeight: isSelected === true ? 'bold' : 'normal',
+            fill: '#555',
+            fontWeight: isHighlighted ? 'bold' : 'normal',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
