@@ -77,13 +77,12 @@ export default function OrgChart({ data }) {
         <text
           y={24}
           textAnchor="middle"
+          dominantBaseline="middle"
           style={{
-            all: 'unset', // ✅ 모든 상속 해제!
             fontFamily: 'Arial, sans-serif',
             fontSize: '12px',
             fill: isHighlighted ? '#007bff' : '#333',
             fontWeight: isSelected === true ? 'bold' : 'normal',
-            textAnchor: 'middle',
           }}
         >
           {nodeDatum.이름}
@@ -92,13 +91,12 @@ export default function OrgChart({ data }) {
         <text
           y={42}
           textAnchor="middle"
+          dominantBaseline="middle"
           style={{
-            all: 'unset',
             fontFamily: 'Arial, sans-serif',
             fontSize: '11px',
             fill: isHighlighted ? '#007bff' : '#555',
             fontWeight: isSelected === true ? 'bold' : 'normal',
-            textAnchor: 'middle',
           }}
         >
           ({nodeDatum.직책}, {nodeDatum.팀})
@@ -106,6 +104,5 @@ export default function OrgChart({ data }) {
       </g>
     );
   };
-  
 }
 
