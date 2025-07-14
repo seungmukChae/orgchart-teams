@@ -15,7 +15,7 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  // ✅ 팀 구성 및 팀장 선택 (ID 가장 낮은 사람)
+  // ✅ 팀 단위 그룹핑 + 팀장(가장 낮은 id)만 상단에, 하위 children에서 제거
   const groupByTeam = (node) => {
     if (!node.children || node.children.length === 0) return { ...node };
 
@@ -27,13 +27,10 @@ export default function OrgChart({ data }) {
     });
 
     const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
-      const sorted = members
-        .filter((m) => !m.isTeamNode)
-        .sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      const sorted = members.filter(m => !m.isTeamNode).sort((a, b) => parseInt(a.id) - parseInt(b.id));
       const manager = sorted[0];
-      const label = manager
-        ? `${teamName} (${manager.이름})`
-        : `${teamName} (미정)`;
+      const others = sorted.slice(1).concat(members.filter(m => m.isTeamNode));
+      const label = manager ? `${teamName} (${manager.이름})` : `${teamName} (미정)`;
 
       return {
         id: `team-${node.id}-${teamName}`,
@@ -43,7 +40,7 @@ export default function OrgChart({ data }) {
         법인: '',
         isTeamNode: true,
         collapsed: true,
-        children: members,
+        children: others,
       };
     });
 
@@ -94,15 +91,15 @@ export default function OrgChart({ data }) {
     setTreeData(searched);
   }, [data, selectedCorp, searchQuery]);
 
-  // ✅ 접기/펼치기 처리
+  // ✅ 접기/펼치기
   const handleToggle = (nodeDatum) => {
     if (nodeDatum.isTeamNode) {
       nodeDatum.collapsed = !nodeDatum.collapsed;
-      setTreeData({ ...treeData }); // 강제 재렌더링
+      setTreeData({ ...treeData });
     }
   };
 
-  // ✅ 커스텀 노드
+  // ✅ 커스텀 노드 렌더링
   const renderNode = ({ nodeDatum }) => {
     const isTeam = nodeDatum.isTeamNode;
     const fill = isTeam ? '#f0ad4e' : '#007bff';
@@ -111,18 +108,19 @@ export default function OrgChart({ data }) {
       <g onClick={() => handleToggle(nodeDatum)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
         <rect
           width={isTeam ? 180 : 140}
-          height={isTeam ? 48 : 38}
+          height={isTeam ? 50 : 40}
           x={-90}
-          y={-24}
+          y={-25}
           rx={6}
           ry={6}
           fill={fill}
           stroke="#333"
         />
         <text
+          x={0}
+          y={-5}
           textAnchor="middle"
           dominantBaseline="middle"
-          y={isTeam ? -2 : -4}
           style={{
             fontFamily: '맑은 고딕',
             fontSize: 12,
@@ -134,9 +132,10 @@ export default function OrgChart({ data }) {
         </text>
         {!isTeam && (
           <text
+            x={0}
+            y={13}
             textAnchor="middle"
             dominantBaseline="middle"
-            y={14}
             style={{
               fontFamily: '맑은 고딕',
               fontSize: 11,
@@ -149,9 +148,10 @@ export default function OrgChart({ data }) {
         )}
         {isTeam && (
           <text
+            x={0}
+            y={15}
             textAnchor="middle"
             dominantBaseline="middle"
-            y={16}
             style={{
               fontFamily: '맑은 고딕',
               fontSize: 10,
