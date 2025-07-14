@@ -15,7 +15,7 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  // ✅ 팀 단위 그룹핑 + 팀장(가장 낮은 id)만 상단에, 하위 children에서 제거
+  // ✅ 팀 단위 그룹핑 (팀장 ID 가장 낮은 사람), BUT 하위 구성원에 포함 유지
   const groupByTeam = (node) => {
     if (!node.children || node.children.length === 0) return { ...node };
 
@@ -29,7 +29,6 @@ export default function OrgChart({ data }) {
     const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
       const sorted = members.filter(m => !m.isTeamNode).sort((a, b) => parseInt(a.id) - parseInt(b.id));
       const manager = sorted[0];
-      const others = sorted.slice(1).concat(members.filter(m => m.isTeamNode));
       const label = manager ? `${teamName} (${manager.이름})` : `${teamName} (미정)`;
 
       return {
@@ -40,14 +39,13 @@ export default function OrgChart({ data }) {
         법인: '',
         isTeamNode: true,
         collapsed: true,
-        children: others,
+        children: members,
       };
     });
 
     return { ...node, children: groupedChildren };
   };
 
-  // ✅ 법인 필터링
   const filterByCorp = (node) => {
     if (selectedCorp === 'ALL') return true;
     if (node.법인?.toUpperCase() === selectedCorp) return true;
@@ -62,7 +60,6 @@ export default function OrgChart({ data }) {
     return { ...node, children: filteredChildren };
   };
 
-  // ✅ 검색 필터링
   const matchesSearch = (node) => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return true;
@@ -83,7 +80,6 @@ export default function OrgChart({ data }) {
     return null;
   };
 
-  // ✅ 트리 가공
   useEffect(() => {
     const grouped = groupByTeam(data);
     const corpFiltered = selectedCorp === 'ALL' ? grouped : applyCorpFilter(grouped);
@@ -91,7 +87,6 @@ export default function OrgChart({ data }) {
     setTreeData(searched);
   }, [data, selectedCorp, searchQuery]);
 
-  // ✅ 접기/펼치기
   const handleToggle = (nodeDatum) => {
     if (nodeDatum.isTeamNode) {
       nodeDatum.collapsed = !nodeDatum.collapsed;
@@ -99,32 +94,36 @@ export default function OrgChart({ data }) {
     }
   };
 
-  // ✅ 커스텀 노드 렌더링
   const renderNode = ({ nodeDatum }) => {
     const isTeam = nodeDatum.isTeamNode;
-    const fill = isTeam ? '#f0ad4e' : '#007bff';
+    const width = isTeam ? 180 : 140;
+    const height = isTeam ? 60 : 50;
+    const fill = isTeam ? '#f8c8dc' : '#e0e0e0'; // 연분홍 / 연회색
 
     return (
-      <g onClick={() => handleToggle(nodeDatum)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
+      <g
+        onClick={() => handleToggle(nodeDatum)}
+        style={{ cursor: isTeam ? 'pointer' : 'default' }}
+      >
         <rect
-          width={isTeam ? 180 : 140}
-          height={isTeam ? 50 : 40}
-          x={-90}
-          y={-25}
-          rx={6}
-          ry={6}
+          width={width}
+          height={height}
+          x={-width / 2}
+          y={-height / 2}
+          rx={8}
+          ry={8}
           fill={fill}
-          stroke="#333"
+          stroke="#444"
         />
         <text
           x={0}
-          y={-5}
+          y={-6}
           textAnchor="middle"
           dominantBaseline="middle"
           style={{
             fontFamily: '맑은 고딕',
-            fontSize: 12,
-            fill: '#fff',
+            fontSize: 13,
+            fill: '#000',
             fontWeight: 'normal',
           }}
         >
@@ -133,13 +132,13 @@ export default function OrgChart({ data }) {
         {!isTeam && (
           <text
             x={0}
-            y={13}
+            y={12}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{
               fontFamily: '맑은 고딕',
               fontSize: 11,
-              fill: '#ddd',
+              fill: '#555',
               fontWeight: 'normal',
             }}
           >
@@ -149,13 +148,13 @@ export default function OrgChart({ data }) {
         {isTeam && (
           <text
             x={0}
-            y={15}
+            y={14}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{
               fontFamily: '맑은 고딕',
               fontSize: 10,
-              fill: '#fff',
+              fill: '#000',
               fontWeight: 'normal',
             }}
           >
@@ -194,7 +193,10 @@ export default function OrgChart({ data }) {
         </label>
       </div>
 
-      <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
+      <div
+        ref={containerRef}
+        style={{ width: '100%', height: 'calc(100vh - 60px)' }}
+      >
         {treeData ? (
           <Tree
             data={treeData}
@@ -203,12 +205,14 @@ export default function OrgChart({ data }) {
             zoomable
             scaleExtent={{ min: 0.3, max: 1.5 }}
             renderCustomNodeElement={renderNode}
-            nodeSize={{ x: 180, y: 100 }}
+            nodeSize={{ x: 200, y: 100 }}
             collapsible={true}
             pathFunc="elbow"
           />
         ) : (
-          <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>
+          <div style={{ padding: '2rem', color: '#888' }}>
+            검색 결과가 없습니다.
+          </div>
         )}
       </div>
     </div>
