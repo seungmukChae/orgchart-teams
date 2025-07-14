@@ -5,7 +5,8 @@ export default function OrgChart({ data }) {
   const containerRef = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [treeData, setTreeData] = useState(null);
-  const collapsibleIds = ['100', '101', '102']; // root로 접기 허용할 ID
+
+  const collapsibleIds = ['100', '101', '102']; // 접기 허용 ID
 
   useEffect(() => {
     if (containerRef.current) {
@@ -14,7 +15,6 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  // ✅ 트리 재귀적으로 가공 (collapsed 상태 적용)
   const applyCollapsedToRoots = (node) => {
     const isCollapsible = collapsibleIds.includes(node.id);
     return {
@@ -26,7 +26,6 @@ export default function OrgChart({ data }) {
     };
   };
 
-  // ✅ 첫 로딩 시 접기 적용
   useEffect(() => {
     const processed = applyCollapsedToRoots(data);
     setTreeData(processed);
@@ -46,22 +45,44 @@ export default function OrgChart({ data }) {
     }
   };
 
+  // ✅ 접기/펼치기 로직 (깊은 복사)
+  const toggleNodeCollapseById = (node, targetId) => {
+    if (node.id === targetId) {
+      return { ...node, collapsed: !node.collapsed };
+    }
+    if (node.children) {
+      return {
+        ...node,
+        children: node.children.map(child =>
+          toggleNodeCollapseById(child, targetId)
+        ),
+      };
+    }
+    return { ...node };
+  };
+
   // ✅ 클릭 핸들러
   const handleClick = (nodeDatum) => {
     console.log('노드 클릭됨:', nodeDatum);
 
     if (collapsibleIds.includes(nodeDatum.id)) {
-      nodeDatum.collapsed = !nodeDatum.collapsed;
-      setTreeData({ ...treeData });
+      const updatedTree = toggleNodeCollapseById(treeData, nodeDatum.id);
+      setTreeData(updatedTree);
     }
   };
 
-  // ✅ 커스텀 노드 렌더링
+  // ✅ 노드 렌더링
   const renderNode = ({ nodeDatum }) => {
     const isCollapsible = collapsibleIds.includes(nodeDatum.id);
     const width = 160;
     const height = 60;
     const fill = getNodeColor(nodeDatum.id);
+
+    const baseTextStyle = {
+      fontFamily: '맑은 고딕',
+      fontWeight: 'normal',
+      fill: '#000',
+    };
 
     return (
       <g
@@ -84,12 +105,7 @@ export default function OrgChart({ data }) {
           y={-6}
           textAnchor="middle"
           dominantBaseline="middle"
-          style={{
-            fontFamily: '맑은 고딕',
-            fontSize: 13,
-            fill: '#000',
-            fontWeight: 'normal',
-          }}
+          style={{ ...baseTextStyle, fontSize: 13 }}
         >
           {nodeDatum.이름}
         </text>
@@ -98,12 +114,7 @@ export default function OrgChart({ data }) {
           y={14}
           textAnchor="middle"
           dominantBaseline="middle"
-          style={{
-            fontFamily: '맑은 고딕',
-            fontSize: 11,
-            fill: '#555',
-            fontWeight: 'normal',
-          }}
+          style={{ ...baseTextStyle, fontSize: 11, fill: '#555' }}
         >
           {nodeDatum.직책}
         </text>
@@ -113,12 +124,7 @@ export default function OrgChart({ data }) {
             y={28}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{
-              fontFamily: '맑은 고딕',
-              fontSize: 10,
-              fill: '#000',
-              fontWeight: 'normal',
-            }}
+            style={{ ...baseTextStyle, fontSize: 10 }}
           >
             [{nodeDatum.collapsed ? '펼치기' : '접기'}]
           </text>
