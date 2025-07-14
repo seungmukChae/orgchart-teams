@@ -5,13 +5,12 @@ export default function OrgChart({ data }) {
   const containerRef = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [collapsedMap, setCollapsedMap] = useState({});
-  const [selectedCorp, setSelectedCorp] = useState('ALL');
-  const [searchQuery, setSearchQuery] = useState('');
 
+  // ✅ 트리 중앙 정렬
   useEffect(() => {
     const updateTranslate = () => {
       if (containerRef.current) {
-        const { width } = containerRef.current.getBoundingClientRect();
+        const { width, height } = containerRef.current.getBoundingClientRect();
         setTranslate({ x: width / 2, y: 50 });
       }
     };
@@ -20,82 +19,38 @@ export default function OrgChart({ data }) {
     return () => window.removeEventListener('resize', updateTranslate);
   }, []);
 
-  const isTeamLeader = (person) => {
-    return ['팀장', 'Manager', 'manager'].some(title =>
-      person.직책?.toLowerCase().includes(title.toLowerCase())
-    );
-  };
-
-  const groupByTeamWithLeader = (node) => {
+  // ✅ 팀별 그룹핑 트리 구조 만들기
+  const groupByTeam = (node) => {
     if (!node.children || node.children.length === 0) return node;
 
+    // 팀별로 자식 분류
     const teamGroups = {};
     node.children.forEach(child => {
       const team = child.팀 || '기타';
       if (!teamGroups[team]) teamGroups[team] = [];
-      teamGroups[team].push(groupByTeamWithLeader(child));
+      teamGroups[team].push(groupByTeam(child)); // 재귀로 하위 자식 처리
     });
 
-    const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
-      const leader = members.find(isTeamLeader);
-      const label = leader
-        ? `${teamName} (${leader.이름})`
-        : `${teamName} (미정)`;
+    // 팀별로 팀 노드 구성
+    const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => ({
+      id: `team-${node.id}-${teamName}`,
+      이름: teamName,
+      직책: '팀',
+      팀: '',
+      법인: '',
+      isTeamNode: true,
+      children: members,
+    }));
 
-      return {
-        id: `team-${node.id}-${teamName}`,
-        이름: label,
-        직책: '팀',
-        팀: '',
-        법인: '',
-        isTeamNode: true,
-        children: members,
-      };
-    });
-
-    return { ...node, children: groupedChildren };
+    return {
+      ...node,
+      children: groupedChildren,
+    };
   };
 
-  const filteredByCorp = (node) => {
-    if (selectedCorp === 'ALL') return true;
-    if (node.법인?.toUpperCase() === selectedCorp) return true;
-    if (node.children?.some(filteredByCorp)) return true;
-    return false;
-  };
+  const processedData = groupByTeam(data);
 
-  const filterByCorpRecursive = (node) => {
-    if (!filteredByCorp(node)) return null;
-    const filteredChildren = (node.children || [])
-      .map(filterByCorpRecursive)
-      .filter(child => child !== null);
-    return { ...node, children: filteredChildren };
-  };
-
-  const processedData = groupByTeamWithLeader(data);
-  const corpFilteredData = selectedCorp === 'ALL' ? processedData : filterByCorpRecursive(processedData);
-
-  const matchesSearch = (node) => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      node.이름?.toLowerCase().includes(q) ||
-      node.직책?.toLowerCase().includes(q)
-    );
-  };
-
-  const filterBySearch = (node) => {
-    const match = matchesSearch(node);
-    const filteredChildren = (node.children || [])
-      .map(filterBySearch)
-      .filter(child => child !== null);
-    if (match || filteredChildren.length > 0) {
-      return { ...node, children: filteredChildren };
-    }
-    return null;
-  };
-
-  const finalData = filterBySearch(corpFilteredData);
-
+  // ✅ 클릭 시 팀 노드 접기/펼치기
   const handleNodeToggle = (nodeDatum) => {
     const nodeId = nodeDatum.__rd3t.id;
     if (nodeDatum.isTeamNode) {
@@ -106,6 +61,7 @@ export default function OrgChart({ data }) {
     }
   };
 
+  // ✅ 커스텀 노드 렌더링
   const renderNode = ({ nodeDatum }) => {
     const isTeam = nodeDatum.isTeamNode;
     const collapsed = collapsedMap[nodeDatum.__rd3t.id];
@@ -114,10 +70,10 @@ export default function OrgChart({ data }) {
     return (
       <g onClick={() => handleNodeToggle(nodeDatum)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
         <rect
-          width={isTeam ? 160 : 120}
-          height={isTeam ? 44 : 36}
-          x={-80}
-          y={-22}
+          width={isTeam ? 120 : 100}
+          height={isTeam ? 40 : 36}
+          x={-60}
+          y={-20}
           rx={6}
           ry={6}
           fill={fillColor}
@@ -142,7 +98,7 @@ export default function OrgChart({ data }) {
         {isTeam && (
           <text
             textAnchor="middle"
-            y={18}
+            y={16}
             style={{ fill: '#fff', fontSize: 10 }}
           >
             [{collapsed ? '펼치기' : '접기'}]
@@ -152,43 +108,23 @@ export default function OrgChart({ data }) {
     );
   };
 
+  // ✅ 하위 트리 접기 적용
   const shouldCollapse = (nodeDatum) => {
     return collapsedMap[nodeDatum.__rd3t.id] ?? false;
   };
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <div style={{ padding: '0.5rem 1rem', display: 'flex', gap: '1rem' }}>
-        <label>
-          법인:
-          <select
-            value={selectedCorp}
-            onChange={(e) => setSelectedCorp(e.target.value)}
-            style={{ marginLeft: '0.5rem' }}
-          >
-            <option value="ALL">전체</option>
-            <option value="SEOUL">SEOUL</option>
-            <option value="ETP">ETP</option>
-            <option value="BVT">BVT</option>
-          </select>
-        </label>
-
-        <label>
-          검색:
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="이름 또는 직책"
-            style={{ marginLeft: '0.5rem' }}
-          />
-        </label>
-      </div>
-
-      <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
+      <div
+        ref={containerRef}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <Tree
-          data={finalData}
-          orientation="vertical"
+          data={processedData}
+          orientation="vertical" // ✅ 세로 방향
           translate={translate}
           zoomable
           scaleExtent={{ min: 0.3, max: 1.5 }}
