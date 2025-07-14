@@ -6,27 +6,20 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [selectedCorp, setSelectedCorp] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [treeData, setTreeData] = useState(null); // 트리 재렌더링 용도
 
-  // ✅ 화면 중앙 정렬
   useEffect(() => {
-    const updateTranslate = () => {
-      if (containerRef.current) {
-        const { width } = containerRef.current.getBoundingClientRect();
-        setTranslate({ x: width / 2, y: 50 });
-      }
-    };
-    updateTranslate();
-    window.addEventListener('resize', updateTranslate);
-    return () => window.removeEventListener('resize', updateTranslate);
+    if (containerRef.current) {
+      const { width } = containerRef.current.getBoundingClientRect();
+      setTranslate({ x: width / 2, y: 50 });
+    }
   }, []);
 
-  // ✅ 팀장 판별
   const isTeamLeader = (person) =>
     ['팀장', 'manager', 'Manager'].some((t) =>
       person.직책?.toLowerCase().includes(t)
     );
 
-  // ✅ 팀 단위 그룹화 및 collapsed 추가
   const groupByTeam = (node) => {
     if (!node.children || node.children.length === 0) return { ...node };
 
@@ -37,30 +30,25 @@ export default function OrgChart({ data }) {
       teamGroups[team].push(groupByTeam(child));
     });
 
-    const groupedChildren = Object.entries(teamGroups).map(
-      ([teamName, members]) => {
-        const leader = members.find(isTeamLeader);
-        const label = leader
-          ? `${teamName} (${leader.이름})`
-          : `${teamName} (미정)`;
+    const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
+      const leader = members.find(isTeamLeader);
+      const label = leader ? `${teamName} (${leader.이름})` : `${teamName} (미정)`;
 
-        return {
-          id: `team-${node.id}-${teamName}`,
-          이름: label,
-          직책: '팀',
-          팀: '',
-          법인: '',
-          isTeamNode: true,
-          collapsed: true, // 기본은 접힘
-          children: members,
-        };
-      }
-    );
+      return {
+        id: `team-${node.id}-${teamName}`,
+        이름: label,
+        직책: '팀',
+        팀: '',
+        법인: '',
+        isTeamNode: true,
+        collapsed: true, // 초기에 접혀 있음
+        children: members,
+      };
+    });
 
     return { ...node, children: groupedChildren };
   };
 
-  // ✅ 법인 필터링
   const filterByCorp = (node) => {
     if (selectedCorp === 'ALL') return true;
     if (node.법인?.toUpperCase() === selectedCorp) return true;
@@ -70,13 +58,12 @@ export default function OrgChart({ data }) {
 
   const applyCorpFilter = (node) => {
     if (!filterByCorp(node)) return null;
-    const filteredChildren = (node.children || [])
+    const children = (node.children || [])
       .map(applyCorpFilter)
       .filter(Boolean);
-    return { ...node, children: filteredChildren };
+    return { ...node, children };
   };
 
-  // ✅ 검색 필터링
   const matchesSearch = (node) => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return true;
@@ -97,28 +84,32 @@ export default function OrgChart({ data }) {
     return null;
   };
 
-  // ✅ 노드 클릭 시 접기/펼치기
-  const handleToggle = (nodeDatum, event) => {
+  useEffect(() => {
+    const grouped = groupByTeam(data);
+    const corpFiltered = selectedCorp === 'ALL' ? grouped : applyCorpFilter(grouped);
+    const searched = searchQuery.trim() ? applySearchFilter(corpFiltered) : corpFiltered;
+    setTreeData(searched);
+  }, [data, selectedCorp, searchQuery]);
+
+  const handleToggle = (nodeDatum) => {
     if (nodeDatum.isTeamNode) {
       nodeDatum.collapsed = !nodeDatum.collapsed;
-      // 강제로 re-render 트리거
-      setTranslate((pos) => ({ ...pos }));
+      setTreeData({ ...treeData }); // 강제로 리렌더링
     }
   };
 
-  // ✅ 커스텀 노드
   const renderNode = ({ nodeDatum }) => {
     const isTeam = nodeDatum.isTeamNode;
     const fill = isTeam ? '#f0ad4e' : '#007bff';
     const collapsed = nodeDatum.collapsed;
 
     return (
-      <g onClick={(e) => handleToggle(nodeDatum, e)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
+      <g onClick={() => handleToggle(nodeDatum)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
         <rect
-          width={isTeam ? 160 : 120}
-          height={isTeam ? 44 : 36}
-          x={-80}
-          y={-22}
+          width={isTeam ? 180 : 140}
+          height={isTeam ? 48 : 38}
+          x={-90}
+          y={-24}
           rx={6}
           ry={6}
           fill={fill}
@@ -126,16 +117,16 @@ export default function OrgChart({ data }) {
         />
         <text
           textAnchor="middle"
-          y={0}
-          style={{ fill: '#fff', fontSize: 12, fontWeight: 'bold' }}
+          y={-2}
+          style={{ fontFamily: '맑은 고딕', fontSize: 12, fill: '#fff' }}
         >
           {nodeDatum.이름}
         </text>
         {!isTeam && (
           <text
             textAnchor="middle"
-            y={16}
-            style={{ fill: '#ddd', fontSize: 11 }}
+            y={14}
+            style={{ fontFamily: '맑은 고딕', fontSize: 11, fill: '#ddd' }}
           >
             {nodeDatum.직책}
           </text>
@@ -143,8 +134,8 @@ export default function OrgChart({ data }) {
         {isTeam && (
           <text
             textAnchor="middle"
-            y={18}
-            style={{ fill: '#fff', fontSize: 10 }}
+            y={16}
+            style={{ fontFamily: '맑은 고딕', fontSize: 10, fill: '#fff' }}
           >
             [{collapsed ? '펼치기' : '접기'}]
           </text>
@@ -152,14 +143,6 @@ export default function OrgChart({ data }) {
       </g>
     );
   };
-
-  // ✅ 전체 처리: 그룹 → 법인 → 검색
-  const groupedData = groupByTeam(data);
-  const corpFilteredData =
-    selectedCorp === 'ALL' ? groupedData : applyCorpFilter(groupedData);
-  const finalData = searchQuery.trim()
-    ? applySearchFilter(corpFilteredData)
-    : corpFilteredData;
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -190,15 +173,15 @@ export default function OrgChart({ data }) {
       </div>
 
       <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
-        {finalData ? (
+        {treeData ? (
           <Tree
-            data={finalData}
+            data={treeData}
             orientation="vertical"
             translate={translate}
             zoomable
             scaleExtent={{ min: 0.3, max: 1.5 }}
             renderCustomNodeElement={renderNode}
-            nodeSize={{ x: 160, y: 100 }}
+            nodeSize={{ x: 180, y: 100 }}
             collapsible={true}
             pathFunc="elbow"
           />
