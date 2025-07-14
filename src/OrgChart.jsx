@@ -85,10 +85,6 @@ export default function OrgChart({ data }) {
     const isHighlighted = highlightedPath.includes(id);
     const isSelected = selectedId && id === selectedId;
     const opacity = selectedId ? (isHighlighted ? 1 : 0.2) : 1;
-
-    // 선택된 노드 기준 색상 통일
-    const selectedNode = highlightedPath.length ? data : null;
-    const selectedColor = selectedNode ? getCorpColor(nodeDatum.법인) : '#ccc';
     const fillColor = isHighlighted ? getCorpColor(nodeDatum.법인) : '#ccc';
 
     return (
@@ -133,20 +129,21 @@ export default function OrgChart({ data }) {
     <div
       ref={containerRef}
       style={{
-        width: '100%',
-        height: '100vh',
+        width: '100vw',     // ✅ 뷰포트 전체 너비 사용
+        height: '100vh',    // ✅ 뷰포트 전체 높이 사용
         overflow: 'auto',
-        border: '1px solid #ccc',
         marginTop: '1rem',
       }}
     >
       <Tree
         data={data}
-        orientation="horizontal"               // ✅ 좌 → 우 방향
+        orientation="horizontal" // ✅ 가로 방향
         renderCustomNodeElement={renderCustomNode}
         translate={translate}
-        nodeSize={{ x: 150, y: 80 }}          // ✅ 노드 간격 축소
+        nodeSize={{ x: 150, y: 80 }} // 노드 간격
         zoomable={true}
+        scaleExtent={{ min: 0.3, max: 2 }} // 줌 범위 제한
+        separation={{ siblings: 1, nonSiblings: 2 }}
       />
     </div>
   );
