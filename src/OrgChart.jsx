@@ -5,44 +5,35 @@ export default function OrgChart({ data }) {
   const [highlightedPath, setHighlightedPath] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [selectedCorp, setSelectedCorp] = useState('ALL');
   const containerRef = useRef(null);
 
-  // ✅ 중앙 정렬 (초기 + 리사이즈 대응)
+  // ✅ 중앙 정렬
   useEffect(() => {
     const updateTranslate = () => {
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect();
-        setTranslate({
-          x: width / 2,
-          y: height / 2,
-        });
+        setTranslate({ x: width / 2, y: height / 2 });
       }
     };
-
     updateTranslate();
     window.addEventListener('resize', updateTranslate);
     return () => window.removeEventListener('resize', updateTranslate);
   }, []);
 
-  // ✅ 부모 경로 찾기
   const findPathToRoot = useCallback((nodeId, nodeMap) => {
     const path = [];
     let currentId = nodeId;
-
     while (currentId) {
       const currentNode = nodeMap[currentId];
       if (currentNode) {
         path.unshift(currentId);
         currentId = currentNode.manager_id;
-      } else {
-        break;
-      }
+      } else break;
     }
-
     return path;
   }, []);
 
-  // ✅ 평탄화
   const flattenTree = (node, map = {}, parentId = null) => {
     map[node.id] = { ...node, manager_id: parentId };
     if (node.children?.length) {
@@ -51,18 +42,16 @@ export default function OrgChart({ data }) {
     return map;
   };
 
-  // ✅ 법인 색상
   const getCorpColor = (corp) => {
     if (!corp) return '#6c757d';
     switch (corp.trim().toUpperCase()) {
-      case 'SEOUL': return '#007bff'; // 파랑
-      case 'ETP': return '#28a745';   // 녹색
-      case 'BVT': return '#dc3545';   // 빨강
+      case 'SEOUL': return '#007bff';
+      case 'ETP': return '#28a745';
+      case 'BVT': return '#dc3545';
       default: return '#6c757d';
     }
   };
 
-  // ✅ 클릭 시: 강조 OR 해제
   const handleClick = useCallback(
     (nodeDatum) => {
       const nodeId = nodeDatum.id;
@@ -79,72 +68,79 @@ export default function OrgChart({ data }) {
     [data, selectedId, findPathToRoot]
   );
 
-  // ✅ 커스텀 노드 렌더링
   const renderCustomNode = ({ nodeDatum }) => {
     const id = nodeDatum.id;
     const isHighlighted = highlightedPath.includes(id);
-    const isSelected = selectedId && id === selectedId;
     const opacity = selectedId ? (isHighlighted ? 1 : 0.2) : 1;
     const fillColor = isHighlighted ? getCorpColor(nodeDatum.법인) : '#ccc';
 
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
-        <circle
-          r={14}
-          fill={fillColor}
-          stroke="#333"
-          strokeWidth="1"
-        />
-        <text
-          y={24}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          style={{
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '12px',
-            fill: '#333',
-            fontWeight: isHighlighted ? 'bold' : 'normal',
-          }}
-        >
+        <circle r={14} fill={fillColor} stroke="#333" strokeWidth="1" />
+        <text y={24} textAnchor="middle" style={{ fontSize: 12 }}>
           {nodeDatum.이름}
         </text>
-        <text
-          y={42}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          style={{
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '11px',
-            fill: '#555',
-            fontWeight: isHighlighted ? 'bold' : 'normal',
-          }}
-        >
+        <text y={42} textAnchor="middle" style={{ fontSize: 11, fill: '#555' }}>
           ({nodeDatum.직책}, {nodeDatum.팀})
         </text>
       </g>
     );
   };
 
+  // ✅ 법인 필터링 적용
+  const filterByCorp = (node) => {
+    if (selectedCorp === 'ALL') return true;
+    if (node.법인?.toUpperCase() === selectedCorp.toUpperCase()) return true;
+    if (node.children?.some(filterByCorp)) return true;
+    return false;
+  };
+
+  const filterTree = (node) => {
+    if (!filterByCorp(node)) return null;
+    const filteredChildren = (node.children || [])
+      .map(filterTree)
+      .filter(child => child !== null);
+    return { ...node, children: filteredChildren };
+  };
+
+  const filteredData = selectedCorp === 'ALL' ? data : filterTree(data);
+
   return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100vw',     // ✅ 뷰포트 전체 너비 사용
-        height: '100vh',    // ✅ 뷰포트 전체 높이 사용
-        overflow: 'auto',
-        marginTop: '1rem',
-      }}
-    >
-      <Tree
-        data={data}
-        orientation="horizontal" // ✅ 가로 방향
-        renderCustomNodeElement={renderCustomNode}
-        translate={translate}
-        nodeSize={{ x: 150, y: 80 }} // 노드 간격
-        zoomable={true}
-        scaleExtent={{ min: 0.3, max: 2 }} // 줌 범위 제한
-        separation={{ siblings: 1, nonSiblings: 2 }}
-      />
+    <div style={{ width: '100vw', height: '100vh' }}>
+      {/* ✅ 법인 선택 필터 */}
+      <div style={{ padding: '0.5rem 1rem' }}>
+        <label htmlFor="corpSelect">법인 필터: </label>
+        <select
+          id="corpSelect"
+          value={selectedCorp}
+          onChange={(e) => setSelectedCorp(e.target.value)}
+        >
+          <option value="ALL">전체</option>
+          <option value="SEOUL">SEOUL</option>
+          <option value="ETP">ETP</option>
+          <option value="BVT">BVT</option>
+        </select>
+      </div>
+
+      <div
+        ref={containerRef}
+        style={{
+          width: '100%',
+          height: 'calc(100vh - 60px)',
+          overflow: 'auto',
+        }}
+      >
+        <Tree
+          data={filteredData}
+          orientation="horizontal"
+          renderCustomNodeElement={renderCustomNode}
+          translate={translate}
+          nodeSize={{ x: 150, y: 80 }}
+          zoomable={true}
+          scaleExtent={{ min: 0.3, max: 2 }}
+          separation={{ siblings: 1, nonSiblings: 2 }}
+        />
+      </div>
     </div>
   );
 }
