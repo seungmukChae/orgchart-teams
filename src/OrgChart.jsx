@@ -4,9 +4,8 @@ import Tree from 'react-d3-tree';
 export default function OrgChart({ data }) {
   const containerRef = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [selectedCorp, setSelectedCorp] = useState('ALL');
-  const [searchQuery, setSearchQuery] = useState('');
   const [treeData, setTreeData] = useState(null);
+  const collapsibleIds = ['100', '101', '102']; // root로 접기 허용할 ID
 
   useEffect(() => {
     if (containerRef.current) {
@@ -15,105 +14,59 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  const groupByTeam = (node) => {
-    if (!node.children || node.children.length === 0) return { ...node };
-
-    const teamGroups = {};
-    node.children.forEach((child) => {
-      const team = child.팀 || '기타';
-      if (!teamGroups[team]) teamGroups[team] = [];
-      teamGroups[team].push(groupByTeam(child));
-    });
-
-    const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
-      const sorted = members
-        .filter((m) => !m.isTeamNode)
-        .sort((a, b) => parseInt(a.id) - parseInt(b.id));
-      const manager = sorted[0];
-      const label = manager ? `${teamName} (${manager.이름})` : `${teamName} (미정)`;
-
-      return {
-        id: `team-${node.id}-${teamName}`,
-        이름: label,
-        직책: '팀',
-        팀: '',
-        법인: '',
-        isTeamNode: true,
-        collapsed: true,
-        children: members,
-      };
-    });
-
-    return { ...node, children: groupedChildren };
+  // ✅ 트리 재귀적으로 가공 (collapsed 상태 적용)
+  const applyCollapsedToRoots = (node) => {
+    const isCollapsible = collapsibleIds.includes(node.id);
+    return {
+      ...node,
+      collapsed: isCollapsible ? true : false,
+      children: node.children
+        ? node.children.map(applyCollapsedToRoots)
+        : [],
+    };
   };
 
-  const filterByCorp = (node) => {
-    if (selectedCorp === 'ALL') return true;
-    if (node.법인?.toUpperCase() === selectedCorp) return true;
-    return node.children?.some(filterByCorp);
-  };
-
-  const applyCorpFilter = (node) => {
-    if (!filterByCorp(node)) return null;
-    const filteredChildren = (node.children || [])
-      .map(applyCorpFilter)
-      .filter(Boolean);
-    return { ...node, children: filteredChildren };
-  };
-
-  const matchesSearch = (node) => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return true;
-    return (
-      node.이름?.toLowerCase().includes(q) ||
-      node.직책?.toLowerCase().includes(q)
-    );
-  };
-
-  const applySearchFilter = (node) => {
-    const match = matchesSearch(node);
-    const filteredChildren = (node.children || [])
-      .map(applySearchFilter)
-      .filter(Boolean);
-    if (match || filteredChildren.length > 0) {
-      return { ...node, children: filteredChildren };
-    }
-    return null;
-  };
-
+  // ✅ 첫 로딩 시 접기 적용
   useEffect(() => {
-    const grouped = groupByTeam(data);
-    const corpFiltered =
-      selectedCorp === 'ALL' ? grouped : applyCorpFilter(grouped);
-    const searched = searchQuery.trim()
-      ? applySearchFilter(corpFiltered)
-      : corpFiltered;
-    setTreeData(searched);
-  }, [data, selectedCorp, searchQuery]);
+    const processed = applyCollapsedToRoots(data);
+    setTreeData(processed);
+  }, [data]);
 
-  const handleToggle = (nodeDatum) => {
-    if (nodeDatum.isTeamNode) {
+  // ✅ 색상 설정
+  const getNodeColor = (id) => {
+    switch (id) {
+      case '100':
+        return '#007bff'; // blue
+      case '101':
+        return '#28a745'; // green
+      case '102':
+        return '#ff9999'; // light red
+      default:
+        return '#e0e0e0'; // gray
+    }
+  };
+
+  // ✅ 클릭 핸들러
+  const handleClick = (nodeDatum) => {
+    console.log('노드 클릭됨:', nodeDatum);
+
+    if (collapsibleIds.includes(nodeDatum.id)) {
       nodeDatum.collapsed = !nodeDatum.collapsed;
       setTreeData({ ...treeData });
     }
   };
 
+  // ✅ 커스텀 노드 렌더링
   const renderNode = ({ nodeDatum }) => {
-    const isTeam = nodeDatum.isTeamNode;
-    const width = isTeam ? 180 : 140;
-    const height = isTeam ? 60 : 50;
-    const fill = isTeam ? '#f8c8dc' : '#e0e0e0';
-
-    const baseTextStyle = {
-      fontFamily: '맑은 고딕',
-      fill: '#000',
-      fontWeight: 'normal',
-    };
+    const isCollapsible = collapsibleIds.includes(nodeDatum.id);
+    const width = 160;
+    const height = 60;
+    const fill = getNodeColor(nodeDatum.id);
 
     return (
       <g
-        onClick={() => handleToggle(nodeDatum)}
-        style={{ cursor: isTeam ? 'pointer' : 'default' }}
+        onClick={() => handleClick(nodeDatum)}
+        style={{ cursor: isCollapsible ? 'pointer' : 'default' }}
       >
         <rect
           width={width}
@@ -124,35 +77,48 @@ export default function OrgChart({ data }) {
           ry={8}
           fill={fill}
           stroke="#444"
-          strokeWidth={1}
+          strokeWidth={1.5}
         />
         <text
           x={0}
           y={-6}
           textAnchor="middle"
           dominantBaseline="middle"
-          style={{ ...baseTextStyle, fontSize: 13 }}
+          style={{
+            fontFamily: '맑은 고딕',
+            fontSize: 13,
+            fill: '#000',
+            fontWeight: 'normal',
+          }}
         >
           {nodeDatum.이름}
         </text>
-        {!isTeam && (
+        <text
+          x={0}
+          y={14}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{
+            fontFamily: '맑은 고딕',
+            fontSize: 11,
+            fill: '#555',
+            fontWeight: 'normal',
+          }}
+        >
+          {nodeDatum.직책}
+        </text>
+        {isCollapsible && (
           <text
             x={0}
-            y={12}
+            y={28}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ ...baseTextStyle, fontSize: 11, fill: '#555' }}
-          >
-            {nodeDatum.직책}
-          </text>
-        )}
-        {isTeam && (
-          <text
-            x={0}
-            y={15}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            style={{ ...baseTextStyle, fontSize: 10 }}
+            style={{
+              fontFamily: '맑은 고딕',
+              fontSize: 10,
+              fill: '#000',
+              fontWeight: 'normal',
+            }}
           >
             [{nodeDatum.collapsed ? '펼치기' : '접기'}]
           </text>
@@ -163,33 +129,10 @@ export default function OrgChart({ data }) {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <div style={{ padding: '0.5rem 1rem', display: 'flex', gap: '1rem' }}>
-        <label>
-          법인:
-          <select
-            value={selectedCorp}
-            onChange={(e) => setSelectedCorp(e.target.value)}
-            style={{ marginLeft: '0.5rem' }}
-          >
-            <option value="ALL">전체</option>
-            <option value="SEOUL">SEOUL</option>
-            <option value="ETP">ETP</option>
-            <option value="BVT">BVT</option>
-          </select>
-        </label>
-        <label>
-          검색:
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="이름 또는 직책"
-            style={{ marginLeft: '0.5rem' }}
-          />
-        </label>
-      </div>
-
-      <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
+      <div
+        ref={containerRef}
+        style={{ width: '100%', height: '100%' }}
+      >
         {treeData ? (
           <Tree
             data={treeData}
@@ -203,13 +146,13 @@ export default function OrgChart({ data }) {
             pathFunc="elbow"
             styles={{
               links: {
-                stroke: '#555',        // ✅ 모든 선 회색
-                strokeWidth: 1.5,      // ✅ 두께 통일
+                stroke: '#555',
+                strokeWidth: 1.5,
               },
             }}
           />
         ) : (
-          <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>
+          <div style={{ padding: '2rem', color: '#888' }}>데이터를 불러오는 중...</div>
         )}
       </div>
     </div>
