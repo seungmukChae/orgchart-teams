@@ -6,7 +6,7 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [treeData, setTreeData] = useState(null);
 
-  const collapsibleIds = ['100', '101', '102']; // 접기 허용 ID
+  const collapsibleIds = ['100', '101', '102']; // 접기 가능한 ID
 
   useEffect(() => {
     if (containerRef.current) {
@@ -15,14 +15,13 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
+  // ✅ collapsed 초기 적용
   const applyCollapsedToRoots = (node) => {
     const isCollapsible = collapsibleIds.includes(node.id);
     return {
       ...node,
       collapsed: isCollapsible ? true : false,
-      children: node.children
-        ? node.children.map(applyCollapsedToRoots)
-        : [],
+      children: node.children?.map(applyCollapsedToRoots) || [],
     };
   };
 
@@ -31,34 +30,28 @@ export default function OrgChart({ data }) {
     setTreeData(processed);
   }, [data]);
 
-  // ✅ 색상 설정
+  // ✅ 색상 지정
   const getNodeColor = (id) => {
     switch (id) {
-      case '100':
-        return '#007bff'; // blue
-      case '101':
-        return '#28a745'; // green
-      case '102':
-        return '#ff9999'; // light red
-      default:
-        return '#e0e0e0'; // gray
+      case '100': return '#007bff';   // Blue
+      case '101': return '#28a745';   // Green
+      case '102': return '#ff9999';   // Light red
+      default: return '#e0e0e0';      // Light gray
     }
   };
 
-  // ✅ 접기/펼치기 로직 (깊은 복사)
-  const toggleNodeCollapseById = (node, targetId) => {
+  // ✅ 트리 내부에서 ID로 collapsed 토글
+  const toggleCollapse = (node, targetId) => {
     if (node.id === targetId) {
-      return { ...node, collapsed: !node.collapsed };
-    }
-    if (node.children) {
       return {
         ...node,
-        children: node.children.map(child =>
-          toggleNodeCollapseById(child, targetId)
-        ),
+        collapsed: !node.collapsed,
       };
     }
-    return { ...node };
+    return {
+      ...node,
+      children: node.children?.map(child => toggleCollapse(child, targetId)) || [],
+    };
   };
 
   // ✅ 클릭 핸들러
@@ -66,8 +59,8 @@ export default function OrgChart({ data }) {
     console.log('노드 클릭됨:', nodeDatum);
 
     if (collapsibleIds.includes(nodeDatum.id)) {
-      const updatedTree = toggleNodeCollapseById(treeData, nodeDatum.id);
-      setTreeData(updatedTree);
+      const updated = toggleCollapse(treeData, nodeDatum.id);
+      setTreeData(updated); // 트리 재구성
     }
   };
 
@@ -135,10 +128,7 @@ export default function OrgChart({ data }) {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <div
-        ref={containerRef}
-        style={{ width: '100%', height: '100%' }}
-      >
+      <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
         {treeData ? (
           <Tree
             data={treeData}
@@ -158,7 +148,9 @@ export default function OrgChart({ data }) {
             }}
           />
         ) : (
-          <div style={{ padding: '2rem', color: '#888' }}>데이터를 불러오는 중...</div>
+          <div style={{ padding: '2rem', color: '#888' }}>
+            데이터 로딩 중...
+          </div>
         )}
       </div>
     </div>
