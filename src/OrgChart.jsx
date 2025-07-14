@@ -15,7 +15,6 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  // ✅ 팀 단위 그룹핑 (팀장 ID 가장 낮은 사람), BUT 하위 구성원에 포함 유지
   const groupByTeam = (node) => {
     if (!node.children || node.children.length === 0) return { ...node };
 
@@ -27,7 +26,9 @@ export default function OrgChart({ data }) {
     });
 
     const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
-      const sorted = members.filter(m => !m.isTeamNode).sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      const sorted = members
+        .filter((m) => !m.isTeamNode)
+        .sort((a, b) => parseInt(a.id) - parseInt(b.id));
       const manager = sorted[0];
       const label = manager ? `${teamName} (${manager.이름})` : `${teamName} (미정)`;
 
@@ -82,8 +83,11 @@ export default function OrgChart({ data }) {
 
   useEffect(() => {
     const grouped = groupByTeam(data);
-    const corpFiltered = selectedCorp === 'ALL' ? grouped : applyCorpFilter(grouped);
-    const searched = searchQuery.trim() ? applySearchFilter(corpFiltered) : corpFiltered;
+    const corpFiltered =
+      selectedCorp === 'ALL' ? grouped : applyCorpFilter(grouped);
+    const searched = searchQuery.trim()
+      ? applySearchFilter(corpFiltered)
+      : corpFiltered;
     setTreeData(searched);
   }, [data, selectedCorp, searchQuery]);
 
@@ -98,7 +102,13 @@ export default function OrgChart({ data }) {
     const isTeam = nodeDatum.isTeamNode;
     const width = isTeam ? 180 : 140;
     const height = isTeam ? 60 : 50;
-    const fill = isTeam ? '#f8c8dc' : '#e0e0e0'; // 연분홍 / 연회색
+    const fill = isTeam ? '#f8c8dc' : '#e0e0e0';
+
+    const baseTextStyle = {
+      fontFamily: '맑은 고딕',
+      fill: '#000',
+      fontWeight: 'normal',
+    };
 
     return (
       <g
@@ -114,18 +124,14 @@ export default function OrgChart({ data }) {
           ry={8}
           fill={fill}
           stroke="#444"
+          strokeWidth={1}
         />
         <text
           x={0}
           y={-6}
           textAnchor="middle"
           dominantBaseline="middle"
-          style={{
-            fontFamily: '맑은 고딕',
-            fontSize: 13,
-            fill: '#000',
-            fontWeight: 'normal',
-          }}
+          style={{ ...baseTextStyle, fontSize: 13 }}
         >
           {nodeDatum.이름}
         </text>
@@ -135,12 +141,7 @@ export default function OrgChart({ data }) {
             y={12}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{
-              fontFamily: '맑은 고딕',
-              fontSize: 11,
-              fill: '#555',
-              fontWeight: 'normal',
-            }}
+            style={{ ...baseTextStyle, fontSize: 11, fill: '#555' }}
           >
             {nodeDatum.직책}
           </text>
@@ -148,15 +149,10 @@ export default function OrgChart({ data }) {
         {isTeam && (
           <text
             x={0}
-            y={14}
+            y={15}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{
-              fontFamily: '맑은 고딕',
-              fontSize: 10,
-              fill: '#000',
-              fontWeight: 'normal',
-            }}
+            style={{ ...baseTextStyle, fontSize: 10 }}
           >
             [{nodeDatum.collapsed ? '펼치기' : '접기'}]
           </text>
@@ -193,10 +189,7 @@ export default function OrgChart({ data }) {
         </label>
       </div>
 
-      <div
-        ref={containerRef}
-        style={{ width: '100%', height: 'calc(100vh - 60px)' }}
-      >
+      <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
         {treeData ? (
           <Tree
             data={treeData}
@@ -208,11 +201,15 @@ export default function OrgChart({ data }) {
             nodeSize={{ x: 200, y: 100 }}
             collapsible={true}
             pathFunc="elbow"
+            styles={{
+              links: {
+                stroke: '#555',        // ✅ 모든 선 회색
+                strokeWidth: 1.5,      // ✅ 두께 통일
+              },
+            }}
           />
         ) : (
-          <div style={{ padding: '2rem', color: '#888' }}>
-            검색 결과가 없습니다.
-          </div>
+          <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>
         )}
       </div>
     </div>
