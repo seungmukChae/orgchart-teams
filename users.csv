@@ -1,23 +1,41 @@
 ﻿id,이름,직책,법인,팀,manager_id
+100,Seoul,,,,2
+101,ETP,,,,2
+102,BVT,,,,2
 1,shin@shints.com,Chairman,,Chairman,
 2,Jongin_CEO,CEO,,CEO,1
 3,CHA,Advisor,,고문,1
-4,Haein_VP,Vice President,,Vice-President,2
-5,Jay_SPL,General Manager,Seoul,Planning,4
-6,Chuck_SMC,Senior Manager,Seoul,Material,4
-7,Mira_SMRP,General Manager,Seoul,MRP,4
-8,Kyu_SIT,Senior Manager,Seoul,IT,4
-9,Jeon_SAC,General Manager,Seoul,Accounting,4
-10,Hyunjoo_STR,Manager,Seoul,Im-Export,4
-11,Leo_SHR,Director,Seoul,HR,4
-12,Chris_SBR,Senior Manager,Seoul,Brand Development,4
-13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,4
-14,Andrew_SMDK,General Manager,Seoul,SalesKR,4
-15,Jhoen_SMD1,Executive Director,Seoul,Sales1,4
-16,Ciara_SMD2,Executive Director,Seoul,Sales2,4
-17,Jake_SMD3,Senior Manager,Seoul,Sales3,4
-18,Ken_SMD4,Executive Director,Seoul,Sales4,4
-19,Oliver_FOB,Director,Seoul,FOB,4
+4,Haein_VP,Vice President,,Vice-President,100
+103,Planning,,,,4
+5,Jay_SPL,General Manager,Seoul,Planning,103
+104,Material,,,,4
+6,Chuck_SMC,Senior Manager,Seoul,Material,104
+105,MRP,,,,4
+7,Mira_SMRP,General Manager,Seoul,MRP,105
+106,IT,,,,4
+8,Kyu_SIT,Senior Manager,Seoul,IT,106
+107,Accounting,,,,4
+9,Jeon_SAC,General Manager,Seoul,Accounting,107
+108,Im-Export,,,,4
+10,Hyunjoo_STR,Manager,Seoul,Im-Export,108
+109,HR,,,,4
+11,Leo_SHR,Director,Seoul,HR,109
+110,Brand Development,,,,4
+12,Chris_SBR,Senior Manager,Seoul,Brand Development,110
+111,Garment Development,,,,4
+13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111
+112,SalesKR,,,,4
+14,Andrew_SMDK,General Manager,Seoul,SalesKR,112
+113,Sales1,,,,4
+15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113
+114,Sales2,,,,4
+16,Ciara_SMD2,Executive Director,Seoul,Sales2,114
+115,Sales3,,,,4
+17,Jake_SMD3,Senior Manager,Seoul,Sales3,115
+116,Sales4,,,,4
+18,Ken_SMD4,Executive Director,Seoul,Sales4,116
+117,FOB,,,,4
+19,Oliver_FOB,Director,Seoul,FOB,117
 20,Bell_SPL,Assistant Manager,Seoul,Planning,5
 21,Mila_SPL,Staff,Seoul,Planning,5
 22,Rim_SPL,Senior Manager,Seoul,Planning,5
@@ -87,242 +105,3 @@
 86,Cherie_FOB,Staff,Seoul,FOB,19
 87,Sam_FOB,Manager,Seoul,FOB,19
 88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14
-201,Daniel_GM,Vice President,ETP,General Manager,2
-202,Thomas_EFD,Executive Director,ETP,Factory Director,201
-203,Abubeker_EQA,Manager,ETP,Quality,201
-204,Ahmed_ECUT,Manager,ETP,Cutting,201
-205,Anwar_EEMB,Manager,ETP,Embroidery,201
-206,Awol_EPM,Asst. Manager,ETP,Production Management,201
-207,Ayele_EHR,Manager,ETP,HR,201
-208,Aziz_EMD,Director,ETP,Sales,201
-209,Dawit_EMD,General Manager,ETP,Sales,208
-210,Beker_EMRP,Assistant Manager,ETP,MRP,201
-211,Bezawit_EAC,Manager,ETP,Accounting,201
-212,Biniyam_EMTN,Manager,ETP,Maintanance,201
-213,Endashaw_ECI,General Manager,ETP,CI,201
-214,Hadush_EFN,Manager,ETP,Finishing,201
-215,Helen_ETR,Manager,ETP,Import&Export,201
-216,Hldana_ETRN,Staff,ETP,Translator,201
-217,Leta_EPS,Manager,ETP,Production Schedule,201
-218,Mihret_ESPM,Team Leader,ETP,Sample,201
-219,Muditha_EME,Manager,ETP,Mending,201
-220,Nigus_ECSR,Manager,ETP,CSR,201
-221,Prasad_ECPM,Chief Production Manager,ETP,Production,201
-222,Rana_ECAD,Manager,ETP,CAD,201
-223,Rewina_EPUR,Manager,ETP,Purchase,201
-224,Saokat_EWSS,Manager,ETP,Welding&Seamseling,201
-225,Solomon_EPRT,Manager,ETP,Print,201
-226,Sugan_EMEC,Manager,ETP,Mechanic,201
-227,Teddy_EMC,General Manager,ETP,Material,201
-228,Tharaka_EIE,Deputy Factory Director,ETP,IE,201
-229,Yemane_EAD,Manager,ETP,Admin,201
-230,Yonas_EIT,Manager,ETP,IT,201
-231,Jay_EFD,General Manager,ETP,Factory Director,202
-232,Jeff_EFD,Director,ETP,Factory Director,202
-233,Abenezer_EQA,Staff,ETP,Quality,203
-234,Abrham_EQA,Staff,ETP,Quality,203
-235,Ali_EQA,Staff,ETP,Quality,203
-236,Ashenafi_EQA,Assistant Manager,ETP,Quality,203
-237,Belay_EQA,Staff,ETP,Quality,203
-238,Buze_EQA,Staff,ETP,Quality,203
-239,Daniel_EQA,Assistant Manager,ETP,Quality,203
-240,Demeke_EQA,Staff,ETP,Quality,203
-241,Eden_EQA,Assistant Manager,ETP,Quality,203
-242,Genanaw_EQA,Assistant Manager,ETP,Quality,203
-243,Genet_EQA,Staff,ETP,Quality,203
-244,Getnet_EQA,Staff,ETP,Quality,203
-245,Goitom_EQA,Assistant Manager,ETP,Quality,203
-246,Kenubsh_EQA,Staff,ETP,Quality,203
-247,Kibrnesh_EQA,Staff,ETP,Quality,203
-248,Moges_EQA,Staff,ETP,Quality,203
-249,Mussie_EQA,Assistant Manager,ETP,Quality,203
-250,Nebyu_EQA,Staff,ETP,Quality,203
-251,Nigusie_EQA,Assistant Manager,ETP,Quality,203
-252,Yibeltal_EQA,Assistant Manager,ETP,Quality,203
-253,Engda_ECUT,Staff,ETP,Cutting,204
-254,Lalinda_ECUT,Manager,ETP,Cutting,204
-255,Mesir_ECUT,Staff,ETP,Cutting,204
-256,Sinka_ECUT,Staff,ETP,Cutting,204
-257,Solomon_ECUT,Manager,ETP,Cutting,204
-258,Zewditu_ECUT,Staff,ETP,Cutting,204
-259,Abebaw_EPM,Staff,ETP,Production Management,206
-260,Aleka_EPM,Staff,ETP,Production Management,206
-261,Asrat_EPM,Staff,ETP,Production Management,206
-262,Belete_EPM,Team Leader,ETP,Production Management,206
-263,Beyene_EPM,Team Leader,ETP,Production Management,206
-264,Birhanu_EPM,Staff,ETP,Production Management,206
-265,Esmael_EPM,Staff,ETP,Production Management,206
-266,Fantu_EPM,Staff,ETP,Production Management,206
-267,Fetene_EPM,Staff,ETP,Production Management,206
-268,Firew_EPM,Staff,ETP,Production Management,206
-269,Kachew_EPM,Team Leader,ETP,Production Management,206
-270,Brkti_EPM,Staff,ETP,Production Management,206
-271,Rediat_EPM,Staff,ETP,Production Management,206
-272,Ayene_EHR,Staff,ETP,HR,207
-273,Beka_EHR,Assistant Manager,ETP,HR,207
-274,B.Bamlaku_EHR,Staff,ETP,HR,207
-275,B.Aknaw_EHR,Staff,ETP,HR,207
-276,Bizuayehu_EHR,Team Leader,ETP,HR,207
-277,Hana_EHR,Staff,ETP,HR,207
-278,Kalkidan_EHR,Staff,ETP,HR,207
-279,Selamawit_EHR,Staff,ETP,HR,207
-280,Shewaye_EHR,Staff,ETP,HR,207
-281,Surafel_EHR,Staff,ETP,HR,207
-282,T.Mesfin_EHR,Staff,ETP,HR,207
-283,T.Fante_EHR,Staff,ETP,HR,207
-284,Tseganesh_EHR,Staff,ETP,HR,207
-285,Yitbarek_EHR,Assistant Manager,ETP,HR,207
-286,Abebe_EMD,Staff,ETP,Sales,209
-287,Abele_EMD,Staff,ETP,sales,209
-288,Abraham_EMD,Staff,ETP,Sales,209
-289,Agegnehu_EMD,Assistant Manager,ETP,Sales,209
-290,Andebet_EMD,Staff,ETP,Sales,209
-291,Berhanu_EMD,Staff,ETP,Sales,209
-292,Beza_EMD,Staff,ETP,Sales,209
-293,Dejene_EMD,Manager,ETP,Sales,209
-294,Dereje_EMD,Staff,ETP,Sales,209
-295,Enchalewu_EMD,Staff,ETP,Sales,209
-296,Fanos_EMD,Team Leader,ETP,Sales,209
-297,Getaneh_EMD,Staff,ETP,Sales,209
-298,habtamu_EMD,Staff,ETP,Sales,209
-299,Hilina_EMD,Staff,ETP,Sales,209
-300,Kasahun_EMD,Staff,ETP,Sales,209
-301,Natinael_EMD,Staff,ETP,Sales,209
-302,Samrawit_EMD,Staff,ETP,Sales,209
-303,Semi_EMD,Team Leader,ETP,Sales,209
-304,Sine_EMD,Senior Manager,ETP,Sales,209
-305,Tamiru_EMD,Team Leader,ETP,Sales,209
-306,Tesfu_EMD,Team Leader,ETP,Sales,209
-307,Teshager_EMD,Staff,ETP,Sales,209
-308,Wasihun_EMD,Staff,ETP,Sales,209
-309,Yohanes_EMD,Assistant Manager,ETP,Sales,209
-310,yohannes_EMD,Staff,ETP,Sales,209
-311,Aynalem_EMRP,Staff,ETP,MRP,210
-312,Bamlak_EMRP,Staff,ETP,MRP,210
-313,Birhanu_EMRP,Staff,ETP,MRP,210
-314,Bizu_EMRP,Staff,ETP,MRP,210
-315,Kalkidan_EMRP,Staff,ETP,MRP,210
-316,Rahel_EMRP,Staff,ETP,MRP,210
-317,Tsige_EMRP,Staff,ETP,MRP,210
-318,Emawayish_EAC,Staff ,ETP,Accounting,211
-319,Zeytie_EAC,Team Leader,ETP,Accounting,211
-320,Hulager_EAC,Staff ,ETP,Accounting,211
-321,Sintayehu_EAC,Staff ,ETP,Accounting,211
-322,Tadele_EAC,Staff ,ETP,Accounting,211
-323,Tirngo_EAC,Staff ,ETP,Accounting,211
-324,Birhane_EMTN,Staff,ETP,Maintanance,212
-325,Wondimu_EMTN,Assistant Manager,ETP,Maintanance,212
-326,Bethlehem_ECI,Team Leader,ETP,CI,213
-327,Andinet_ECI,Team Leader,ETP,CI,213
-328,Aregay_ECI,Assistant Manager,ETP,CI,213
-329,Asmro_ECI,Team Leader,ETP,CI,213
-330,Bedasa_ECI,Assistant Manager,ETP,CI,213
-331,Birtukan_ECI,Staff,ETP,CI,213
-332,Desie_ECI,Staff,ETP,CI,213
-333,Eyob_ECI,Manager,ETP,CI,213
-334,Ararsa_EFN,Ass Manager,ETP,Finishing,214
-335,Bamlak_EFN,Staff,ETP,Finishing,214
-336,Birhanu_EFN,Staff,ETP,Finishing,214
-337,Dejene_EFN,Staff,ETP,Finishing,214
-338,Eshetu_EFN,Staff,ETP,Finishing,214
-339,Fayise_EFN,Staff,ETP,Finishing,214
-340,Girma_EFN,Staff,ETP,Finishing,214
-341,Habtamu_EFN,Ass Manager,ETP,Finishing,214
-342,Sewhareg_EFN,Staff,ETP,Finishing,214
-343,Mokenin_EFN,Ass Manager,ETP,Finishing,214
-344,Nuguse_EFN,Staff,ETP,Finishing,214
-345,Yahikob_EFN,Staff,ETP,Finishing,214
-346,Abebe_ETR,Staff,ETP,Import&Export,215
-347,Beza_ETR,Staff,ETP,Import&Export,215
-348,Degefa_ETR,Staff,ETP,Import&Export,215
-349,Dessalegn_ETR,Staff,ETP,Import&Export,215
-350,Feven_ETR,Staff,ETP,Import&Export,215
-351,Fithun_ETR,Assistant Manager,ETP,Import&Export,215
-352,Hana_ETR,Staff,ETP,Import&Export,215
-353,Liyuwork_ETR,Team leader,ETP,Import&Export,215
-354,Mesi_ETR,Assistant Manager,ETP,Import&Export,215
-355,Solomon_ETR,Staff,ETP,Import&Export,215
-356,Tadael_ETR,Staff,ETP,Import&Export,215
-357,Tadele_ETR,Staff,ETP,Import&Export,215
-358,Tigist_ETR,Staff,ETP,Import&Export,215
-359,Yemsrach_ETR,Staff,ETP,Import&Export,215
-360,Yeshialem_ETR,Staff,ETP,Import&Export,215
-361,Hilina_ETRN,Staff,ETP,Translator,216
-362,Saron_ETRN,Staff,ETP,Translator,216
-363,Tizeta_ETRN,Staff,ETP,Translator,216
-364,Zelalem_ETRN,Staff,ETP,Translator,216
-365,Fanta_EPS,Staff,ETP,Production Schedule,217
-366,Kabyinad_EPS,Team Leader,ETP,Production Schedule,217
-367,Maron_EPS,Staff,ETP,Production Schedule,217
-368,Zelalem_EPS,Team Leader,ETP,Production Schedule,217
-369,Abyeserash_ECSR,Team Leader,ETP,CSR,220
-370,Addise_ECSR,Assistant Manager,ETP,CSR,220
-371,Demeke_ECSR,Team Leader,ETP,CSR,220
-372,Solomon_ECSR,Team Leader,ETP,CSR,220
-373,Amelwork_EPD,Leader,ETP,Production store,221
-374,Ermias_EPM,Manager,ETP,Production,221
-375,Feyisa_EPM,Manager,ETP,Production,221
-376,Abel_EPM,Manager,ETP,Production,221
-377,Lemma_EPM,Manager,ETP,Production,221
-378,Sampath_EPD,Manager,ETP,Production,221
-379,Shahadat_EDFD,Deputy Factory Director,ETP,Production,221
-380,Shadat_EPD,,ETP,Production,221
-381,Yirga_EPM,Manager,ETP,Production,221
-382,Abrham _ECAD,Staff,ETP,CAD,222
-383,Ageritu_ECAD,Team Leader,ETP,CAD,222
-384,Ashenafi Legesse_ECAD,Manager,ETP,CAD,222
-385,Bayush_ECAD,Staff,ETP,CAD,222
-386,Belayset_ECAD,Staff,ETP,CAD,222
-387,Zakir_ECAD,Manager,ETP,CAD,222
-388,Nazim_ECAD,Staff,ETP,CAD,222
-389,Seada_ECAD,Staff,ETP,CAD,222
-390,Tesfaye aklog_ECAD,Team Leader,ETP,CAD,222
-391,Yezihalem_ECAD,Staff,ETP,CAD,222
-392,Zertihun_ECAD,Staff,ETP,CAD,222
-393,Zinaw_ECAD,Staff,ETP,CAD,222
-394,Asmamaw_EPUR,Staff,ETP,Purchase,223
-395,Bontu_EPUR,Staff,ETP,Purchase,223
-396,Tadele_EPUR,Staff,ETP,Purchase,223
-397,Tilahun_EPUR,Staff,ETP,Purchase,223
-398,Ephrem_EWSS,Staff,ETP,Welding&Seamseling,224
-399,Tegenu_EWSS,Team Leader,ETP,Welding&Seamseling,224
-400,Tigist_EWSS,Staff,ETP,Welding&Seamseling,224
-401,Ababe_EPRT,Asst. Manager,ETP,Print,225
-402,Bethlehem_EPRT,Staff,ETP,Print,225
-403,Kidus_EPRT,Staff,ETP,Print,225
-404,Teddy_EMEC,Team Leader,ETP,Mechanic,226
-405,Animut_EMC,Staff,ETP,Material,227
-406,Asfaw_EMC,Staff,ETP,Material,227
-407,Bantie_EMC,Team Leader,ETP,Material,227
-408,Beka_EMC,Assistant Manager,ETP,Material,227
-409,Degineh_EMC,Staff,ETP,Material,227
-410,Debebe_EMC,General Manager,ETP,Material,227
-411,Deriba_EMC,Staff,ETP,Material,227
-412,Godada_EMC,Staff,ETP,Material,227
-413,Habtamu_EMC,Staff,ETP,Material,227
-414,Hibiste_EMC,Staff,ETP,Material,227
-415,Kuba_EMC,Staff,ETP,Material,227
-416,Woinshet_EMC,Team Leader,ETP,Material,227
-417,Mulat_EMC,Staff,ETP,Material,227
-418,Tekalign_EMC,Staff,ETP,Material,227
-419,Tiruwork_EMC,Staff,ETP,Material,227
-420,Aberash_EIE,Staff,ETP,IE,228
-421,Anteneh_EIE,Staff,ETP,IE,228
-422,Chalchisa_EIE,Team Leader,ETP,IE,228
-423,Estifanos_EIE,Staff,ETP,IE,228
-424,Fikru_EIE,Team Leader,ETP,IE,228
-425,Mamaru_EIE,Team Leader,ETP,IE,228
-426,Mulugeta_EIE,Assitant Manager,ETP,IE,228
-427,Muluken_EIE,Assitant Manager,ETP,IE,228
-428,Temesgen_EIE,Staff,ETP,IE,228
-429,Wakuma_EIE,Team Leader,ETP,IE,228
-430,Zigeju_EIE,Staff,ETP,IE,228
-431,Abreham_EAD,GA Staff,ETP,Admin,229
-432,Betremariam_EAD,Asst. Manager,ETP,Admin,229
-433,Mehret_EAD,Visa Staff,ETP,Admin,229
-434,Mihret_EAD,Mihret Dorm Admin,ETP,Admin,229
-435,Nega_EAD,Team Leader,ETP,Admin,229
-436,Tadesse_EAD,Manager,ETP,Admin,229
-437,Kalab_EIT,Staff,ETP,IT,230
-438,Workneh_EIT,Staff,ETP,IT,230
-439,Zerihun_EIT,Staff,ETP,IT,230
