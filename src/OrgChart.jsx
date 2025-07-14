@@ -6,7 +6,7 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [selectedCorp, setSelectedCorp] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-  const [treeData, setTreeData] = useState(null); // 트리 재렌더링 용도
+  const [treeData, setTreeData] = useState(null);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -15,11 +15,7 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  const isTeamLeader = (person) =>
-    ['팀장', 'manager', 'Manager'].some((t) =>
-      person.직책?.toLowerCase().includes(t)
-    );
-
+  // ✅ 팀 구성 및 팀장 선택 (ID 가장 낮은 사람)
   const groupByTeam = (node) => {
     if (!node.children || node.children.length === 0) return { ...node };
 
@@ -31,8 +27,13 @@ export default function OrgChart({ data }) {
     });
 
     const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
-      const leader = members.find(isTeamLeader);
-      const label = leader ? `${teamName} (${leader.이름})` : `${teamName} (미정)`;
+      const sorted = members
+        .filter((m) => !m.isTeamNode)
+        .sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      const manager = sorted[0];
+      const label = manager
+        ? `${teamName} (${manager.이름})`
+        : `${teamName} (미정)`;
 
       return {
         id: `team-${node.id}-${teamName}`,
@@ -41,7 +42,7 @@ export default function OrgChart({ data }) {
         팀: '',
         법인: '',
         isTeamNode: true,
-        collapsed: true, // 초기에 접혀 있음
+        collapsed: true,
         children: members,
       };
     });
@@ -49,21 +50,22 @@ export default function OrgChart({ data }) {
     return { ...node, children: groupedChildren };
   };
 
+  // ✅ 법인 필터링
   const filterByCorp = (node) => {
     if (selectedCorp === 'ALL') return true;
     if (node.법인?.toUpperCase() === selectedCorp) return true;
-    if (node.children?.some(filterByCorp)) return true;
-    return false;
+    return node.children?.some(filterByCorp);
   };
 
   const applyCorpFilter = (node) => {
     if (!filterByCorp(node)) return null;
-    const children = (node.children || [])
+    const filteredChildren = (node.children || [])
       .map(applyCorpFilter)
       .filter(Boolean);
-    return { ...node, children };
+    return { ...node, children: filteredChildren };
   };
 
+  // ✅ 검색 필터링
   const matchesSearch = (node) => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return true;
@@ -84,6 +86,7 @@ export default function OrgChart({ data }) {
     return null;
   };
 
+  // ✅ 트리 가공
   useEffect(() => {
     const grouped = groupByTeam(data);
     const corpFiltered = selectedCorp === 'ALL' ? grouped : applyCorpFilter(grouped);
@@ -91,17 +94,18 @@ export default function OrgChart({ data }) {
     setTreeData(searched);
   }, [data, selectedCorp, searchQuery]);
 
+  // ✅ 접기/펼치기 처리
   const handleToggle = (nodeDatum) => {
     if (nodeDatum.isTeamNode) {
       nodeDatum.collapsed = !nodeDatum.collapsed;
-      setTreeData({ ...treeData }); // 강제로 리렌더링
+      setTreeData({ ...treeData }); // 강제 재렌더링
     }
   };
 
+  // ✅ 커스텀 노드
   const renderNode = ({ nodeDatum }) => {
     const isTeam = nodeDatum.isTeamNode;
     const fill = isTeam ? '#f0ad4e' : '#007bff';
-    const collapsed = nodeDatum.collapsed;
 
     return (
       <g onClick={() => handleToggle(nodeDatum)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
@@ -117,16 +121,28 @@ export default function OrgChart({ data }) {
         />
         <text
           textAnchor="middle"
-          y={-2}
-          style={{ fontFamily: '맑은 고딕', fontSize: 12, fill: '#fff' }}
+          dominantBaseline="middle"
+          y={isTeam ? -2 : -4}
+          style={{
+            fontFamily: '맑은 고딕',
+            fontSize: 12,
+            fill: '#fff',
+            fontWeight: 'normal',
+          }}
         >
           {nodeDatum.이름}
         </text>
         {!isTeam && (
           <text
             textAnchor="middle"
+            dominantBaseline="middle"
             y={14}
-            style={{ fontFamily: '맑은 고딕', fontSize: 11, fill: '#ddd' }}
+            style={{
+              fontFamily: '맑은 고딕',
+              fontSize: 11,
+              fill: '#ddd',
+              fontWeight: 'normal',
+            }}
           >
             {nodeDatum.직책}
           </text>
@@ -134,10 +150,16 @@ export default function OrgChart({ data }) {
         {isTeam && (
           <text
             textAnchor="middle"
+            dominantBaseline="middle"
             y={16}
-            style={{ fontFamily: '맑은 고딕', fontSize: 10, fill: '#fff' }}
+            style={{
+              fontFamily: '맑은 고딕',
+              fontSize: 10,
+              fill: '#fff',
+              fontWeight: 'normal',
+            }}
           >
-            [{collapsed ? '펼치기' : '접기'}]
+            [{nodeDatum.collapsed ? '펼치기' : '접기'}]
           </text>
         )}
       </g>
