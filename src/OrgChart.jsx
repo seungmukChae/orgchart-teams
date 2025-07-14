@@ -1,19 +1,18 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data }) {
-  const [highlightedPath, setHighlightedPath] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [selectedCorp, setSelectedCorp] = useState('ALL');
   const containerRef = useRef(null);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [collapsedMap, setCollapsedMap] = useState({});
+  const [selectedCorp, setSelectedCorp] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // ✅ 중앙 정렬
   useEffect(() => {
     const updateTranslate = () => {
       if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect();
-        setTranslate({ x: width / 2, y: height / 2 });
+        const { width } = containerRef.current.getBoundingClientRect();
+        setTranslate({ x: width / 2, y: 50 });
       }
     };
     updateTranslate();
@@ -21,124 +20,185 @@ export default function OrgChart({ data }) {
     return () => window.removeEventListener('resize', updateTranslate);
   }, []);
 
-  const findPathToRoot = useCallback((nodeId, nodeMap) => {
-    const path = [];
-    let currentId = nodeId;
-    while (currentId) {
-      const currentNode = nodeMap[currentId];
-      if (currentNode) {
-        path.unshift(currentId);
-        currentId = currentNode.manager_id;
-      } else break;
-    }
-    return path;
-  }, []);
-
-  const flattenTree = (node, map = {}, parentId = null) => {
-    map[node.id] = { ...node, manager_id: parentId };
-    if (node.children?.length) {
-      node.children.forEach(child => flattenTree(child, map, node.id));
-    }
-    return map;
-  };
-
-  const getCorpColor = (corp) => {
-    if (!corp) return '#6c757d';
-    switch (corp.trim().toUpperCase()) {
-      case 'SEOUL': return '#007bff';
-      case 'ETP': return '#28a745';
-      case 'BVT': return '#dc3545';
-      default: return '#6c757d';
-    }
-  };
-
-  const handleClick = useCallback(
-    (nodeDatum) => {
-      const nodeId = nodeDatum.id;
-      if (nodeId === selectedId) {
-        setHighlightedPath([]);
-        setSelectedId(null);
-      } else {
-        const nodeMap = flattenTree(data);
-        const path = findPathToRoot(nodeId, nodeMap);
-        setHighlightedPath(path);
-        setSelectedId(nodeId);
-      }
-    },
-    [data, selectedId, findPathToRoot]
-  );
-
-  const renderCustomNode = ({ nodeDatum }) => {
-    const id = nodeDatum.id;
-    const isHighlighted = highlightedPath.includes(id);
-    const opacity = selectedId ? (isHighlighted ? 1 : 0.2) : 1;
-    const fillColor = isHighlighted ? getCorpColor(nodeDatum.법인) : '#ccc';
-
-    return (
-      <g onClick={() => handleClick(nodeDatum)} style={{ cursor: 'pointer', opacity }}>
-        <circle r={14} fill={fillColor} stroke="#333" strokeWidth="1" />
-        <text y={24} textAnchor="middle" style={{ fontSize: 12 }}>
-          {nodeDatum.이름}
-        </text>
-        <text y={42} textAnchor="middle" style={{ fontSize: 11, fill: '#555' }}>
-          ({nodeDatum.직책}, {nodeDatum.팀})
-        </text>
-      </g>
+  const isTeamLeader = (person) => {
+    return ['팀장', 'Manager', 'manager'].some(title =>
+      person.직책?.toLowerCase().includes(title.toLowerCase())
     );
   };
 
-  // ✅ 법인 필터링 적용
-  const filterByCorp = (node) => {
+  const groupByTeamWithLeader = (node) => {
+    if (!node.children || node.children.length === 0) return node;
+
+    const teamGroups = {};
+    node.children.forEach(child => {
+      const team = child.팀 || '기타';
+      if (!teamGroups[team]) teamGroups[team] = [];
+      teamGroups[team].push(groupByTeamWithLeader(child));
+    });
+
+    const groupedChildren = Object.entries(teamGroups).map(([teamName, members]) => {
+      const leader = members.find(isTeamLeader);
+      const label = leader
+        ? `${teamName} (${leader.이름})`
+        : `${teamName} (미정)`;
+
+      return {
+        id: `team-${node.id}-${teamName}`,
+        이름: label,
+        직책: '팀',
+        팀: '',
+        법인: '',
+        isTeamNode: true,
+        children: members,
+      };
+    });
+
+    return { ...node, children: groupedChildren };
+  };
+
+  const filteredByCorp = (node) => {
     if (selectedCorp === 'ALL') return true;
-    if (node.법인?.toUpperCase() === selectedCorp.toUpperCase()) return true;
-    if (node.children?.some(filterByCorp)) return true;
+    if (node.법인?.toUpperCase() === selectedCorp) return true;
+    if (node.children?.some(filteredByCorp)) return true;
     return false;
   };
 
-  const filterTree = (node) => {
-    if (!filterByCorp(node)) return null;
+  const filterByCorpRecursive = (node) => {
+    if (!filteredByCorp(node)) return null;
     const filteredChildren = (node.children || [])
-      .map(filterTree)
+      .map(filterByCorpRecursive)
       .filter(child => child !== null);
     return { ...node, children: filteredChildren };
   };
 
-  const filteredData = selectedCorp === 'ALL' ? data : filterTree(data);
+  const processedData = groupByTeamWithLeader(data);
+  const corpFilteredData = selectedCorp === 'ALL' ? processedData : filterByCorpRecursive(processedData);
+
+  const matchesSearch = (node) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      node.이름?.toLowerCase().includes(q) ||
+      node.직책?.toLowerCase().includes(q)
+    );
+  };
+
+  const filterBySearch = (node) => {
+    const match = matchesSearch(node);
+    const filteredChildren = (node.children || [])
+      .map(filterBySearch)
+      .filter(child => child !== null);
+    if (match || filteredChildren.length > 0) {
+      return { ...node, children: filteredChildren };
+    }
+    return null;
+  };
+
+  const finalData = filterBySearch(corpFilteredData);
+
+  const handleNodeToggle = (nodeDatum) => {
+    const nodeId = nodeDatum.__rd3t.id;
+    if (nodeDatum.isTeamNode) {
+      setCollapsedMap(prev => ({
+        ...prev,
+        [nodeId]: !prev[nodeId],
+      }));
+    }
+  };
+
+  const renderNode = ({ nodeDatum }) => {
+    const isTeam = nodeDatum.isTeamNode;
+    const collapsed = collapsedMap[nodeDatum.__rd3t.id];
+    const fillColor = isTeam ? '#f0ad4e' : '#007bff';
+
+    return (
+      <g onClick={() => handleNodeToggle(nodeDatum)} style={{ cursor: isTeam ? 'pointer' : 'default' }}>
+        <rect
+          width={isTeam ? 160 : 120}
+          height={isTeam ? 44 : 36}
+          x={-80}
+          y={-22}
+          rx={6}
+          ry={6}
+          fill={fillColor}
+          stroke="#333"
+        />
+        <text
+          textAnchor="middle"
+          y={0}
+          style={{ fill: '#fff', fontSize: 12, fontWeight: 'bold' }}
+        >
+          {nodeDatum.이름}
+        </text>
+        {!isTeam && (
+          <text
+            textAnchor="middle"
+            y={16}
+            style={{ fill: '#ddd', fontSize: 11 }}
+          >
+            {nodeDatum.직책}
+          </text>
+        )}
+        {isTeam && (
+          <text
+            textAnchor="middle"
+            y={18}
+            style={{ fill: '#fff', fontSize: 10 }}
+          >
+            [{collapsed ? '펼치기' : '접기'}]
+          </text>
+        )}
+      </g>
+    );
+  };
+
+  const shouldCollapse = (nodeDatum) => {
+    return collapsedMap[nodeDatum.__rd3t.id] ?? false;
+  };
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      {/* ✅ 법인 선택 필터 */}
-      <div style={{ padding: '0.5rem 1rem' }}>
-        <label htmlFor="corpSelect">법인 필터: </label>
-        <select
-          id="corpSelect"
-          value={selectedCorp}
-          onChange={(e) => setSelectedCorp(e.target.value)}
-        >
-          <option value="ALL">전체</option>
-          <option value="SEOUL">SEOUL</option>
-          <option value="ETP">ETP</option>
-          <option value="BVT">BVT</option>
-        </select>
+      <div style={{ padding: '0.5rem 1rem', display: 'flex', gap: '1rem' }}>
+        <label>
+          법인:
+          <select
+            value={selectedCorp}
+            onChange={(e) => setSelectedCorp(e.target.value)}
+            style={{ marginLeft: '0.5rem' }}
+          >
+            <option value="ALL">전체</option>
+            <option value="SEOUL">SEOUL</option>
+            <option value="ETP">ETP</option>
+            <option value="BVT">BVT</option>
+          </select>
+        </label>
+
+        <label>
+          검색:
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="이름 또는 직책"
+            style={{ marginLeft: '0.5rem' }}
+          />
+        </label>
       </div>
 
-      <div
-        ref={containerRef}
-        style={{
-          width: '100%',
-          height: 'calc(100vh - 60px)',
-          overflow: 'auto',
-        }}
-      >
+      <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
         <Tree
-          data={filteredData}
-          orientation="horizontal"
-          renderCustomNodeElement={renderCustomNode}
+          data={finalData}
+          orientation="vertical"
           translate={translate}
-          nodeSize={{ x: 150, y: 80 }}
-          zoomable={true}
-          scaleExtent={{ min: 0.3, max: 2 }}
-          separation={{ siblings: 1, nonSiblings: 2 }}
+          zoomable
+          scaleExtent={{ min: 0.3, max: 1.5 }}
+          renderCustomNodeElement={renderNode}
+          nodeSize={{ x: 160, y: 100 }}
+          collapsible={true}
+          shouldCollapseNeighborNodes={false}
+          pathFunc="elbow"
+          initialDepth={1}
+          shouldCollapseNode={shouldCollapse}
         />
       </div>
     </div>
