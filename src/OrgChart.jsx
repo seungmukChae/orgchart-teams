@@ -213,13 +213,14 @@ export default function OrgChart({ data }) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         }}
       >
+        <h1 style={{ margin: 0 }}>SHINTS Organization Chart</h1>
       </div>
 
       {/* 고정된 컨트롤 바 */}
       <div
         style={{
           position: 'fixed',
-          top: '120px',
+          top: 'px',
           left: 0,
           width: '100%',
           padding: '1rem',
