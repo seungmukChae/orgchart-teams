@@ -145,7 +145,7 @@ export default function OrgChart({ data }) {
     : treeData;
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div className="orgchart-container" style={{ width: '100vw', height: '100vh' }}>
       <div style={{ padding: '0.5rem 1rem' }}>
         <label>
           검색:

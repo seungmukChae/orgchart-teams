@@ -84,3 +84,25 @@ g text {
   font-weight: normal;
   fill: #000;
 }
+
+/* ──────────────────────────────────────────────────
+   OrgChart 전용 override
+────────────────────────────────────────────────── */
+
+/* OrgChart 전체를 감싸는 최상위 컨테이너 */
+.orgchart-container svg {
+  /* 최우선으로 맑은 고딕 적용 */
+  font-family: '맑은 고딕', Arial, sans-serif !important;
+}
+
+.orgchart-container g text {
+  font-family: '맑은 고딕', Arial, sans-serif !important;
+  font-weight: normal              !important;
+  fill: #000                       !important;
+}
+
+/* 연결선 스타일 통일 */
+.orgchart-container .rd3t-link path {
+  stroke: #555     !important;
+  stroke-width: 1.5px !important;
+}
