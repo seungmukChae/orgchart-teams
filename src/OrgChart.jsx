@@ -40,8 +40,7 @@ export default function OrgChart({ data }) {
       // 섹션이면 검색어 없을 때(openSection)만 자식 숨김/표시
       if (sectionIds.includes(node.id) && !term) {
         children = openSection === node.id ? children : [];
-      }
-            
+      }    
 
       // 루트(data)는 항상 렌더
       if (node === data) {
