@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Tree from 'react-d3-tree';
 
-export default function OrgChart({ data }) {
+export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 100 });
   const [openSection, setOpenSection] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, email: '' });
-
-  // 섹션 루트 ID 목록
   const sectionIds = ['100', '101', '102'];
 
   // 컨테이너 리사이즈 시 중앙 정렬 계산
@@ -79,7 +76,14 @@ export default function OrgChart({ data }) {
     if (matchNode && treeRef.current.centerNode) {
       treeRef.current.centerNode(matchNode.id);
     }
-  }, [searchQuery, treeData]);
+  }, [searchQuery, treeData, data]);
+
+  // 검색 취소 시 루트 재중앙 정렬
+  useEffect(() => {
+    if (searchQuery.trim() === '' && treeRef.current?.centerNode) {
+      treeRef.current.centerNode(data.id);
+    }
+  }, [searchQuery, data]);
 
   // 노드 렌더링 스타일
   const baseText = {
@@ -121,15 +125,43 @@ export default function OrgChart({ data }) {
         onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, email: '' })}
         style={{ cursor: nodeDatum.email ? 'pointer' : 'default' }}
       >
-        <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8} fill={fill} stroke="#444" strokeWidth={1.5} />
-        <text x={0} y={-6} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 13 }}> 
+        <rect
+          x={-80}
+          y={-30}
+          width={160}
+          height={60}
+          rx={8}
+          ry={8}
+          fill={fill}
+          stroke="#444"
+          strokeWidth={1.5}
+        />
+        <text
+          x={0}
+          y={-6}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...baseText, fontSize: 13 }}
+        >
           {nodeDatum.이름}
         </text>
-        <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 11, fill: '#555' }}>
+        <text
+          x={0}
+          y={14}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...baseText, fontSize: 11, fill: '#555' }}
+        >
           {nodeDatum.직책}
         </text>
         {sectionIds.includes(nodeDatum.id) && (
-          <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 10 }}>
+          <text
+            x={0}
+            y={14}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            style={{ ...baseText, fontSize: 10 }}
+          >
             [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
           </text>
         )}
@@ -137,73 +169,31 @@ export default function OrgChart({ data }) {
     );
   };
 
-  const handleReset = () => {
-    setSearchQuery('');
-    setOpenSection(null);
-    if (treeRef.current?.centerNode) {
-      treeRef.current.centerNode(data.id);
-    }
-  };
-
   return (
-    <div className="orgchart-container" style={{ width: '100vw', height: '100vh', position: 'relative' }}>
-      {/* 고정된 컨트롤 바: App의 제목 바로 아래 표시 */}
-      <div
-        style={{
-          position: 'fixed',
-          top: '60px',
-          left: 0,
-          width: '100%',
-          padding: '1rem',
-          background: '#fff',
-          zIndex: 1000,
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        }}
-      >
-        <label style={{ marginRight: '1rem' }}>
-          Search:{' '}
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Enter a name"
-          />
-        </label>
-        <button onClick={handleReset} style={{ padding: '0.5rem 1rem' }}>
-          Reset
-        </button>
-      </div>
-
-      {/* 트리 렌더 영역 */}
-      <div
-        style={{
-          marginTop: '120px', // 컨트롤 바 아래 시작
-          width: '100%',
-          height: 'calc(100vh - 120px)',
-        }}
-        ref={containerRef}
-      >
-        {treeData ? (
-          <Tree
-            ref={treeRef}
-            data={treeData}
-            orientation="horizontal"
-            translate={translate}
-            zoomable
-            collapsible={false}
-            pathFunc="elbow"
-            renderCustomNodeElement={renderNode}
-            nodeSize={{ x: 200, y: 80 }}
-            separation={{ siblings: 1, nonSiblings: 1 }}
-            styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
-          />
-        ) : (
-          <div style={{ padding: '2rem', color: '#888' }}>
-            Sorry, we couldn’t find any results.
-          </div>
-        )}
-      </div>
-
-      {/* 이메일 툴팁 */}
+    <div
+      className="orgchart-container"
+      style={{ width: '100%', height: '100%' }}
+      ref={containerRef}
+    >
+      {treeData ? (
+        <Tree
+          ref={treeRef}
+          data={treeData}
+          orientation="horizontal"
+          translate={translate}
+          zoomable
+          collapsible={false}
+          pathFunc="elbow"
+          renderCustomNodeElement={renderNode}
+          nodeSize={{ x: 200, y: 80 }}
+          separation={{ siblings: 1, nonSiblings: 1 }}
+          styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
+        />
+      ) : (
+        <div style={{ padding: '2rem', color: '#888' }}>
+          Sorry, we couldn’t find any results.
+        </div>
+      )}
       {tooltip.visible && (
         <div
           style={{
