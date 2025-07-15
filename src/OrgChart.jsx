@@ -220,7 +220,7 @@ export default function OrgChart({ data }) {
       <div
         style={{
           position: 'fixed',
-          top: '60px',
+          top: '120px',
           left: 0,
           width: '100%',
           padding: '1rem',
