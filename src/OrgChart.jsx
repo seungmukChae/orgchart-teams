@@ -5,12 +5,11 @@ export default function OrgChart({ data }) {
   const containerRef = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [treeData, setTreeData] = useState(null);
-  const [treeKey, setTreeKey] = useState(0); // ⬅️ 강제 리렌더링용
+  const [treeKey, setTreeKey] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
 
   const collapsibleIds = ['100', '101', '102'];
 
-  // ⬇️ 중앙 정렬
   useEffect(() => {
     if (containerRef.current) {
       const { width } = containerRef.current.getBoundingClientRect();
@@ -18,7 +17,6 @@ export default function OrgChart({ data }) {
     }
   }, []);
 
-  // ⬇️ collapsed 초기 상태 적용
   const applyCollapsedToRoots = (node) => {
     const isCollapsible = collapsibleIds.includes(node.id);
     return {
@@ -28,7 +26,6 @@ export default function OrgChart({ data }) {
     };
   };
 
-  // ⬇️ 검색 필터링
   const applySearchFilter = (node, query) => {
     const lowerQ = query.trim().toLowerCase();
     const isMatch =
@@ -40,36 +37,31 @@ export default function OrgChart({ data }) {
       .filter(Boolean);
 
     if (isMatch || filteredChildren.length > 0) {
-      return { ...node, children: filteredChildren };
+      return { ...node, children: filteredChildren, collapsed: false };
     }
 
     return null;
   };
 
-  // ⬇️ 첫 로딩 & 검색 적용
   useEffect(() => {
     let processed = applyCollapsedToRoots(data);
     if (searchQuery.trim()) {
-      processed = applySearchFilter(processed, searchQuery);
+      const filtered = applySearchFilter(processed, searchQuery);
+      setTreeData(filtered);
+    } else {
+      setTreeData(processed);
     }
-    setTreeData(processed);
   }, [data, searchQuery]);
 
-  // ⬇️ 색상
   const getNodeColor = (id) => {
     switch (id) {
-      case '100':
-        return '#007bff';
-      case '101':
-        return '#28a745';
-      case '102':
-        return '#ff9999';
-      default:
-        return '#e0e0e0';
+      case '100': return '#007bff';
+      case '101': return '#28a745';
+      case '102': return '#ff9999';
+      default: return '#e0e0e0';
     }
   };
 
-  // ⬇️ 접기/펼치기
   const toggleCollapse = (node, targetId) => {
     if (node.id === targetId) {
       return {
@@ -83,18 +75,16 @@ export default function OrgChart({ data }) {
     };
   };
 
-  // ⬇️ 클릭 핸들러
   const handleClick = (nodeDatum) => {
     console.log('노드 클릭됨:', nodeDatum);
 
     if (collapsibleIds.includes(nodeDatum.id)) {
       const updated = toggleCollapse(treeData, nodeDatum.id);
       setTreeData(updated);
-      setTreeKey((prev) => prev + 1); // ⬅️ 강제 리렌더링
+      setTreeKey((prev) => prev + 1);
     }
   };
 
-  // ⬇️ 커스텀 노드 렌더링
   const renderNode = ({ nodeDatum }) => {
     const isCollapsible = collapsibleIds.includes(nodeDatum.id);
     const width = 160;
@@ -174,7 +164,7 @@ export default function OrgChart({ data }) {
       <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
         {treeData ? (
           <Tree
-            key={treeKey} // ⬅️ 트리 재렌더링 강제
+            key={treeKey}
             data={treeData}
             orientation="vertical"
             translate={translate}
