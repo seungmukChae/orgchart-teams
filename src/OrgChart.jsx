@@ -6,7 +6,7 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 100 });
   const [openSection, setOpenSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-
+  
   // 펼치기 가능한 Section ID 목록
   const sectionIds = ['100', '101', '102'];
 
@@ -37,7 +37,7 @@ export default function OrgChart({ data }) {
     // Section 루트 접기/펼치기 제어
     if (sectionIds.includes(node.id)) {
       if (openSection === node.id) {
-        // 펼쳐진 상태: include filtered children, 간격 조정 위해 nodeSize 조정
+        // 펼쳐진 상태: include filtered children
         children = (node.children || [])
           .map(buildTree)
           .filter(Boolean);
@@ -115,7 +115,7 @@ export default function OrgChart({ data }) {
             pathFunc="elbow"
             collapsible={false}
             renderCustomNodeElement={renderNode}
-            nodeSize={{ x: openSection ? 140 : 200, y: openSection ? 60 : 100 }}
+            nodeSize={{ x: 200, y: 100 }}
             styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
           />
         ) : (
