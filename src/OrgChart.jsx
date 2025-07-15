@@ -64,7 +64,12 @@ export default function OrgChart({ data }) {
     const filtered = filterTree(data);
     const built = buildTree(filtered);
     setTreeData(built);
-  }, [data, searchQuery, openIds]);
+  $1
+
+  // 트리 데이터 변경 시 translate 재계산
+  useEffect(() => {
+    updateTranslate();
+  }, [treeData, searchQuery]);
 
   // 노드 색상
   const getColor = (id) => {
