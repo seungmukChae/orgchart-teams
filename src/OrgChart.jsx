@@ -37,12 +37,15 @@ export default function OrgChart({ data }) {
         .map(buildTree)
         .filter(Boolean);
 
-      // 섹션이면 openSection 상태에 따라 자식 숨김/표시
-      if (sectionIds.includes(node.id)) {
+            // 섹션이면 검색 중이 아닐 때만 openSection 상태에 따라 자식 숨김/표시
+      if (sectionIds.includes(node.id) && !term) {
         children = openSection === node.id ? children : [];
       }
 
       // 루트(data)는 항상 렌더
+      if (node === data) {
+        return { ...node, children };
+      }// 루트(data)는 항상 렌더
       if (node === data) {
         return { ...node, children };
       }
