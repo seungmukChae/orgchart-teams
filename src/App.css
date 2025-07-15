@@ -58,3 +58,11 @@
   stroke: #555     !important;
   stroke-width: 1.5px !important;
 }
+
+/* OrgChart 전용 */
+.orgchart-container .rd3t-node text,
+.orgchart-container .rd3t-node--highlighted text,
+.orgchart-container .rd3t-node--expanded text {
+  font-family: '맑은 고딕', Arial, sans-serif !important;
+  font-weight: normal                         !important;
+}
