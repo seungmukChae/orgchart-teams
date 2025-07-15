@@ -68,14 +68,14 @@ export default function App() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h1>조직도 (CSV 버전)</h1>
-      <button onClick={resetData}>🔄 데이터 초기화</button>
+      <h1>SHINTS Organization Chart</h1>
+      <button onClick={resetData}>🔄 Reset</button>
 
       {treeData && <OrgChart data={treeData} />}
 
       {!treeData && (
         <p>
-          조직도 데이터가 없습니다.
+          Organization chart data is missing or not loaded.
           <br />
           (처음 접속 시 public/users.csv 로 자동 로드됩니다)
         </p>
