@@ -57,7 +57,7 @@ export default function OrgChart({ data }) {
 
   const treeData = buildTree(data);
 
-  // 노드 클릭: 섹션 노드만 토글 or 이메일 복사
+  // 노드 클릭: 섹션 토글 or 이메일 복사
   const handleClick = (nodeDatum) => {
     if (sectionIds.includes(nodeDatum.id)) {
       setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
@@ -66,15 +66,17 @@ export default function OrgChart({ data }) {
     }
   };
 
-  // 검색 후 포커스: 첫 번째 매치 노드로 센터링
+  // 검색 후 포커스 이동
   useEffect(() => {
     const term = searchQuery.trim().toLowerCase();
-    if (!term || !treeRef.current) return;
+    if (!term || !treeRef.current || !treeData) return;
 
-    // 재귀 탐색해서 매치 노드 찾기
     const findNode = (node) => {
       if (!node) return null;
-      if (node.이름?.toLowerCase().includes(term) || node.직책?.toLowerCase().includes(term)) {
+      if (
+        node.이름?.toLowerCase().includes(term) ||
+        node.직책?.toLowerCase().includes(term)
+      ) {
         return node;
       }
       if (node.children) {
@@ -87,8 +89,8 @@ export default function OrgChart({ data }) {
     };
 
     const matchNode = findNode(treeData);
-    if (matchNode) {
-      treeRef.current.centerNode(matchNode);
+    if (matchNode && treeRef.current.centerNode) {
+      treeRef.current.centerNode(matchNode.id);
     }
   }, [searchQuery, treeData]);
 
@@ -100,11 +102,16 @@ export default function OrgChart({ data }) {
     letterSpacing: '0.5px',
   };
 
-  const renderNode = ({ nodeDatum, hierarchyPoint }) => {
+  const renderNode = ({ nodeDatum }) => {
     const idNum = parseInt(nodeDatum.id, 10);
     let fill = idNum >= 100 && idNum <= 199 ? '#ffa500' : '#e0e0e0';
     if (sectionIds.includes(nodeDatum.id)) {
-      fill = nodeDatum.id === '100' ? '#007bff' : nodeDatum.id === '101' ? '#28a745' : '#ff9999';
+      fill =
+        nodeDatum.id === '100'
+          ? '#007bff'
+          : nodeDatum.id === '101'
+          ? '#28a745'
+          : '#ff9999';
     }
 
     return (
@@ -112,7 +119,12 @@ export default function OrgChart({ data }) {
         onClick={() => handleClick(nodeDatum)}
         onMouseEnter={(evt) => {
           if (nodeDatum.email) {
-            setTooltip({ visible: true, x: evt.clientX + 10, y: evt.clientY + 10, email: `Business mail: ${nodeDatum.email}` });
+            setTooltip({
+              visible: true,
+              x: evt.clientX + 10,
+              y: evt.clientY + 10,
+              email: `Business mail: ${nodeDatum.email}`,
+            });
           }
         }}
         onMouseMove={(evt) => {
@@ -120,18 +132,54 @@ export default function OrgChart({ data }) {
             setTooltip((t) => ({ ...t, x: evt.clientX + 10, y: evt.clientY + 10 }));
           }
         }}
-        onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, email: '' })}
-        style={{ cursor: nodeDatum.email ? 'pointer' : sectionIds.includes(nodeDatum.id) ? 'pointer' : 'default' }}
+        onMouseLeave={() =>
+          setTooltip({ visible: false, x: 0, y: 0, email: '' })
+        }
+        style={{
+          cursor: nodeDatum.email
+            ? 'pointer'
+            : sectionIds.includes(nodeDatum.id)
+            ? 'pointer'
+            : 'default',
+        }}
       >
-        <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8} fill={fill} stroke="#444" strokeWidth={1.5} />
-        <text x={0} y={-6} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 13 }}>
+        <rect
+          x={-80}
+          y={-30}
+          width={160}
+          height={60}
+          rx={8}
+          ry={8}
+          fill={fill}
+          stroke="#444"
+          strokeWidth={1.5}
+        />
+        <text
+          x={0}
+          y={-6}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...baseText, fontSize: 13 }}
+        >
           {nodeDatum.이름}
         </text>
-        <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 11, fill: '#555' }}>
+        <text
+          x={0}
+          y={14}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...baseText, fontSize: 11, fill: '#555' }}
+        >
           {nodeDatum.직책}
         </text>
         {sectionIds.includes(nodeDatum.id) && (
-          <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 10 }}>
+          <text
+            x={0}
+            y={14}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            style={{ ...baseText, fontSize: 10 }}
+          >
             [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
           </text>
         )}
@@ -139,19 +187,48 @@ export default function OrgChart({ data }) {
     );
   };
 
-  // reset 동작
   const handleReset = () => {
     setSearchQuery('');
     setOpenSection(null);
-    if (treeRef.current) {
-      treeRef.current.centerNode(data);
+    if (treeRef.current && treeRef.current.centerNode) {
+      treeRef.current.centerNode(data.id);
     }
   };
 
   return (
-    <div className="orgchart-container" style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+    <div
+      className="orgchart-container"
+      style={{ width: '100vw', height: '100vh', position: 'relative' }}
+    >
+      {/* 제목 */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          padding: '1rem',
+          background: '#fff',
+          zIndex: 1000,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        }}
+      >
+        <h1 style={{ margin: 0 }}>SHINTS Organization Chart</h1>
+      </div>
+
       {/* 고정된 컨트롤 바 */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', padding: '1rem', background: '#fff', zIndex: 1000, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+      <div
+        style={{
+          position: 'fixed',
+          top: '60px',
+          left: 0,
+          width: '100%',
+          padding: '1rem',
+          background: '#fff',
+          zIndex: 1000,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        }}
+      >
         <label style={{ marginRight: '1rem' }}>
           Search:{' '}
           <input
@@ -166,7 +243,14 @@ export default function OrgChart({ data }) {
       </div>
 
       {/* 트리 렌더 영역 */}
-      <div style={{ marginTop: '80px', width: '100%', height: 'calc(100vh - 80px)' }} ref={containerRef}>
+      <div
+        style={{
+          marginTop: '120px',
+          width: '100%',
+          height: 'calc(100vh - 120px)',
+        }}
+        ref={containerRef}
+      >
         {treeData ? (
           <Tree
             ref={treeRef}
@@ -190,7 +274,20 @@ export default function OrgChart({ data }) {
 
       {/* 이메일 툴팁 */}
       {tooltip.visible && (
-        <div style={{ position: 'absolute', top: tooltip.y, left: tooltip.x, background: '#fff', border: '1px solid #ccc', padding: '4px 8px', borderRadius: '4px', pointerEvents: 'none', whiteSpace: 'nowrap', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: tooltip.y,
+            left: tooltip.x,
+            background: '#fff',
+            border: '1px solid #ccc',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            pointerEvents: 'none',
+            whiteSpace: 'nowrap',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          }}
+        >
           {tooltip.email}
         </div>
       )}
