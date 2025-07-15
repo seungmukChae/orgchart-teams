@@ -125,12 +125,12 @@ export default function OrgChart({ data }) {
         {sectionIds.includes(nodeDatum.id) && (
           <text
             x={0}
-            y={28}
+            y={14}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ ...baseText, fontSize: 10 }}
           >
-            [{openSection === nodeDatum.id ? '접기' : '펼치기'}]
+            [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
           </text>
         )}
       </g>
@@ -142,11 +142,11 @@ export default function OrgChart({ data }) {
       {/* 검색 UI */}
       <div style={{ padding: '1rem' }}>
         <label>
-          검색:{' '}
+          Search:{' '}
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="이름 또는 직책"
+            placeholder="Enter a name"
           />
         </label>
       </div>
@@ -171,7 +171,7 @@ export default function OrgChart({ data }) {
           />
         ) : (
           <div style={{ padding: '2rem', color: '#888' }}>
-            검색 결과 없음
+            Sorry, we couldn’t find any results.
           </div>
         )}
       </div>
