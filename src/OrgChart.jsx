@@ -3,34 +3,70 @@ import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data }) {
   const containerRef = useRef(null);
-  const [translate, setTranslate] = useState({ x: 50, y: 0 });
+  const [translate, setTranslate] = useState({ x: 0, y: 100 });
   const [openSection, setOpenSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Section 루트 ID 목록
   const sectionIds = ['100', '101', '102'];
 
-  // 검색 + 접기/펼치기 중첩 빌드
+  // 데이터 평탄화: id → node 매핑
+  const flatten = useCallback((node, map = {}) => {
+    map[node.id] = node;
+    (node.children || []).forEach(child => flatten(child, map));
+    return map;
+  }, []);
+  const nodeMap = flatten(data);
+
+  // 중앙 정렬: x 중간, y 고정 100px
+  useEffect(() => {
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      const { width } = containerRef.current.getBoundingClientRect();
+      setTranslate({ x: width / 2, y: 100 });
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 트리 빌드: 검색, 섹션 토글, id=3 위치 보정 포함
   const buildTree = useCallback((node) => {
     if (!node) return null;
     const term = searchQuery.trim().toLowerCase();
-    const match = !term || node.이름.toLowerCase().includes(term) || node.직책.toLowerCase().includes(term);
+    const match = !term ||
+      node.이름.toLowerCase().includes(term) ||
+      node.직책.toLowerCase().includes(term);
 
+    // 기본 자식 재귀 빌드
     let children = (node.children || [])
       .map(buildTree)
       .filter(Boolean);
 
-    // Section toggle: children hidden or shown
+    // 섹션 토글 처리
     if (sectionIds.includes(node.id)) {
-      children = openSection === node.id
+      children = (openSection === node.id)
         ? (node.children || []).map(buildTree).filter(Boolean)
         : [];
     }
 
-    // Always include root
+    // id=3 노드를 id=2 대신 id=1에 붙이기
+    if (node.id === '2') {
+      // id=2 밑에서는 id=3 제외
+      children = children.filter(child => child.id !== '3');
+    }
+    if (node.id === '1') {
+      // id=1 밑에 id=3을 직접 추가
+      const moved = buildTree(nodeMap['3']);
+      if (moved) children.push(moved);
+    }
+
+    // 루트 노드는 항상 유지
     if (node === data) {
       return { ...node, children };
     }
 
+    // 필터링된 노드 또는 자식이 있을 때만 반환
     if (match || children.length) {
       return { ...node, children };
     }
@@ -39,24 +75,14 @@ export default function OrgChart({ data }) {
 
   const treeData = buildTree(data);
 
-  // 중앙 정렬: y축 가운데, x 고정 좌측
-  useEffect(() => {
-    const update = () => {
-      if (!containerRef.current) return;
-      const { height } = containerRef.current.getBoundingClientRect();
-      setTranslate({ x: 50, y: height / 2 });
-    };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  const handleClick = (node) => {
-    if (sectionIds.includes(node.id)) {
-      setOpenSection(prev => prev === node.id ? null : node.id);
+  // 노드 클릭: 섹션만 토글
+  const handleClick = (nodeDatum) => {
+    if (sectionIds.includes(nodeDatum.id)) {
+      setOpenSection(prev => (prev === nodeDatum.id ? null : nodeDatum.id));
     }
   };
 
+  // 커스텀 노드 렌더링
   const baseText = { fontFamily: '맑은 고딕', fontWeight: 'normal', fill: '#000', letterSpacing: '0.5px' };
   const renderNode = ({ nodeDatum }) => {
     const isSection = sectionIds.includes(nodeDatum.id);
@@ -67,15 +93,15 @@ export default function OrgChart({ data }) {
       : '#e0e0e0';
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: isSection ? 'pointer' : 'default' }}>
-        <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8} fill={fill} stroke="#444" strokeWidth={1.5} />
-        <text x={0} y={-6} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 13 }}>
-          {nodeDatum.이름}
-        </text>
-        <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 11, fill: '#555' }}>
-          {nodeDatum.직책}
-        </text>
+        <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8}
+              fill={fill} stroke="#444" strokeWidth={1.5} />
+        <text x={0} y={-6} textAnchor="middle" dominantBaseline="middle"
+              style={{ ...baseText, fontSize: 13 }}>{nodeDatum.이름}</text>
+        <text x={0} y={14} textAnchor="middle" dominantBaseline="middle"
+              style={{ ...baseText, fontSize: 11, fill: '#555' }}>{nodeDatum.직책}</text>
         {isSection && (
-          <text x={0} y={28} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 10 }}>
+          <text x={0} y={28} textAnchor="middle" dominantBaseline="middle"
+                style={{ ...baseText, fontSize: 10 }}>
             [{openSection === nodeDatum.id ? '접기' : '펼치기'}]
           </text>
         )}
