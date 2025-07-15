@@ -186,7 +186,7 @@ export default function OrgChart({ data }) {
           <div style={{ width: '100%', height: '50%' }}>
             <Tree
               data={trunkData}
-              orientation="horizontal"
+              orientation="vertical"
               translate={translate}
               zoomable
               pathFunc="elbow"
@@ -205,7 +205,7 @@ export default function OrgChart({ data }) {
           <div style={{ width: '100%', height: '50%' }}>
             <Tree
               data={sectionData}
-              orientation="vertical"
+              orientation="horizontal"
               translate={{ x: 100, y: 50 }}
               zoomable
               pathFunc="elbow"
