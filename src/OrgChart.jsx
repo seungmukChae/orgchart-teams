@@ -3,7 +3,7 @@ import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data }) {
   const containerRef = useRef(null);
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [translate, setTranslate] = useState({ x: 0, y: 100 }); // 초기 y offset 고정
   const [openIds, setOpenIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [treeData, setTreeData] = useState(null);
@@ -11,20 +11,18 @@ export default function OrgChart({ data }) {
   // 접기/펼치기 가능한 섹션 ID
   const collapsibleIds = ['100', '101', '102'];
 
-  // 화면 크기 및 중앙 정렬
+  // 화면 크기 및 중앙 정렬 (x축만 중앙)
   const updateTranslate = () => {
     if (!containerRef.current) return;
-    const { width, height } = containerRef.current.getBoundingClientRect();
-    // 검색 중이면 트리를 더 가까이 (y 위치를 상단 쪽으로)
-    const centerY = searchQuery ? height * 0.3 : height / 2;
-    setTranslate({ x: width / 2, y: centerY });
+    const { width } = containerRef.current.getBoundingClientRect();
+    setTranslate({ x: width / 2, y: 100 });
   };
 
   useEffect(() => {
     updateTranslate();
     window.addEventListener('resize', updateTranslate);
     return () => window.removeEventListener('resize', updateTranslate);
-  }, [searchQuery]);
+  }, []);
 
   // 노드 토글 핸들러
   const toggleSection = (id) => {
