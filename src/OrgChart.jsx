@@ -124,7 +124,7 @@ export default function OrgChart({ data }) {
         {isSection && (
           <text
             x={0}
-            y={28}
+            y={14}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ ...baseText, fontSize: 10 }}
