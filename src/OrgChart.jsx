@@ -37,15 +37,12 @@ export default function OrgChart({ data }) {
         .map(buildTree)
         .filter(Boolean);
 
-            // 섹션이면 검색 중이 아닐 때만 openSection 상태에 따라 자식 숨김/표시
-      if (sectionIds.includes(node.id) && !term) {
+      // 섹션이면 openSection 상태에 따라 자식 숨김/표시
+      if (sectionIds.includes(node.id)) {
         children = openSection === node.id ? children : [];
       }
 
       // 루트(data)는 항상 렌더
-      if (node === data) {
-        return { ...node, children };
-      }// 루트(data)는 항상 렌더
       if (node === data) {
         return { ...node, children };
       }
@@ -61,12 +58,10 @@ export default function OrgChart({ data }) {
 
   const treeData = buildTree(data);
 
-  // 노드 클릭: 섹션 ID만 토글
+  // 노드 클릭: 섹션 노드만 토글
   const handleClick = (nodeDatum) => {
     if (sectionIds.includes(nodeDatum.id)) {
-      setOpenSection((prev) =>
-        prev === nodeDatum.id ? null : nodeDatum.id
-      );
+      setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
     }
   };
 
@@ -78,19 +73,25 @@ export default function OrgChart({ data }) {
     letterSpacing: '0.5px',
   };
   const renderNode = ({ nodeDatum }) => {
-    const isSection = sectionIds.includes(nodeDatum.id);
-    const fill = isSection
-      ? nodeDatum.id === '100'
+    // ID 숫자 파싱
+    const idNum = parseInt(nodeDatum.id, 10);
+    // 100~199 범위 주황색
+    let fill = (idNum >= 100 && idNum <= 199)
+      ? '#ffa500'
+      : '#e0e0e0';
+    // 섹션 루트 색상 재정의
+    if (sectionIds.includes(nodeDatum.id)) {
+      fill = nodeDatum.id === '100'
         ? '#007bff'
         : nodeDatum.id === '101'
         ? '#28a745'
-        : '#ff9999'
-      : '#e0e0e0';
+        : '#ff9999';
+    }
 
     return (
       <g
         onClick={() => handleClick(nodeDatum)}
-        style={{ cursor: isSection ? 'pointer' : 'default' }}
+        style={{ cursor: sectionIds.includes(nodeDatum.id) ? 'pointer' : 'default' }}
       >
         <rect
           x={-80}
@@ -121,15 +122,15 @@ export default function OrgChart({ data }) {
         >
           {nodeDatum.직책}
         </text>
-        {isSection && (
+        {sectionIds.includes(nodeDatum.id) && (
           <text
             x={0}
-            y={14}
+            y={28}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ ...baseText, fontSize: 10 }}
           >
-            [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
+            [{openSection === nodeDatum.id ? '접기' : '펼치기'}]
           </text>
         )}
       </g>
@@ -137,15 +138,15 @@ export default function OrgChart({ data }) {
   };
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div className="orgchart-container" style={{ width: '100vw', height: '100vh' }}>
       {/* 검색 UI */}
       <div style={{ padding: '1rem' }}>
         <label>
-          Search:{' '}
+          검색:{' '}
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Enter a name"
+            placeholder="이름 또는 직책"
           />
         </label>
       </div>
@@ -170,7 +171,7 @@ export default function OrgChart({ data }) {
           />
         ) : (
           <div style={{ padding: '2rem', color: '#888' }}>
-            Sorry, we couldn’t find any results.
+            검색 결과 없음
           </div>
         )}
       </div>
