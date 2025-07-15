@@ -7,10 +7,10 @@ export default function OrgChart({ data }) {
   const [openSection, setOpenSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Section 루트 ID 목록
+  // 섹션 노드 ID 목록 (100,101,102)
   const sectionIds = ['100', '101', '102'];
 
-  // 데이터 평탄화: id → node 매핑
+  // 데이터 평탄화: id -> node map
   const flatten = useCallback((node, map = {}) => {
     map[node.id] = node;
     (node.children || []).forEach(child => flatten(child, map));
@@ -18,7 +18,7 @@ export default function OrgChart({ data }) {
   }, []);
   const nodeMap = flatten(data);
 
-  // 중앙 정렬: x 중간, y 고정 100px
+  // 중앙 정렬: x중앙, y고정
   useEffect(() => {
     const handleResize = () => {
       if (!containerRef.current) return;
@@ -30,9 +30,17 @@ export default function OrgChart({ data }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 트리 빌드: 검색, 섹션 토글, id=3 위치 보정 포함
+  // 재귀 빌드: 검색, 섹션 토글, id3 부모 재배치 포함
   const buildTree = useCallback((node) => {
     if (!node) return null;
+
+    // 루트 노드는 특별 처리: children = [node2, node3]
+    if (node === data) {
+      const child2 = buildTree(nodeMap['2']);
+      const child3 = buildTree(nodeMap['3']);
+      return { ...node, children: [child2, child3].filter(Boolean) };
+    }
+
     const term = searchQuery.trim().toLowerCase();
     const match = !term ||
       node.이름.toLowerCase().includes(term) ||
@@ -43,46 +51,30 @@ export default function OrgChart({ data }) {
       .map(buildTree)
       .filter(Boolean);
 
-    // 섹션 토글 처리
+    // 섹션 노드는 openSection에 따라 children 표시/숨김
     if (sectionIds.includes(node.id)) {
-      children = (openSection === node.id)
+      children = openSection === node.id
         ? (node.children || []).map(buildTree).filter(Boolean)
         : [];
     }
 
-    // id=3 노드를 id=2 대신 id=1에 붙이기
-    if (node.id === '2') {
-      // id=2 밑에서는 id=3 제외
-      children = children.filter(child => child.id !== '3');
-    }
-    if (node.id === '1') {
-      // id=1 밑에 id=3을 직접 추가
-      const moved = buildTree(nodeMap['3']);
-      if (moved) children.push(moved);
-    }
-
-    // 루트 노드는 항상 유지
-    if (node === data) {
-      return { ...node, children };
-    }
-
-    // 필터링된 노드 또는 자식이 있을 때만 반환
+    // 매치되거나 자식이 있으면 노드 유지
     if (match || children.length) {
       return { ...node, children };
     }
     return null;
-  }, [searchQuery, openSection, data]);
+  }, [searchQuery, openSection, data, nodeMap]);
 
   const treeData = buildTree(data);
 
-  // 노드 클릭: 섹션만 토글
+  // 노드 클릭 핸들러: 섹션 노드만 토글
   const handleClick = (nodeDatum) => {
     if (sectionIds.includes(nodeDatum.id)) {
-      setOpenSection(prev => (prev === nodeDatum.id ? null : nodeDatum.id));
+      setOpenSection(prev => prev === nodeDatum.id ? null : nodeDatum.id);
     }
   };
 
-  // 커스텀 노드 렌더링
+  // 노드 렌더링 스타일
   const baseText = { fontFamily: '맑은 고딕', fontWeight: 'normal', fill: '#000', letterSpacing: '0.5px' };
   const renderNode = ({ nodeDatum }) => {
     const isSection = sectionIds.includes(nodeDatum.id);
