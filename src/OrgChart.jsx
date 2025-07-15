@@ -26,32 +26,42 @@ export default function OrgChart({ data }) {
     );
   };
 
-  // 검색 필터
+  // 검색 필터 재귀
   const filterTree = (node) => {
-    const q = searchQuery.trim().toLowerCase();
-    const match = !q || node.이름?.toLowerCase().includes(q) || node.직책?.toLowerCase().includes(q);
-    const children = (node.children || [])
-      .map(filterTree)
+    if (!node) return null;
+    const term = searchQuery.trim().toLowerCase();
+    const match =
+      !term ||
+      node.이름?.toLowerCase().includes(term) ||
+      node.직책?.toLowerCase().includes(term);
+    const filteredChildren = (node.children || [])
+      .map(child => filterTree(child))
       .filter(Boolean);
-    if (match || children.length) return { ...node, children };
+    if (match || filteredChildren.length) {
+      return { ...node, children: filteredChildren };
+    }
     return null;
   };
 
   // 트리 빌드 (openIds에 따라 하위 노드 포함 여부 결정)
   const buildTree = (node) => {
+    if (!node) return null;
     let children = node.children || [];
     if (collapsibleIds.includes(node.id) && !openIds.includes(node.id)) {
+      // 섹션 닫힌 경우, children 숨기기
       children = [];
     }
     return { ...node, children: children.map(buildTree) };
   };
 
-  // 데이터 및 상태 변화시 트리 업데이트
+  // 데이터 및 상태 변화시 트리 업데이트: 검색 후 접기 적용
   useEffect(() => {
     if (!data) return;
-    let tree = buildTree(data);
-    tree = filterTree(tree);
-    setTreeData(tree);
+    // 1. 전체 트리에서 검색 필터 적용
+    const filtered = filterTree(data);
+    // 2. 필터된 트리에 접기/펼치기 적용
+    const built = buildTree(filtered);
+    setTreeData(built);
   }, [data, openIds, searchQuery]);
 
   // 노드 색상
@@ -98,7 +108,9 @@ export default function OrgChart({ data }) {
     );
   };
 
-  if (!treeData) return <div style={{ padding: '2rem', color: '#888' }}>데이터 없음</div>;
+  if (!treeData) {
+    return <div style={{ padding: '2rem', color: '#888' }}>데이터 없음</div>;
+  }
 
   return (
     <div className="orgchart-container" style={{ width: '100vw', height: '100vh' }}>
