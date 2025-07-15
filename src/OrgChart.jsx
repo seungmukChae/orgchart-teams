@@ -7,18 +7,10 @@ export default function OrgChart({ data }) {
   const [openSection, setOpenSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 섹션 노드 ID 목록 (100,101,102)
+  // 섹션 루트 ID 목록 (100, 101, 102)
   const sectionIds = ['100', '101', '102'];
 
-  // 데이터 평탄화: id -> node map
-  const flatten = useCallback((node, map = {}) => {
-    map[node.id] = node;
-    (node.children || []).forEach(child => flatten(child, map));
-    return map;
-  }, []);
-  const nodeMap = flatten(data);
-
-  // 중앙 정렬: x중앙, y고정
+  // 컨테이너 리사이즈 시 중앙 정렬 계산
   useEffect(() => {
     const handleResize = () => {
       if (!containerRef.current) return;
@@ -30,70 +22,110 @@ export default function OrgChart({ data }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 재귀 빌드: 검색, 섹션 토글, id3 부모 재배치 포함
-  const buildTree = useCallback((node) => {
-    if (!node) return null;
+  // 트리 빌드: 검색 필터 + 섹션 토글 반영
+  const buildTree = useCallback(
+    (node) => {
+      if (!node) return null;
+      const term = searchQuery.trim().toLowerCase();
+      const match =
+        !term ||
+        node.이름?.toLowerCase().includes(term) ||
+        node.직책?.toLowerCase().includes(term);
 
-    // 루트 노드는 특별 처리: children = [node2, node3]
-    if (node === data) {
-      const child2 = buildTree(nodeMap['2']);
-      const child3 = buildTree(nodeMap['3']);
-      return { ...node, children: [child2, child3].filter(Boolean) };
-    }
+      // 자식 재귀 처리
+      let children = (node.children || [])
+        .map(buildTree)
+        .filter(Boolean);
 
-    const term = searchQuery.trim().toLowerCase();
-    const match = !term ||
-      node.이름.toLowerCase().includes(term) ||
-      node.직책.toLowerCase().includes(term);
+      // 섹션이면 openSection 상태에 따라 자식 숨김/표시
+      if (sectionIds.includes(node.id)) {
+        children = openSection === node.id ? children : [];
+      }
 
-    // 기본 자식 재귀 빌드
-    let children = (node.children || [])
-      .map(buildTree)
-      .filter(Boolean);
+      // 루트(data)는 항상 렌더
+      if (node === data) {
+        return { ...node, children };
+      }
 
-    // 섹션 노드는 openSection에 따라 children 표시/숨김
-    if (sectionIds.includes(node.id)) {
-      children = openSection === node.id
-        ? (node.children || []).map(buildTree).filter(Boolean)
-        : [];
-    }
-
-    // 매치되거나 자식이 있으면 노드 유지
-    if (match || children.length) {
-      return { ...node, children };
-    }
-    return null;
-  }, [searchQuery, openSection, data, nodeMap]);
+      // 매치되거나 자식 존재 시 렌더
+      if (match || children.length) {
+        return { ...node, children };
+      }
+      return null;
+    },
+    [searchQuery, openSection, data]
+  );
 
   const treeData = buildTree(data);
 
-  // 노드 클릭 핸들러: 섹션 노드만 토글
+  // 노드 클릭: 섹션 ID만 토글
   const handleClick = (nodeDatum) => {
     if (sectionIds.includes(nodeDatum.id)) {
-      setOpenSection(prev => prev === nodeDatum.id ? null : nodeDatum.id);
+      setOpenSection((prev) =>
+        prev === nodeDatum.id ? null : nodeDatum.id
+      );
     }
   };
 
   // 노드 렌더링 스타일
-  const baseText = { fontFamily: '맑은 고딕', fontWeight: 'normal', fill: '#000', letterSpacing: '0.5px' };
+  const baseText = {
+    fontFamily: '맑은 고딕',
+    fontWeight: 'normal',
+    fill: '#000',
+    letterSpacing: '0.5px',
+  };
   const renderNode = ({ nodeDatum }) => {
     const isSection = sectionIds.includes(nodeDatum.id);
     const fill = isSection
-      ? nodeDatum.id === '100' ? '#007bff'
-      : nodeDatum.id === '101' ? '#28a745'
-      : '#ff9999'
+      ? nodeDatum.id === '100'
+        ? '#007bff'
+        : nodeDatum.id === '101'
+        ? '#28a745'
+        : '#ff9999'
       : '#e0e0e0';
+
     return (
-      <g onClick={() => handleClick(nodeDatum)} style={{ cursor: isSection ? 'pointer' : 'default' }}>
-        <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8}
-              fill={fill} stroke="#444" strokeWidth={1.5} />
-        <text x={0} y={-6} textAnchor="middle" dominantBaseline="middle"
-              style={{ ...baseText, fontSize: 13 }}>{nodeDatum.이름}</text>
-        <text x={0} y={14} textAnchor="middle" dominantBaseline="middle"
-              style={{ ...baseText, fontSize: 11, fill: '#555' }}>{nodeDatum.직책}</text>
+      <g
+        onClick={() => handleClick(nodeDatum)}
+        style={{ cursor: isSection ? 'pointer' : 'default' }}
+      >
+        <rect
+          x={-80}
+          y={-30}
+          width={160}
+          height={60}
+          rx={8}
+          ry={8}
+          fill={fill}
+          stroke="#444"
+          strokeWidth={1.5}
+        />
+        <text
+          x={0}
+          y={-6}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...baseText, fontSize: 13 }}
+        >
+          {nodeDatum.이름}
+        </text>
+        <text
+          x={0}
+          y={14}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...baseText, fontSize: 11, fill: '#555' }}
+        >
+          {nodeDatum.직책}
+        </text>
         {isSection && (
-          <text x={0} y={28} textAnchor="middle" dominantBaseline="middle"
-                style={{ ...baseText, fontSize: 10 }}>
+          <text
+            x={0}
+            y={28}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            style={{ ...baseText, fontSize: 10 }}
+          >
             [{openSection === nodeDatum.id ? '접기' : '펼치기'}]
           </text>
         )}
@@ -103,10 +135,23 @@ export default function OrgChart({ data }) {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      {/* 검색 UI */}
       <div style={{ padding: '1rem' }}>
-        <label>검색: <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="이름 또는 직책" /></label>
+        <label>
+          검색:{' '}
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="이름 또는 직책"
+          />
+        </label>
       </div>
-      <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 80px)' }}>
+
+      {/* OrgChart Tree */}
+      <div
+        ref={containerRef}
+        style={{ width: '100%', height: 'calc(100vh - 80px)' }}
+      >
         {treeData ? (
           <Tree
             data={treeData}
@@ -121,7 +166,9 @@ export default function OrgChart({ data }) {
             styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
           />
         ) : (
-          <div style={{ padding: '2rem', color: '#888' }}>검색 결과 없음</div>
+          <div style={{ padding: '2rem', color: '#888' }}>
+            검색 결과 없음
+          </div>
         )}
       </div>
     </div>
