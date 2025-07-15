@@ -164,6 +164,18 @@ export default function OrgChart({ data }) {
           nodeSize={{ x: 200, y: 100 }}
           collapsible={false}
           pathFunc="elbow"
+          separation={{ siblings: 1, nonSiblings: 2 }} // 자식 노드 간 간격 설정
+          styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
+        />
+          data={treeData}
+          orientation="vertical"
+          translate={translate}
+          zoomable
+          scaleExtent={{ min: 0.3, max: 1.5 }}
+          renderCustomNodeElement={renderNode}
+          nodeSize={{ x: 200, y: 100 }}
+          collapsible={false}
+          pathFunc="elbow"
           styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
         />
       </div>
