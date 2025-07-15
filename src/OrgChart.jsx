@@ -5,7 +5,6 @@ export default function OrgChart({ data }) {
   const containerRef = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [treeData, setTreeData] = useState(null);
-  const [treeKey, setTreeKey] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
 
   const collapsibleIds = ['100', '101', '102'];
@@ -44,14 +43,9 @@ export default function OrgChart({ data }) {
   };
 
   useEffect(() => {
-    let processed = applyCollapsedToRoots(data);
-    if (searchQuery.trim()) {
-      const filtered = applySearchFilter(processed, searchQuery);
-      setTreeData(filtered);
-    } else {
-      setTreeData(processed);
-    }
-  }, [data, searchQuery]);
+    const prepared = applyCollapsedToRoots(data);
+    setTreeData(prepared);
+  }, [data]);
 
   const getNodeColor = (id) => {
     switch (id) {
@@ -69,9 +63,10 @@ export default function OrgChart({ data }) {
         collapsed: !node.collapsed,
       };
     }
+    if (!node.children) return node;
     return {
       ...node,
-      children: node.children?.map((c) => toggleCollapse(c, targetId)) || [],
+      children: node.children.map((child) => toggleCollapse(child, targetId)),
     };
   };
 
@@ -80,8 +75,7 @@ export default function OrgChart({ data }) {
 
     if (collapsibleIds.includes(nodeDatum.id)) {
       const updated = toggleCollapse(treeData, nodeDatum.id);
-      setTreeData(updated);
-      setTreeKey((prev) => prev + 1);
+      setTreeData({ ...updated });
     }
   };
 
@@ -146,6 +140,10 @@ export default function OrgChart({ data }) {
     );
   };
 
+  const filteredTree = searchQuery.trim()
+    ? applySearchFilter(treeData, searchQuery)
+    : treeData;
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <div style={{ padding: '0.5rem 1rem' }}>
@@ -162,10 +160,9 @@ export default function OrgChart({ data }) {
       </div>
 
       <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
-        {treeData ? (
+        {filteredTree ? (
           <Tree
-            key={treeKey}
-            data={treeData}
+            data={filteredTree}
             orientation="vertical"
             translate={translate}
             zoomable
