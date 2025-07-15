@@ -11,26 +11,20 @@ export default function OrgChart({ data }) {
   // 접기/펼치기 가능한 섹션 ID
   const collapsibleIds = ['100', '101', '102'];
 
-  // 화면 중앙 정렬: 초기 및 리사이즈
+  // 화면 크기 및 중앙 정렬
+  const updateTranslate = () => {
+    if (!containerRef.current) return;
+    const { width, height } = containerRef.current.getBoundingClientRect();
+    // 검색 중이면 트리를 더 가까이 (y 위치를 상단 쪽으로)
+    const centerY = searchQuery ? height * 0.3 : height / 2;
+    setTranslate({ x: width / 2, y: centerY });
+  };
+
   useEffect(() => {
-    const updateTranslate = () => {
-      if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect();
-        setTranslate({ x: width / 2, y: height / 2 });
-      }
-    };
     updateTranslate();
     window.addEventListener('resize', updateTranslate);
     return () => window.removeEventListener('resize', updateTranslate);
-  }, []);
-
-  // 트리 데이터 변화 시에도 중앙 재계산
-  useEffect(() => {
-    if (containerRef.current) {
-      const { width, height } = containerRef.current.getBoundingClientRect();
-      setTranslate({ x: width / 2, y: height / 2 });
-    }
-  }, [treeData]);
+  }, [searchQuery]);
 
   // 노드 토글 핸들러
   const toggleSection = (id) => {
