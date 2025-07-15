@@ -6,6 +6,7 @@ export default function OrgChart({ data }) {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [treeData, setTreeData] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [treeKey, setTreeKey] = useState(0);
 
   const collapsibleIds = ['100', '101', '102'];
 
@@ -76,6 +77,7 @@ export default function OrgChart({ data }) {
     if (collapsibleIds.includes(nodeDatum.id)) {
       const updated = toggleCollapse(treeData, nodeDatum.id);
       setTreeData({ ...updated });
+      setTreeKey(k => k+1);
     }
   };
 
@@ -162,6 +164,7 @@ export default function OrgChart({ data }) {
       <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 60px)' }}>
         {filteredTree ? (
           <Tree
+            key={treeKey}
             data={filteredTree}
             orientation="vertical"
             translate={translate}

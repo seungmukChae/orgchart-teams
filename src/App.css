@@ -40,3 +40,21 @@
 .read-the-docs {
   color: #888;
 }
+
+/* ──────────────────────────────────────────────────
+   OrgChart 전용 Override
+────────────────────────────────────────────────── */
+.orgchart-container svg {
+  font-family: '맑은 고딕', Arial, sans-serif !important;
+}
+
+.orgchart-container g text {
+  font-family: '맑은 고딕', Arial, sans-serif !important;
+  font-weight: normal              !important;
+  fill: #000                       !important;
+}
+
+.orgchart-container .rd3t-link path {
+  stroke: #555     !important;
+  stroke-width: 1.5px !important;
+}
