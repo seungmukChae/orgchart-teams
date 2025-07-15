@@ -11,12 +11,17 @@ export default function OrgChart({ data }) {
   // 접기/펼치기 가능한 섹션 ID
   const collapsibleIds = ['100', '101', '102'];
 
-  // 화면 중앙 정렬
+  // 화면 중앙 정렬 (가로 + 세로)
   useEffect(() => {
-    if (containerRef.current) {
-      const { width } = containerRef.current.getBoundingClientRect();
-      setTranslate({ x: width / 2, y: 50 });
-    }
+    const updateTranslate = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setTranslate({ x: width / 2, y: height / 2 });
+      }
+    };
+    updateTranslate();
+    window.addEventListener('resize', updateTranslate);
+    return () => window.removeEventListener('resize', updateTranslate);
   }, []);
 
   // 노드 토글 핸들러
@@ -78,7 +83,12 @@ export default function OrgChart({ data }) {
     const isOpen = openIds.includes(nodeDatum.id);
     const w = 160, h = 60;
     const fill = getColor(nodeDatum.id);
-    const textStyle = { fontFamily: '맑은 고딕', fontWeight: 'normal', fill: '#000' };
+    const textStyle = {
+      fontFamily: '맑은 고딕',
+      fontWeight: 'normal',
+      letterSpacing: '0.5px',
+      fill: '#000',
+    };
 
     return (
       <g
@@ -93,14 +103,29 @@ export default function OrgChart({ data }) {
           stroke="#444"
           strokeWidth={1.5}
         />
-        <text x={0} y={-8} textAnchor="middle" dominantBaseline="middle" style={{ ...textStyle, fontSize: 13 }}>
+        <text
+          x={0} y={-8}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...textStyle, fontSize: 13 }}
+        >
           {nodeDatum.이름}
         </text>
-        <text x={0} y={12} textAnchor="middle" dominantBaseline="middle" style={{ ...textStyle, fontSize: 11, fill: '#555' }}>
+        <text
+          x={0} y={12}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ ...textStyle, fontSize: 11, fill: '#555' }}
+        >
           {nodeDatum.직책}
         </text>
         {isSection && (
-          <text x={0} y={28} textAnchor="middle" dominantBaseline="middle" style={{ ...textStyle, fontSize: 10 }}>
+          <text
+            x={0} y={28}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            style={{ ...textStyle, fontSize: 10 }}
+          >
             [{isOpen ? '접기' : '펼치기'}]
           </text>
         )}
