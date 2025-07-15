@@ -3,56 +3,34 @@ import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data }) {
   const containerRef = useRef(null);
-  const [translate, setTranslate] = useState({ x: 0, y: 100 });
+  const [translate, setTranslate] = useState({ x: 50, y: 0 });
   const [openSection, setOpenSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // 펼치기 가능한 Section ID 목록
+
   const sectionIds = ['100', '101', '102'];
 
-  // 중앙 정렬 (x만 가운데, y 고정)
-  useEffect(() => {
-    const updateTranslate = () => {
-      if (containerRef.current) {
-        const { width } = containerRef.current.getBoundingClientRect();
-        setTranslate({ x: width / 2, y: 100 });
-      }
-    };
-    updateTranslate();
-    window.addEventListener('resize', updateTranslate);
-    return () => window.removeEventListener('resize', updateTranslate);
-  }, []);
-
-  // 재귀 빌드: 검색+접기/펼치기 반영하여 단일 트리 생성
+  // 검색 + 접기/펼치기 중첩 빌드
   const buildTree = useCallback((node) => {
     if (!node) return null;
     const term = searchQuery.trim().toLowerCase();
     const match = !term || node.이름.toLowerCase().includes(term) || node.직책.toLowerCase().includes(term);
 
-    // 기본 children 재귀 구축
     let children = (node.children || [])
       .map(buildTree)
       .filter(Boolean);
 
-    // Section 루트 접기/펼치기 제어
+    // Section toggle: children hidden or shown
     if (sectionIds.includes(node.id)) {
-      if (openSection === node.id) {
-        // 펼쳐진 상태: include filtered children
-        children = (node.children || [])
-          .map(buildTree)
-          .filter(Boolean);
-      } else {
-        // 접힌 상태: hide children
-        children = [];
-      }
+      children = openSection === node.id
+        ? (node.children || []).map(buildTree).filter(Boolean)
+        : [];
     }
 
-    // 루트(data)가 항상 렌더링되도록
+    // Always include root
     if (node === data) {
       return { ...node, children };
     }
 
-    // 필터된 결과 또는 하위가 있으면 렌더
     if (match || children.length) {
       return { ...node, children };
     }
@@ -61,14 +39,24 @@ export default function OrgChart({ data }) {
 
   const treeData = buildTree(data);
 
-  // 노드 클릭 핸들러: Section 루트만 토글
-  const handleClick = (nodeDatum) => {
-    if (sectionIds.includes(nodeDatum.id)) {
-      setOpenSection(prev => (prev === nodeDatum.id ? null : nodeDatum.id));
+  // 중앙 정렬: y축 가운데, x 고정 좌측
+  useEffect(() => {
+    const update = () => {
+      if (!containerRef.current) return;
+      const { height } = containerRef.current.getBoundingClientRect();
+      setTranslate({ x: 50, y: height / 2 });
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const handleClick = (node) => {
+    if (sectionIds.includes(node.id)) {
+      setOpenSection(prev => prev === node.id ? null : node.id);
     }
   };
 
-  // 노드 렌더링 스타일
   const baseText = { fontFamily: '맑은 고딕', fontWeight: 'normal', fill: '#000', letterSpacing: '0.5px' };
   const renderNode = ({ nodeDatum }) => {
     const isSection = sectionIds.includes(nodeDatum.id);
@@ -77,7 +65,6 @@ export default function OrgChart({ data }) {
       : nodeDatum.id === '101' ? '#28a745'
       : '#ff9999'
       : '#e0e0e0';
-
     return (
       <g onClick={() => handleClick(nodeDatum)} style={{ cursor: isSection ? 'pointer' : 'default' }}>
         <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8} fill={fill} stroke="#444" strokeWidth={1.5} />
@@ -98,24 +85,21 @@ export default function OrgChart({ data }) {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      {/* 검색 UI */}
       <div style={{ padding: '1rem' }}>
-        <label>
-          검색: <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="이름 또는 직책" />
-        </label>
+        <label>검색: <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="이름 또는 직책" /></label>
       </div>
-      {/* OrgChart Tree */}
       <div ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 80px)' }}>
         {treeData ? (
           <Tree
             data={treeData}
-            orientation="vertical"
+            orientation="horizontal"
             translate={translate}
             zoomable
-            pathFunc="elbow"
             collapsible={false}
+            pathFunc="elbow"
             renderCustomNodeElement={renderNode}
-            nodeSize={{ x: 200, y: 100 }}
+            nodeSize={{ x: 200, y: 80 }}
+            separation={{ siblings: 1, nonSiblings: 1 }}
             styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
           />
         ) : (
