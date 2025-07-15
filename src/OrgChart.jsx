@@ -11,7 +11,7 @@ export default function OrgChart({ data }) {
   // 접기/펼치기 가능한 섹션 ID
   const collapsibleIds = ['100', '101', '102'];
 
-  // 화면 중앙 정렬 (가로 + 세로)
+  // 화면 중앙 정렬: 초기 및 리사이즈
   useEffect(() => {
     const updateTranslate = () => {
       if (containerRef.current) {
@@ -23,6 +23,14 @@ export default function OrgChart({ data }) {
     window.addEventListener('resize', updateTranslate);
     return () => window.removeEventListener('resize', updateTranslate);
   }, []);
+
+  // 트리 데이터 변화 시에도 중앙 재계산
+  useEffect(() => {
+    if (containerRef.current) {
+      const { width, height } = containerRef.current.getBoundingClientRect();
+      setTranslate({ x: width / 2, y: height / 2 });
+    }
+  }, [treeData]);
 
   // 노드 토글 핸들러
   const toggleSection = (id) => {
@@ -48,26 +56,23 @@ export default function OrgChart({ data }) {
     return null;
   };
 
-  // 트리 빌드 (openIds에 따라 하위 노드 포함 여부 결정)
+  // 트리 빌드: openIds에 따라 하위 노드 포함 여부
   const buildTree = (node) => {
     if (!node) return null;
     let children = node.children || [];
     if (collapsibleIds.includes(node.id) && !openIds.includes(node.id)) {
-      // 섹션 닫힌 경우, children 숨기기
       children = [];
     }
     return { ...node, children: children.map(buildTree) };
   };
 
-  // 데이터 및 상태 변화시 트리 업데이트: 검색 후 접기 적용
+  // 데이터/검색/openIds 변화 시 트리 업데이트
   useEffect(() => {
     if (!data) return;
-    // 1. 전체 트리에서 검색 필터 적용
     const filtered = filterTree(data);
-    // 2. 필터된 트리에 접기/펼치기 적용
     const built = buildTree(filtered);
     setTreeData(built);
-  }, [data, openIds, searchQuery]);
+  }, [data, searchQuery, openIds]);
 
   // 노드 색상
   const getColor = (id) => {
