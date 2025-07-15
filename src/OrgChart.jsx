@@ -245,7 +245,7 @@ export default function OrgChart({ data }) {
       {/* 트리 렌더 영역 */}
       <div
         style={{
-          marginTop: '120px',
+          marginTop: '60px',
           width: '100%',
           height: 'calc(100vh - 120px)',
         }}
