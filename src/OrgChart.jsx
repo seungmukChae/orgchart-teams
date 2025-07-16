@@ -12,9 +12,14 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  const sectionIds = ['100', '101', '102'];
+  // 법인(100~102), 팀(103~199) 헬퍼
+  const isCorp = (id) => ['100', '101', '102'].includes(String(id));
+  const isTeam = (id) => {
+    const n = Number(id);
+    return n >= 103 && n <= 199;
+  };
 
-  // 1) “가상 루트” 만들기: data가 배열이면 dummy root 생성
+  // 1) "가상 루트" 만들기: data가 배열이면 dummy root 생성
   const rootData = useMemo(() => {
     if (Array.isArray(data)) {
       return {
@@ -33,88 +38,71 @@ export default function OrgChart({ data, searchQuery }) {
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
-        // 빈 검색 시 첫 번째 루트, 아니면 단일 data.id
-        const targetId = Array.isArray(data) ? data[0]?.id : data.id;
-        treeRef.current.centerNode(targetId);
+        // 첫 루트로 포커스
+        const targetId = Array.isArray(data) ? data[0]?.id : data?.id;
+        if (targetId) treeRef.current.centerNode(targetId);
       }
     };
     window.addEventListener('resize', handleResize);
-    handleResize(); // 마운트 시에도 한 번 실행
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
-  // 3) 노드 클릭 핸들러: 섹션 토글 or 이메일 복사
+  // 3) 노드 클릭: 팀만 토글, 직원은 메일 복사
   const handleClick = useCallback((nodeDatum) => {
-    if (sectionIds.includes(nodeDatum.id)) {
-      setOpenSection((prev) =>
-        prev === nodeDatum.id ? null : nodeDatum.id
-      );
+    if (isTeam(nodeDatum.id)) {
+      setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
     } else if (nodeDatum.email) {
       navigator.clipboard.writeText(nodeDatum.email);
     }
   }, []);
 
-  // 4) buildTree: 검색어 없으면 전체 렌더 + 섹션 토글만
-  //    검색어 있을 땐 이름/직책/팀 match 로직
+  // 4) 트리 빌드
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
       const term = searchQuery.trim().toLowerCase();
 
       // (1) 자식 먼저 재귀
-      let children = (node.children || [])
-        .map(buildTree)
-        .filter(Boolean);
+      let children = (node.children || []).map(buildTree).filter(Boolean);
 
-      // (2) 검색어 없으면 항상 렌더 + 섹션 토글만
+      // (2) 검색어 없을 때: 법인 항상, 팀은 openSection
       if (!term) {
-        if (sectionIds.includes(node.id)) {
+        if (isCorp(node.id)) {
+          return { ...node, children };
+        }
+        if (isTeam(node.id)) {
           children = openSection === node.id ? children : [];
+          return { ...node, children };
         }
         return { ...node, children };
       }
 
-      // (3) 검색어 있을 때: 이름/직책/팀 match
-      const nameMatch = node.이름
-        ?.toLowerCase()
-        .includes(term);
-      const titleMatch = node.직책
-        ?.toLowerCase()
-        .includes(term);
-      const teamMatch = node.팀
-        ?.toLowerCase()
-        .includes(term);
+      // (3) 검색: 이름/직책/팀
+      const nameMatch = node.이름?.toLowerCase().includes(term);
+      const titleMatch = node.직책?.toLowerCase().includes(term);
+      const teamMatch = node.팀?.toLowerCase().includes(term);
 
-      if (nameMatch || titleMatch) {
-        return { ...node, children };
-      }
+      if (nameMatch || titleMatch) return { ...node, children };
       if (teamMatch) {
-        const allDesc = (node.children || [])
-          .map(buildTree)
-          .filter(Boolean);
+        const allDesc = (node.children || []).map(buildTree).filter(Boolean);
         return { ...node, children: allDesc };
       }
-      if (children.length) {
-        return { ...node, children };
-      }
+      if (children.length) return { ...node, children };
       return null;
     },
     [searchQuery, openSection]
   );
 
-  // 5) buildTree 적용 후, 가상 루트면 children만 꺼내서 Tree에 전달
+  // 5) 트리 데이터 가공
   const treeData = useMemo(() => {
     const fullTree = buildTree(rootData);
     if (!fullTree) return null;
-    return fullTree.id === 'root'
-      ? fullTree.children
-      : fullTree;
+    return fullTree.id === 'root' ? fullTree.children : fullTree;
   }, [buildTree, rootData]);
 
-  if (
-    !treeData ||
-    (Array.isArray(treeData) && treeData.length === 0)
-  ) {
+  // 6) 결과 없음 처리
+  if (!treeData || (Array.isArray(treeData) && treeData.length === 0)) {
     return (
       <div style={{ padding: '2rem', color: '#888' }}>
         검색 결과가 없습니다.
@@ -122,21 +110,17 @@ export default function OrgChart({ data, searchQuery }) {
     );
   }
 
-  // 6) 노드 커스텀 렌더러 (툴팁 포함)
+  // 7) 커스텀 노드 렌더러 (툴팁 포함)
   const renderNode = ({ nodeDatum }) => {
     const idNum = parseInt(nodeDatum.id, 10);
     let fill =
-      idNum >= 100 && idNum <= 199
+      isCorp(nodeDatum.id) ? (
+        nodeDatum.id === '100' ? '#007bff' :
+        nodeDatum.id === '101' ? '#28a745' :
+        '#ff9999'
+      ) : isTeam(nodeDatum.id)
         ? '#ffa500'
         : '#e0e0e0';
-    if (sectionIds.includes(nodeDatum.id)) {
-      fill =
-        nodeDatum.id === '100'
-          ? '#007bff'
-          : nodeDatum.id === '101'
-          ? '#28a745'
-          : '#ff9999';
-    }
 
     return (
       <g
@@ -161,17 +145,11 @@ export default function OrgChart({ data, searchQuery }) {
           }
         }}
         onMouseLeave={() =>
-          setTooltip({
-            visible: false,
-            x: 0,
-            y: 0,
-            email: '',
-          })
+          setTooltip({ visible: false, x: 0, y: 0, email: '' })
         }
         style={{
           cursor:
-            nodeDatum.email ||
-            sectionIds.includes(nodeDatum.id)
+            nodeDatum.email || isTeam(nodeDatum.id)
               ? 'pointer'
               : 'default',
         }}
@@ -213,29 +191,22 @@ export default function OrgChart({ data, searchQuery }) {
         >
           {nodeDatum.직책}
         </text>
-        {sectionIds.includes(nodeDatum.id) && (
+        {isTeam(nodeDatum.id) && (
           <text
             x={0}
             y={14}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{
-              fontFamily: '맑은 고딕',
-              fontSize: 10,
-            }}
+            style={{ fontFamily: '맑은 고딕', fontSize: 10 }}
           >
-            [
-            {openSection === nodeDatum.id
-              ? 'Collapse'
-              : 'Expand'}
-            ]
+            [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
           </text>
         )}
       </g>
     );
   };
 
-  // 7) 최종 렌더
+  // 8) 최종 렌더
   return (
     <div
       ref={containerRef}
@@ -275,8 +246,7 @@ export default function OrgChart({ data, searchQuery }) {
             padding: '4px 8px',
             borderRadius: '4px',
             pointerEvents: 'none',
-            boxShadow:
-              '0 2px 4px rgba(0,0,0,0.1)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
           {tooltip.email}
