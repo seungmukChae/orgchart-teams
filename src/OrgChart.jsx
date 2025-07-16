@@ -154,7 +154,7 @@ export default function OrgChart({ data, searchQuery }) {
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
 
-        {/* 수정된 separation */}
+        /* 수정된 separation */
         separation={(a, b) => {
           // 형제 노드 간격만 동적 조절
           if (a.parent === b.parent && a.parent) {
