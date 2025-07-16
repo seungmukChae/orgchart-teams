@@ -6,73 +6,106 @@ export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
   const [openSection, setOpenSection] = useState(null);
-  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, email: '' });
+  const [tooltip, setTooltip] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    email: '',
+  });
 
-  const sectionIds = ['100','101','102'];
+  const sectionIds = ['100', '101', '102'];
 
+  // 윈도우 리사이즈 시 중앙 노드 유지
   useEffect(() => {
     const handleResize = () => {
-      treeRef.current?.centerNode?.(data.id);
+      treeRef.current?.centerNode?.(Array.isArray(data) ? data[0]?.id : data.id);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
+  // 노드 클릭 핸들러
   const handleClick = (nodeDatum) => {
     if (sectionIds.includes(nodeDatum.id)) {
-      setOpenSection(prev => prev === nodeDatum.id ? null : nodeDatum.id);
+      setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
     } else if (nodeDatum.email) {
       navigator.clipboard.writeText(nodeDatum.email);
     }
   };
 
-  const buildTree = useCallback((node) => {
-    if (!node) return null;
-    const term = searchQuery.trim().toLowerCase();
-    let children = (node.children || []).map(buildTree).filter(Boolean);
+  // 트리 재귀 생성
+  const buildTree = useCallback(
+    (node) => {
+      if (!node) return null;
+      const term = searchQuery.trim().toLowerCase();
 
-    if (!term) {
-      if (sectionIds.includes(node.id)) {
-        children = openSection === node.id ? children : [];
+      // 1) 자식부터 재귀
+      let children = (node.children || []).map(buildTree).filter(Boolean);
+
+      // 2) 검색어 없으면 전체 렌더 + 섹션 토글만
+      if (!term) {
+        if (sectionIds.includes(node.id)) {
+          children = openSection === node.id ? children : [];
+        }
+        return { ...node, children };
       }
-      return { ...node, children };
-    }
 
-    const isNameMatch  = node.이름?.toLowerCase().includes(term);
-    const isTitleMatch = node.직책?.toLowerCase().includes(term);
-    const isTeamMatch  = node.팀?.toLowerCase().includes(term);
+      // 3) 검색어 있을 때: 이름/직책/팀 매치
+      const nameMatch = node.이름?.toLowerCase().includes(term);
+      const titleMatch = node.직책?.toLowerCase().includes(term);
+      const teamMatch = node.팀?.toLowerCase().includes(term);
 
-    if (isNameMatch || isTitleMatch) {
-      return { ...node, children };
-    }
-    if (isTeamMatch) {
-      const allDescendants = (node.children || []).map(buildTree).filter(Boolean);
-      return { ...node, children: allDescendants };
-    }
-    if (children.length) {
-      return { ...node, children };
-    }
-    return null;
-  }, [searchQuery, openSection, data]);
+      if (nameMatch || titleMatch) {
+        return { ...node, children };
+      }
+      if (teamMatch) {
+        const allDesc = (node.children || []).map(buildTree).filter(Boolean);
+        return { ...node, children: allDesc };
+      }
+      if (children.length) {
+        return { ...node, children };
+      }
+      return null;
+    },
+    [searchQuery, openSection]
+  );
 
-  const filteredTree = useMemo(() => buildTree(data), [buildTree, data]);
-  if (!filteredTree) {
-    return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
+  // data가 배열인지 단일 노드인지 구분해서 처리
+  const treeData = useMemo(() => {
+    if (Array.isArray(data)) {
+      return data.map(buildTree).filter(Boolean);
+    }
+    return buildTree(data);
+  }, [buildTree, data]);
+
+  if (
+    !treeData ||
+    (Array.isArray(treeData) ? treeData.length === 0 : treeData === null)
+  ) {
+    return (
+      <div style={{ padding: '2rem', color: '#888' }}>
+        검색 결과가 없습니다.
+      </div>
+    );
   }
 
+  // 노드 커스텀 렌더러 (툴팁 포함)
   const renderNode = ({ nodeDatum }) => {
     const idNum = parseInt(nodeDatum.id, 10);
     let fill = idNum >= 100 && idNum <= 199 ? '#ffa500' : '#e0e0e0';
     if (sectionIds.includes(nodeDatum.id)) {
-      fill = nodeDatum.id === '100' ? '#007bff'
-           : nodeDatum.id === '101' ? '#28a745'
-           : '#ff9999';
+      fill =
+        nodeDatum.id === '100'
+          ? '#007bff'
+          : nodeDatum.id === '101'
+          ? '#28a745'
+          : '#ff9999';
     }
 
     return (
       <g
         onClick={() => handleClick(nodeDatum)}
-        onMouseEnter={evt => {
+        onMouseEnter={(evt) => {
           if (nodeDatum.email) {
             setTooltip({
               visible: true,
@@ -82,16 +115,23 @@ export default function OrgChart({ data, searchQuery }) {
             });
           }
         }}
-        onMouseMove={evt => {
+        onMouseMove={(evt) => {
           if (tooltip.visible) {
-            setTooltip(t => ({ ...t, x: evt.clientX + 10, y: evt.clientY + 10 }));
+            setTooltip((t) => ({
+              ...t,
+              x: evt.clientX + 10,
+              y: evt.clientY + 10,
+            }));
           }
         }}
-        onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, email: '' })}
+        onMouseLeave={() =>
+          setTooltip({ visible: false, x: 0, y: 0, email: '' })
+        }
         style={{
-          cursor: nodeDatum.email || sectionIds.includes(nodeDatum.id)
-            ? 'pointer'
-            : 'default'
+          cursor:
+            nodeDatum.email || sectionIds.includes(nodeDatum.id)
+              ? 'pointer'
+              : 'default',
         }}
       >
         <rect
@@ -145,7 +185,7 @@ export default function OrgChart({ data, searchQuery }) {
     >
       <Tree
         ref={treeRef}
-        data={filteredTree}
+        data={treeData}
         orientation="horizontal"
         translate={{ x: window.innerWidth / 2, y: 100 }}
         zoomable
@@ -153,21 +193,16 @@ export default function OrgChart({ data, searchQuery }) {
         pathFunc="elbow"
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
-
-        /* 수정된 separation */
         separation={(a, b) => {
-          // 형제 노드 간격만 동적 조절
           if (a.parent === b.parent && a.parent) {
-            // children 배열이 없거나 길이가 0이면 최소 1로 치환
-            const raw = Array.isArray(a.parent.children) ? a.parent.children.length : 1;
+            const raw = Array.isArray(a.parent.children)
+              ? a.parent.children.length
+              : 1;
             const cnt = Math.max(raw, 1);
-            // 1 + log(cnt) 방식 (cnt=1일 땐 1)
             return 1 + Math.log(cnt);
           }
-            // 비형제 노드는 기본 간격 1
-            return 1;
-    }}
-
+          return 1;
+        }}
         styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
 
@@ -182,7 +217,7 @@ export default function OrgChart({ data, searchQuery }) {
             padding: '4px 8px',
             borderRadius: '4px',
             pointerEvents: 'none',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
           {tooltip.email}
