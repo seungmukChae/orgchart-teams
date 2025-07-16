@@ -66,7 +66,18 @@ export default function OrgChart({ data, searchQuery }) {
         .map(buildTree)
         .filter(Boolean);
 
-      // (2) 검색어 없으면 항상 렌더 + 섹션 토글만
+      // ----- (2) 팀 노드면(103~199) 자식 개수 기준 내림차순 정렬 -----
+      const idNum = parseInt(node.id, 10);
+      if (idNum >= 103 && idNum <= 199 && children.length > 1) {
+        children = [...children].sort((a, b) => {
+          // 자식 노드의 자손(팀원) 수 많은 게 뒤로
+          const countA = a.children ? a.children.length : 0;
+          const countB = b.children ? b.children.length : 0;
+          return countA - countB;
+        });
+      }
+
+      // (3) 검색어 없으면 항상 렌더 + 섹션 토글만
       if (!term) {
         if (sectionIds.includes(node.id)) {
           children = openSection === node.id ? children : [];
@@ -74,7 +85,7 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // (3) 검색어 있을 때: 이름/직책/팀 match
+      // (4) 검색어 있을 때: 이름/직책/팀 match
       const nameMatch = node.이름
         ?.toLowerCase()
         .includes(term);
