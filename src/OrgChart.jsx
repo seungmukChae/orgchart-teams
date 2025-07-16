@@ -40,7 +40,7 @@ export default function OrgChart({ data, searchQuery }) {
 
     // [검색어 없을 때] 팀/법인 노드는 openSection 일치 시에만 자식 펼침
     if (!term && (isTeam(idStr) || isCorp(idStr))) {
-      const children = openSection === idStr ? (node.children || []).map(buildTree).filter(Boolean) : [];
+      const children = openSection === idStr ? (node.children || []).map(buildTree).filter(x => x !== null && x !== undefined) : [];
       return { ...node, children };
     }
 
@@ -60,6 +60,7 @@ export default function OrgChart({ data, searchQuery }) {
       return { ...node, children: allDesc };
     }
     if (children.length) return { ...node, children };
+    if (isTeam(idStr) || isCorp(idStr)) return { ...node, children: [] };
     return null;
   }, [searchQuery, openSection]);
 
