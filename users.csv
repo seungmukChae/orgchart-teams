@@ -1,107 +1,374 @@
-﻿id,이름,직책,법인,팀,manager_id,email
+﻿id,이름,직책,법인,팀,manager_id,이메일
+1,SHIN,Chairman,,Chairman,,shin@shints.com
+2,Jongin_CEO,CEO,,CEO,1,jongin.cha@shints.com
+3,CHA,Advisor,,고문,2,cha@shints.com
+4,Haein_VP,Vice President,,Vice-President,100,haein@shints.com
+5,Jay_SPL,General Manager,Seoul,Planning,103,jay.jung@shints.com
+6,Chuck_SMC,Senior Manager,Seoul,Material,104,chuck@shints.com
+7,Mira_SMRP,General Manager,Seoul,MRP,105,meiluo@shints.com
+8,Kyu_SIT,Senior Manager,Seoul,IT,106,lkj83@shints.com
+9,Jeon_SAC,General Manager,Seoul,Accounting,107,changbae.jeon@shints.com
+10,Hyunjoo_STR,Manager,Seoul,Im-Export,108,whj84@shints.com
+11,Leo_SHR,Director,Seoul,HR,109,jmlee@shints.com
+12,Chris_SBR,Senior Manager,Seoul,Brand Development,110,chris@shints.com
+13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111,kjjeong@shints.com
+14,Andrew_SMDK,General Manager,Seoul,SalesKR,112,andrew@shints.com
+15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113,jhoen@shints.com
+16,Ciara_SMD2,Executive Director,Seoul,Sales2,114,ciara@shints.com
+17,Jake_SMD3,Senior Manager,Seoul,Sales3,115,jake@shints.com
+18,Ken_SMD4,Executive Director,Seoul,Sales4,116,ken@shints.com
+19,Oliver_FOB,Director,Seoul,FOB,117,oliver@shints.com
+20,Bell_SPL,Assistant Manager,Seoul,Planning,5,bell@shints.com
+21,Mila_SPL,Staff,Seoul,Planning,5,mila@shints.com
+22,Rim_SPL,Senior Manager,Seoul,Planning,5,rim.han@shints.com
+23,Chelsea_SMC,Senior Manager,Seoul,Material,6,chelsea@shints.com
+24,Parttime1_SMC,Parttime,Seoul,Material,6,parttime1@shints.com
+25,Steven_SMC,Staff,Seoul,Material,6,steven@shints.com
+26,Sunny_SMC,Senior Manager,Seoul,Material,6,sunnykang@shints.com
+27,Tammy_SMC,Staff,Seoul,Material,6,tammy@shints.com
+28,Trudy_SMC,Assistant Manager,Seoul,Material,6,trudy@shints.com
+29,Khe_SMRP,General Manager,Seoul,MRP,7,khe@shints.com
+30,Minsun_SMRP,Manager,Seoul,MRP,7,minsun@shints.com
+31,Brandon_SIT,Assistant Manager,Seoul,IT,8,brandon@shints.com
+32,Dain_SAC,Assistant Manager,Seoul,Accounting,9,dain_lee@shints.com
+33,Jeongyoun_SAC,Staff,Seoul,Accounting,9,jy.j@shints.com
+34,Miae_SAC,Staff,Seoul,Accounting,9,malee@shints.com
+35,Mijin_SAC,Assistant Manager,Seoul,Accounting,9,mjshim@shints.com
+36,Chloe_SAC,Assistant Manager,Seoul,Accounting,9,trade1@shints.com
+37,Yugyeong_SAC,Assistant Manager,Seoul,Accounting,9,yugyeong@shints.com
+38,Clara_STR,Assistant Manager,Seoul,Im-Export,10,clara@shints.com
+39,Colin_STR,Assistant Manager,Seoul,Im-Export,10,Colin@shints.com
+40,Bit_SHR,Assistant Manager,Seoul,HR,11,bit@shints.com
+41,Zoe_SHR,Staff,Seoul,HR,11,Zoe@shints.com
+42,Moon_SBR,Assistant Manager,Seoul,Brand Development,12,awd@shints.com
+43,Ed_SBR,Manager,Seoul,Brand Development,12,ed@shints.com
+44,Glove_SBR,Executive Director,Seoul,Brand Development,12,glove@shints.com
+45,Parttime3_SBR,Parttime,Seoul,Brand Development,12,parttime3@shints.com
+46,Hmk_SBR,Assistant Manager,Seoul,Brand Development,12,pm@shints.com
+47,Seedgarden_SBR,Manager,Seoul,Brand Development,12,seedgarden@shints.com
+48,Kang_SGRM,Director,Seoul,Garment Development,13,kang@shints.com
+49,Skmin_SGRM,Manager,Seoul,Garment Development,13,skmin@shints.com
+50,Yeeun_SGRM,Assistant Manager,Seoul,Garment Development,13,yeeun@shints.com
+51,Yhkim_SGRM,Director,Seoul,Garment Development,13,yhkim@shints.com
+52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,14,ahracho@shints.com
+53,Becky_SMDK,General Manager,Seoul,SalesKR,14,becky@shints.com
+54,Bella_SMDK,Manager,Seoul,SalesKR,14,bellakoo@shints.com
+55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,14,ben@shints.com
+56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,14,danielshin@shints.com
+57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,14,daphne@shints.com
+58,Diana_SMDK,Manager,Seoul,SalesKR,14,diana@shints.com
+59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,14,joy@shints.com
+60,Kylie_SMDK,Staff,Seoul,SalesKR,14,kylie@shints.com
+61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,14,lina@shints.com
+62,Mahlet_SMDK,Staff,Seoul,SalesKR,14,mahlet@shints.com
+63,Andy_SMD1,Staff,Seoul,Sales1,15,andy@shints.com
+64,Celeste_SMD1,Staff,Seoul,Sales1,15,celeste@shints.com
+65,Dos_SMD1,General Manager,Seoul,Sales1,15,dos@shints.com
+66,Jin_SMD1,Manager,Seoul,Sales1,15,jin.park@shints.com
+67,Sewon_SMD1,Assistant Manager,Seoul,Sales1,15,sewon@shints.com
+68,Kara_FOB,Staff,Seoul,FOB,16,kara@shints.com
+69,Jinny_SMD2,Manager,Seoul,Sales2,16,jinny@shints.com
+70,Joon_SMD2,Staff,Seoul,Sales2,16,joon@shints.com
+71,Matthew_SMD2,Staff,Seoul,Sales2,16,matthew@shints.com
+72,Tibka_SMD2,Staff,Seoul,Sales2,16,tibka@shints.com
+73,Tommy_SMD2,Manager,Seoul,Sales2,16,tommy@shints.com
+74,Hana_FOB,Manager,Seoul,FOB,17,hana@shints.com
+75,Ally_SMD3,Staff,Seoul,Sales3,17,ally@shints.com
+76,Boin_SMD3,Senior Manager,Seoul,Sales3,17,boin@shints.com
+77,Hazel_SMD3,Assistant Manager,Seoul,Sales3,17,hazel@shints.com
+78,Jenny_SMD3,Manager,Seoul,Sales3,17,jenny@shints.com
+79,Mason_SMD3,Staff,Seoul,Sales3,17,mason@shints.com
+80,David_FOB,Staff,Seoul,FOB,18,david@shints.com
+81,Jimmy_FOB,Staff,Seoul,FOB,18,jimmy@shints.com
+82,Lia_SMD4,Assistant Manager,Seoul,Sales4,18,lia@shints.com
+83,Lily_SMD4,Assistant Manager,Seoul,Sales4,18,lily@shints.com
+84,Minji_SMD4,Assistant Manager,Seoul,Sales4,18,minji@shints.com
+85,Yuri_SMD4,Manager,Seoul,Sales4,18,yuri@shints.com
+86,Cherie_FOB,Staff,Seoul,FOB,19,cherie@shints.com
+87,Sam_FOB,Manager,Seoul,FOB,19,sam@shints.com
+88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14,nadia@shints.com
 100,Seoul,,,,2,
 101,ETP,,,,2,
 102,BVT,,,,2,
-1,SHIN,Chairman,,Chairman,,
-2,Jongin_CEO,CEO,,CEO,1,
-3,CHA,Advisor,,고문,2,
-4,Haein_VP,Vice President,,Vice-President,100,
 103,Planning,,,,4,
-5,Jay_SPL,General Manager,Seoul,Planning,103,
 104,Material,,,,4,
-6,Chuck_SMC,Senior Manager,Seoul,Material,104,
 105,MRP,,,,4,
-7,Mira_SMRP,General Manager,Seoul,MRP,105,
 106,IT,,,,4,
-8,Kyu_SIT,Senior Manager,Seoul,IT,106,
 107,Accounting,,,,4,
-9,Jeon_SAC,General Manager,Seoul,Accounting,107,
 108,Im-Export,,,,4,
-10,Hyunjoo_STR,Manager,Seoul,Im-Export,108,
 109,HR,,,,4,
-11,Leo_SHR,Director,Seoul,HR,109,
 110,Brand Development,,,,4,
-12,Chris_SBR,Senior Manager,Seoul,Brand Development,110,
 111,Garment Development,,,,4,
-13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111,
 112,SalesKR,,,,4,
-14,Andrew_SMDK,General Manager,Seoul,SalesKR,112,
 113,Sales1,,,,4,
-15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113,
 114,Sales2,,,,4,
-16,Ciara_SMD2,Executive Director,Seoul,Sales2,114,
 115,Sales3,,,,4,
-17,Jake_SMD3,Senior Manager,Seoul,Sales3,115,
 116,Sales4,,,,4,
-18,Ken_SMD4,Executive Director,Seoul,Sales4,116,
 117,FOB,,,,4,
-19,Oliver_FOB,Director,Seoul,FOB,117,
-20,Bell_SPL,Assistant Manager,Seoul,Planning,5,
-21,Mila_SPL,Staff,Seoul,Planning,5,
-22,Rim_SPL,Senior Manager,Seoul,Planning,5,
-23,Chelsea_SMC,Senior Manager,Seoul,Material,6,
-24,Parttime1_SMC,Parttime,Seoul,Material,6,
-25,Steven_SMC,Staff,Seoul,Material,6,
-26,Sunny_SMC,Senior Manager,Seoul,Material,6,
-27,Tammy_SMC,Staff,Seoul,Material,6,
-28,Trudy_SMC,Assistant Manager,Seoul,Material,6,
-29,Khe_SMRP,General Manager,Seoul,MRP,7,
-30,Minsun_SMRP,Manager,Seoul,MRP,7,
-31,Brandon_SIT,Assistant Manager,Seoul,IT,8,brandon@shints.com
-32,Dain_SAC,Assistant Manager,Seoul,Accounting,9,
-33,Jeongyoun_SAC,Staff,Seoul,Accounting,9,
-34,Miae_SAC,Staff,Seoul,Accounting,9,
-35,Mijin_SAC,Assistant Manager,Seoul,Accounting,9,
-36,Chloe_SAC,Assistant Manager,Seoul,Accounting,9,
-37,Yugyeong_SAC,Assistant Manager,Seoul,Accounting,9,
-38,Clara_STR,Assistant Manager,Seoul,Im-Export,10,
-39,Colin_STR,Assistant Manager,Seoul,Im-Export,10,
-40,Bit_SHR,Assistant Manager,Seoul,HR,11,
-41,Zoe_SHR,Staff,Seoul,HR,11,
-42,Moon_SBR,Assistant Manager,Seoul,Brand Development,12,
-43,Ed_SBR,Manager,Seoul,Brand Development,12,
-44,Glove_SBR,Executive Director,Seoul,Brand Development,12,
-45,Parttime3_SBR,Parttime,Seoul,Brand Development,12,
-46,Hmk_SBR,Assistant Manager,Seoul,Brand Development,12,
-47,Seedgarden_SBR,Manager,Seoul,Brand Development,12,
-48,Kang_SGRM,Director,Seoul,Garment Development,13,
-49,Skmin_SGRM,Manager,Seoul,Garment Development,13,
-50,Yeeun_SGRM,Assistant Manager,Seoul,Garment Development,13,
-51,Yhkim_SGRM,Director,Seoul,Garment Development,13,
-52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,14,
-53,Becky_SMDK,General Manager,Seoul,SalesKR,14,
-54,Bella_SMDK,Manager,Seoul,SalesKR,14,
-55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,14,
-56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,14,
-57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,14,
-58,Diana_SMDK,Manager,Seoul,SalesKR,14,
-59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,14,
-60,Kylie_SMDK,Staff,Seoul,SalesKR,14,
-61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,14,
-62,Mahlet_SMDK,Staff,Seoul,SalesKR,14,
-63,Andy_SMD1,Staff,Seoul,Sales1,15,
-64,Celeste_SMD1,Staff,Seoul,Sales1,15,
-65,Dos_SMD1,General Manager,Seoul,Sales1,15,
-66,Jin_SMD1,Manager,Seoul,Sales1,15,
-67,Sewon_SMD1,Assistant Manager,Seoul,Sales1,15,
-68,Kara_FOB,,Seoul,FOB,16,
-69,Jinny_SMD2,Manager,Seoul,Sales2,16,
-70,Joon_SMD2,Staff,Seoul,Sales2,16,
-71,Matthew_SMD2,Staff,Seoul,Sales2,16,
-72,Tibka_SMD2,Staff,Seoul,Sales2,16,
-73,Tommy_SMD2,Manager,Seoul,Sales2,16,
-74,Hana_FOB,Manager,Seoul,FOB,17,
-75,Ally_SMD3,Staff,Seoul,Sales3,17,
-76,Boin_SMD3,Senior Manager,Seoul,Sales3,17,
-77,Hazel_SMD3,Assistant Manager,Seoul,Sales3,17,
-78,Jenny_SMD3,Manager,Seoul,Sales3,17,
-79,Mason_SMD3,Staff,Seoul,Sales3,17,
-80,David_FOB,Staff,Seoul,FOB,18,
-81,Jimmy_FOB,Staff,Seoul,FOB,18,
-82,Lia_SMD4,Assistant Manager,Seoul,Sales4,18,
-83,Lily_SMD4,Assistant Manager,Seoul,Sales4,18,
-84,Minji_SMD4,Assistant Manager,Seoul,Sales4,18,
-85,Yuri_SMD4,Manager,Seoul,Sales4,18,
-86,Cherie_FOB,Staff,Seoul,FOB,19,
-87,Sam_FOB,Manager,Seoul,FOB,19,
-88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14,
+118,Factory Director,,,,200,
+119,Production,,,,200,
+120,Production Management,,,,200,
+121,Production store,,,,200,
+122,Sample,,,,200,
+123,Production Planning,,,,200,
+124,Embroidery,,,,200,
+125,Welding&Seamseling,,,,200,
+126,Cutting,,,,200,
+127,Print,,,,200,
+128,Finishing,,,,200,
+129,Mending,,,,200,
+130,IE & Quilting,,,,200,
+131,Sales,,,,200,
+132,Im-Export,,,,200,
+133,CSR,,,,200,
+134,MRP,,,,200,
+135,CI,,,,200,
+136,Material,,,,200,
+137,Purchase,,,,200,
+138,HR,,,,200,
+139,Admin,,,,200,
+140,Accounting,,,,200,
+141,Quality,,,,200,
+142,IT,,,,200,
+143,CAD,,,,200,
+144,Maintanance,,,,200,
+145,Mechanic,,,,200,
+146,Translator,,,,200,
+200,Daniel_GM,General Manager,ETP,General Manager,101,daniel@shintsetp.com
+201,Jay_EFD,Factory Director,ETP,Factory Director,118,jay@shintsetp.com
+202,Jeff_EFD,Quality & Merchandising Director,ETP,Factory Director,118,jeffchoi@shints.com
+203,Thomas_EFD,Factory Director,ETP,Factory Director,118,thomas@shintsetp.com
+204,Ermias_EPD,Production Manager,ETP,Production,208,ermias1.shints@gmail.com
+205,Feyisa_EPD,Production Manager,ETP,Production,208,feyisa.shints@gmail.com
+206,Abel_EPD,Production Manager,ETP,Production,208,hailuabel544@gmail.com
+207,Lemma_EPD,Production Manager,ETP,Production,208,lemmayeziera@gmail.com
+208,Prasad_EPD,Chief Production Manager,ETP,Production,119,Prasad@shintsetp.com
+209,Sampath_EPD,Production Manager,ETP,Production,208,Sampath.shints@gmail.com
+210,Shahadat_EPD,Deputy Factory Director,ETP,Production,208,shahadat@shintsetp.com
+211,Yirga_EPD,Production Manager,ETP,Production,208,yirga1.shints@gmail.com
+212,Abebaw_EPM,Staff,ETP,Production Management,215,abebaw1.shints1@gmail.com
+213,Aleka_EPM,Staff,ETP,Production Management,215,aleka1.shints1@gmail.com
+214,Asrat_EPM,Staff,ETP,Production Management,215,asrat2.shints@gmail.com
+215,Awol_EPM,Assistant Manager,ETP,Production Management,120,awol.shints@gmail.com
+216,Belete_EPM,Team Leader,ETP,Production Management,215,belete.shints@gmail.com
+217,Beyene_EPM,Team Leader,ETP,Production Management,215,beyene1shints@gmail.com
+218,Birhanu_EPM,Staff,ETP,Production Management,215,birhanupm.shints1@gmail.com
+219,Esmael_EPM,Staff,ETP,Production Management,215,esmael.shints@gmail.com
+220,Fantu_EPM,Staff,ETP,Production Management,215,fantu.shints1@gmail.com
+221,Fetene_EPM,Staff,ETP,Production Management,215,fetene.shints@gmail.com
+222,Firew_EPM,Staff,ETP,Production Management,215,firew1.shints@gmail.com
+223,Kachew_EPM,Team Leader,ETP,Production Management,215,Kachew@shintsetp.com
+224,Brkti_EPM,Staff,ETP,Production Management,215,pmdata1.shints@gmail.com
+225,Rediat_EPM,Staff,ETP,Production Management,215,rediat1.shints@gmail.com
+226,Amelwork_EPD,Leader,ETP,Production store,121,amelework1.shints1@gmail.com
+227,Mihret_ESPM,Staff,ETP,Sample,122,mihret.shints@gmail.com
+228,Fanta_EPS,Staff,ETP,Production Schedule,230,fantaps.shints@gmail.com
+229,Kabyinad_EPS,Team Leader,ETP,Production Schedule,230,kabyinad@shintsetp.com
+230,Leta_EPS,Manager,ETP,Production Schedule,123,leta@shintsetp.com
+231,Maron_EPS,Staff,ETP,Production Schedule,230,meron2.shints@gmail.com
+232,Zelalem_EPS,Team Leader,ETP,Production Schedule,230,zelalem@shintsetp.com
+233,Anwar_EEMB,Manager,ETP,Embroidery,124,anwar.shints@gmail.com
+234,Ephrem_EWSS,Staff,ETP,Welding&Seamseling,235,ephrem0716@gmail.com
+235,Saokat_EWSS,Manager,ETP,Welding&Seamseling,125,saokat1@gmail.com
+236,Tegenu_EWSS,Team Leader,ETP,Welding&Seamseling,235,tegen.shints@gmail.com
+237,Tigist_EWSS,Staff,ETP,Welding&Seamseling,235,tigistamarezegeye@gmail.com
+238,Ahmed_ECUT,Manager,ETP,Cutting,126,ahmed.shints@gmail.com
+239,Engda_ECUT,Staff,ETP,Cutting,238,engda.shints@gmail.com
+240,Lalinda_ECUT,Manager,ETP,Cutting,238,lalinda1.shints@gmail.com
+241,Mesir_ECUT,Staff,ETP,Cutting,238,mesir.shints@gmail.com
+242,Sinka_ECUT,Staff,ETP,Cutting,238,sinike1.shints@gmail.com
+243,Solomon_ECUT,Manager,ETP,Cutting,238,solomon6.shints@gmail.com
+244,Zewditu_ECUT,Staff,ETP,Cutting,238,zewditu.shints@gmail.com
+245,Ababe_EPRT,Assistant Manager,ETP,Print,248,abebe3.shints@gmail.com
+246,Bethlehem_EPRT,Staff,ETP,Print,248,betyejigu799@gmail.com
+247,Kidus_EPRT,Staff,ETP,Print,248,kidus7.shints@gmail.com
+248,Solomon_EPRT,Manager,ETP,Print,127,selomon.shints@gmail.com
+249,Ararsa_EFN,Assistant Manager,ETP,Finishing,257,ararsa.shints@gmail.com
+250,Bamlak_EFN,Staff,ETP,Finishing,257,bamlak.shints@gmail.com
+251,Birhanu_EFN,Staff,ETP,Finishing,257,birhanu3.shints@gmail.com
+252,Dejene_EFN,Staff,ETP,Finishing,257,dejuhailu89@gmail.com
+253,Eshetu_EFN,Staff,ETP,Finishing,257,eshetu.shints@gmail.com
+254,Fayise_EFN,Staff,ETP,Finishing,257,feyise2.shints@gmail.com
+255,Girma_EFN,Staff,ETP,Finishing,257,girma5.shints@gmail.com
+256,Habtamu_EFN,Assistant Manager,ETP,Finishing,257,habtamu3.shints@gmail.com
+257,Hadush_EFN,Manager,ETP,Finishing,128,hadush.shints@gmail.com
+258,Sewhareg_EFN,Staff,ETP,Finishing,257,hareg177@gmail.com
+259,Mokenin_EFN,Assistant Manager,ETP,Finishing,257,mekonen.shints@gmail.com
+260,Nuguse_EFN,Staff,ETP,Finishing,257,nmitiku.shints@gmail.com
+261,Yahikob_EFN,Staff,ETP,Finishing,257,yahikob.shints@gmail.com
+262,Muditha_EME,Manager,ETP,Mending,129,muditha.shints@gmail.com
+263,Aberash_EIE,Staff,ETP,IE & Quilting,272,aberash1.shints@gmail.com
+264,Anteneh_EIE,Staff,ETP,IE & Quilting,272,anteneh.shints@gmail.com
+265,Chalchisa_EIE,Team Leader,ETP,IE & Quilting,272,chalchisa.shints@gmail.com
+266,Estifanos_EIE,Staff,ETP,IE & Quilting,272,estifanos.shints@gmail.com
+267,Fikru_EIE,Team Leader,ETP,IE & Quilting,272,fikiru.shints@gmail.com
+268,Mamaru_EIE,Team Leader,ETP,IE & Quilting,272,mamru.shints@gmail.com
+269,Mulugeta_EIE,Assistant Manager,ETP,IE & Quilting,272,mulie.shints@gmail.com
+270,Muluken_EIE,Assistant Manager,ETP,IE & Quilting,272,muluken.shint@gmail.com
+271,Temesgen_EIE,Staff,ETP,IE & Quilting,272,temesgen1.shints@gmail.com
+272,Tharaka_EIE,Deputy Factory Director,ETP,IE & Quilting,130,tharaka@shintsetp.com
+273,Wakuma_EIE,Team Leader,ETP,IE & Quilting,272,wakumadiriba213@gmail.com
+274,Zigeju_EIE,Staff,ETP,IE & Quilting,272,zigeju.shints@gmail.com
+275,Abebe_EMD,Staff,ETP,Sales,282,abebe2.shints@gmail.com
+276,Abele_EMD,Staff,ETP,sales,282,abel3.shints@gmail.com
+277,Abraham_EMD,Staff,ETP,Sales,282,abraham@shintsetp.com
+278,Agegnehu_EMD,Assistant Manager,ETP,Sales,282,agegnehu@shintsetp.com
+279,Andebet_EMD,Staff,ETP,Sales,282,andebetk.shints@gmail.com
+280,Berhanu_EMD,Staff,ETP,Sales,282,berhanu1.shints@gmail.com
+281,Beza_EMD,Staff,ETP,Sales,282,bezawit1.shints@gmail.com
+282,Dawit_EMD,General Manager,ETP,Sales,302,dawit@shintsetp.com
+283,Dejene_EMD,Manager,ETP,Sales,282,dejene@shintsetp.com
+284,Dereje_EMD,Staff,ETP,Sales,282,dereje@shintsetp.com
+285,Enchalewu_EMD,Staff,ETP,Sales,282,enchalew.shints@gmail.com
+286,Fanos_EMD,Team Leader,ETP,Sales,282,fanos@shintsetp.com
+287,Getaneh_EMD,Staff,ETP,Sales,282,getaneh.shints@gmail.com
+288,habtamu_EMD,Staff,ETP,Sales,282,habtamu4.shints@gmail.com
+289,Hilina_EMD,Staff,ETP,Sales,282,hilina1.shints@gmail.com
+290,Kasahun_EMD,Staff,ETP,Sales,282,kasahun.shints@gmail.com
+291,Natinael_EMD,Staff,ETP,Sales,282,nati4.shints@gmail.com
+292,Samrawit_EMD,Staff,ETP,Sales,282,samrawit3.shints@gmail.com
+293,Semi_EMD,Team Leader,ETP,Sales,282,semi@shintsetp.com
+294,Sine_EMD,Senior Manager,ETP,Sales,282,sine@shintsetp.com
+296,Tamiru_EMD,Team Leader,ETP,Sales,282,tamiru@shintsetp.com
+297,Tesfu_EMD,Team Leader,ETP,Sales,282,tesfu@shintsetp.com
+298,Teshager_EMD,Staff,ETP,Sales,282,teshager.shints@gmail.com
+299,Wasihun_EMD,Staff,ETP,Sales,282,wasihun@shintsetp.com
+300,Yohanes_EMD,Assistant Manager,ETP,Sales,282,yohanes.shints@gmail.com
+301,yohannes_EMD,Staff,ETP,Sales,282,yohannes2.shints@gmail.com
+302,Aziz_EMD,Director,ETP,Sales,131,aziz@shints.com
+303,Helen_ETR,Manager,ETP,Import&Export,132,helen@shintsetp.com
+304,Abebe_ETR,Staff,ETP,Import&Export,303,abebe1.shints@gmail.com
+305,Beza_ETR,Staff,ETP,Import&Export,303,beza.shints@gmail.com
+306,Degefa_ETR,Staff,ETP,Import&Export,303,degefa.shints@gmail.com
+307,Dessalegn_ETR,Staff,ETP,Import&Export,303,desie.shints@gmail.com
+308,Feven_ETR,Staff,ETP,Import&Export,303,feven.shints@gmail.com
+309,Fithun_ETR,Assistant Manager,ETP,Import&Export,303,fithun@shintsetp.com
+310,Hana_ETR,Staff,ETP,Import&Export,303,hanatr.shints@gmail.com
+311,Liyuwork_ETR,Team leader,ETP,Import&Export,303,liyuwork.shints@gmail.com
+312,Mesi_ETR,Assistant Manager,ETP,Import&Export,303,mesi@shintsetp.com
+313,Solomon_ETR,Staff,ETP,Import&Export,303,solomon5.shints@gmail.com
+314,Tadael_ETR,Staff,ETP,Import&Export,303,tada2.shints@gmail.com
+315,Tadele_ETR,Staff,ETP,Import&Export,303,tadele.shints@gmail.com
+316,Tigist_ETR,Staff,ETP,Import&Export,303,tigi.shints@gmail.com
+317,Yemsrach_ETR,Staff,ETP,Import&Export,303,yemeserach1.shints@gmail.com
+318,Yeshialem_ETR,Staff,ETP,Import&Export,303,yeshi1.shints@gmail.com
+319,Nigus_ECSR,Manager,ETP,CSR,133,nigus.csr@shintsetp.com
+320,Abyeserash_ECSR,Team Leader,ETP,CSR,319,abayeserash.shints@gmail.com
+321,Addise_ECSR,Assistant Manager,ETP,CSR,319,adis.shints@gmail.com
+322,Demeke_ECSR,Team Leader,ETP,CSR,319,demeke1.shints@gmail.com
+323,Solomon_ECSR,Team Leader,ETP,CSR,319,solomon2.shints@gmail.com
+324,Beker_EMRP,Assistant Manager,ETP,MRP,134,beker@shintsetp.com
+325,Aynalem_EMRP,Staff,ETP,MRP,324,aynalem1.shints@gmail.com
+326,Bamlak_EMRP,Staff,ETP,MRP,324,bamlak1.shints@gmail.com
+327,Birhanu_EMRP,Staff,ETP,MRP,324,birhanu2.shints@gmail.com
+328,Bizu_EMRP,Staff,ETP,MRP,324,bizu.shints@gmail.com
+329,Kalkidan_EMRP,Staff,ETP,MRP,324,kalkidan.shints3@gmail.com
+330,Rahel_EMRP,Staff,ETP,MRP,324,rahel1.shints@gmail.com
+331,Tsige_EMRP,Staff,ETP,MRP,324,tsige1.shints@gmail.com
+332,Endashaw_ECI,General Manager,ETP,CI,135,endashaw@shintsetp.com
+333,Bethlehem_ECI,Team Leader,ETP,CI,332,betty4.shints@gmail.com
+334,Andinet_ECI,Team Leader,ETP,CI,332,andinethabtamu3@gmail.com
+335,Aregay_ECI,Assistant Manager,ETP,CI,332,aregay.shints@gmail.com
+336,Asmro_ECI,Team Leader,ETP,CI,332,asmro.shints@gmail.com
+337,Bedasa_ECI,Assistant Manager,ETP,CI,332,bedasa@shintsetp.com
+338,Birtukan_ECI,Staff,ETP,CI,332,birtu64283@gmail.com
+339,Desie_ECI,Staff,ETP,CI,332,dessieenyew23.shints@gmail.com
+340,Eyob_ECI,Manager,ETP,CI,332,eyob@shintsetp.com
+341,Teddy_EMC,General Manager,ETP,Material,136,teddy@shintsetp.com
+342,Animut_EMC,Staff,ETP,Material,341,animut.shints@gmail.com
+343,Asfaw_EMC,Staff,ETP,Material,341,asfaw2.shints@gmail.com
+344,Bantie_EMC,Team Leader,ETP,Material,341,bantie.shints@gmail.com
+345,Beka_EMC,Assistant Manager,ETP,Material,341,beka@shintsetp.com
+346,Degineh_EMC,Staff,ETP,Material,341,dagineh.shints@gmail.com
+347,Debebe_EMC,General Manager,ETP,Material,341,debebe.shints@gmail.com
+348,Deriba_EMC,Staff,ETP,Material,341,deriba.shints@gmail.com
+349,Godada_EMC,Staff,ETP,Material,341,godada.shints@gmail.com
+350,Habtamu_EMC,Staff,ETP,Material,341,habtamu2.shints@gmail.com
+351,Hibiste_EMC,Staff,ETP,Material,341,hibist1.shints@gmail.com
+352,Kuba_EMC,Staff,ETP,Material,341,kubamc.shints@gmail.com
+353,Woinshet_EMC,Team Leader,ETP,Material,341,mcwoinshet.shints@gmail.com
+354,Mulat_EMC,Staff,ETP,Material,341,mulat1.shints@gmail.com
+355,Tekalign_EMC,Staff,ETP,Material,341,tekalign.shints@gmail.com
+356,Tiruwork_EMC,Staff,ETP,Material,341,tiruwork.shints@gmail.com
+357,Rewina_EPUR,Manager,ETP,Purchase,137,rewina@shintsetp.com
+358,Asmamaw_EPUR,Staff,ETP,Purchase,357,asmamaw2.shints@gmail.com
+359,Bontu_EPUR,Staff,ETP,Purchase,357,bontu1.shints@gmail.com
+360,Tadele_EPUR,Staff,ETP,Purchase,357,tadelep.shints@gmail.com
+361,Tilahun_EPUR,Staff,ETP,Purchase,357,tilahun.shints@gmail.com
+362,Ayele_EHR,Manager,ETP,HR,138,ayele@shintsetp.com
+363,Ayene_EHR,Staff,ETP,HR,362,ayene.shints@gmail.com
+364,Beka_EHR,Assistant Manager,ETP,HR,362,beka2.shints@gmail.com
+365,B.Bamlaku_EHR,Staff,ETP,HR,362,betelhem11.shints@gmail.com
+366,B.Aknaw_EHR,Staff,ETP,HR,362,betty5.shints@gmail.com
+367,Bizuayehu_EHR,Team Leader,ETP,HR,362,buzu.shints@gmail.com
+368,Hana_EHR,Staff,ETP,HR,362,hanahr.shints@gmail.com
+369,Kalkidan_EHR,Staff,ETP,HR,362,kalnati.shints@gmail.com
+370,Selamawit_EHR,Staff,ETP,HR,362,selamawit.shints@gmail.com
+371,Shewaye_EHR,Staff,ETP,HR,362,shewithr.shints@gmail.com
+372,Surafel_EHR,Staff,ETP,HR,362,surafel.shints@gmail.com
+373,T.Mesfin_EHR,Staff,ETP,HR,362,tigist21.shints@gmail.com
+374,T.Fante_EHR,Staff,ETP,HR,362,tigist5.shints@gmail.com
+375,Tseganesh_EHR,Staff,ETP,HR,362,tsega.shints@gmail.com
+376,Yitbarek_EHR,Assistant Manager,ETP,HR,362,yitbarek@shintsetp.com
+377,Yemane_EAD,Genernal Manager,ETP,Admin,139,yemane@shintsetp.com
+378,Abreham_EAD,GA Staff,ETP,Admin,377,abrham2.shints@gmail.com
+379,Betremariam_EAD,Asst. Manager,ETP,Admin,377,betremariam@shintsetp.com
+380,Mehret_EAD,Visa Staff,ETP,Admin,377,meheret.shints@gmail.com
+381,Mihret_EAD,Mihret Dorm Admin,ETP,Admin,377,mihiretad.shints@gmail.com
+382,Nega_EAD,Team Leader,ETP,Admin,377,nega2.shints@gmail.com
+383,Tadesse_EAD,Manager,ETP,Admin,377,tadese1.shints@gmail.com
+384,Bezawit_EAC,Manager,ETP,Accounting,140,beza@shintsetp.com
+385,Emawayish_EAC,Staff ,ETP,Accounting,384,emawayish.shints@gmail.com
+386,Zeytie_EAC,Team Leader,ETP,Accounting,384,eyerus.shints@gmail.com
+387,Hulager_EAC,Staff ,ETP,Accounting,384,hulagereshetu2020@gmail.com
+388,Sintayehu_EAC,Staff ,ETP,Accounting,384,sinte1.shints@gmail.com
+389,Tadele_EAC,Staff ,ETP,Accounting,384,tadelehosiso@gmail.com
+390,Tirngo_EAC,Staff ,ETP,Accounting,384,tringo.shints@gmail.com
+391,Abubeker_EQA,Manager,ETP,Quality,141,abubeker@shintsetp.com
+392,Abenezer_EQA,Staff,ETP,Quality,391,abenezerbirhanu2001@gmail.com
+393,Abrham_EQA,Staff,ETP,Quality,391,abrhamqa.shints@gmail.com
+394,Ali_EQA,Staff,ETP,Quality,391,ali.shints@gmail.com
+395,Ashenafi_EQA,Assistant Manager,ETP,Quality,391,ashenafiqa.shints@gmail.com
+396,Belay_EQA,Staff,ETP,Quality,391,belay2.shints@gmail.com
+397,Buze_EQA,Staff,ETP,Quality,391,buzetekelie21@gmail.com
+398,Daniel_EQA,Assistant Manager,ETP,Quality,391,daniel3.shints@gmail.com
+399,Demeke_EQA,Staff,ETP,Quality,391,demeke2.shints@gmail.com
+400,Eden_EQA,Assistant Manager,ETP,Quality,391,eden1.shints@gmail.com
+401,Genanaw_EQA,Assistant Manager,ETP,Quality,391,genanaw@shintsetp.com
+402,Genet_EQA,Staff,ETP,Quality,391,genetqa.shints@gmail.com
+403,Getnet_EQA,Staff,ETP,Quality,391,getnetyihunie2014gc@gmail.com
+404,Goitom_EQA,Assistant Manager,ETP,Quality,391,goitom@shintsetp.com
+405,Kenubsh_EQA,Staff,ETP,Quality,391,kenu.shints@gmail.com
+406,Kibrnesh_EQA,Staff,ETP,Quality,391,kibernesh.shints@gmail.com
+407,Moges_EQA,Staff,ETP,Quality,391,moges2.shints@gmail.com
+408,Mussie_EQA,Assistant Manager,ETP,Quality,391,mussie@shintsetp.com
+409,Nebyu_EQA,Staff,ETP,Quality,391,nebiyugetu24@gmail.com
+410,Nigusie_EQA,Assistant Manager,ETP,Quality,391,nigus1.shints@gmail.com
+411,Yibeltal_EQA,Assistant Manager,ETP,Quality,391,yibeltal.shints@gmail.com
+412,Yonas_EIT,Manager,ETP,IT,142,yonas@shintsetp.com
+413,Kalab_EIT,Staff,ETP,IT,412,kalab.shints@gmail.com
+414,Workneh_EIT,Staff,ETP,IT,412,workneh.shints@gmail.com
+415,Zerihun_EIT,Staff,ETP,IT,412,zersh54@gmail.com
+416,Rana_ECAD,Manager,ETP,CAD,143,rana@shintsetp.com
+417,Abrham _ECAD,Staff,ETP,CAD,416,abrehamcad1.shints@gmail.com
+418,Ageritu_ECAD,Team Leader,ETP,CAD,416,ageritu.shints@gmail.com
+419,Ashenafi Legesse_ECAD,Manager,ETP,CAD,416,ashubelishu@outlook.com
+420,Bayush_ECAD,Staff,ETP,CAD,416,bayushcad2.shints@gmail.com
+421,Belayset_ECAD,Staff,ETP,CAD,416,belaycad.shints@gmail.com
+422,Zakir_ECAD,Manager,ETP,CAD,416,md.zakirh86@yahoo.com
+423,Nazim_ECAD,Staff,ETP,CAD,416,nazim.shints@gmail.com
+424,Seada_ECAD,Staff,ETP,CAD,416,seadacad.shints@gmail.com
+425,Tesfaye aklog_ECAD,Team Leader,ETP,CAD,416,tesfayecad.shints@gmail.com
+426,Yezihalem_ECAD,Staff,ETP,CAD,416,yezihalem.shints@gmail.com
+427,Zertihun_ECAD,Staff,ETP,CAD,416,zerthun.shints@gmail.com
+428,Zinaw_ECAD,Staff,ETP,CAD,416,zinaw.shints@gmail.com
+429,Biniyam_EMTN,Manager,ETP,Maintanance,144,bina.shints@gmail.com
+430,Birhane_EMTN,Staff,ETP,Maintanance,144,birhanegetahun05@gmail.com
+431,Wondimu_EMTN,Assistant Manager,ETP,Maintanance,144,wondeb.shints@gmail.com
+432,Sugan_EMEC,Manager,ETP,Mechanic,145,sugan@shintsetp.com
+433,Teddy_EMEC,Team Leader,ETP,Mechanic,432,tedetadese34@gamil.com
+434,Hldana_ETRN,Staff,ETP,Translator,146,hldana.shints@gmail.com
+435,Hilina_ETRN,Staff,ETP,Translator,434,hilinabenyam@gmail.com
+436,Saron_ETRN,Staff,ETP,Translator,434,saron12.shints@gmail.com
+437,Tizeta_ETRN,Staff,ETP,Translator,434,tizeta.shints@gmail.com
+438,Zelalem_ETRN,Staff,ETP,Translator,434,zelalem99.shints@gmail.com
