@@ -36,8 +36,8 @@ export default function OrgChart({ data, searchQuery }) {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
-
-      // 1. 검색이 없으면: 법인/팀 노드는 토글, 그 외는 그냥
+  
+      // 1. 검색어 없을 때: 법인/팀 토글만
       if (!term) {
         if (isTeam(idStr) || isCorp(idStr)) {
           const children = openSection === idStr
@@ -45,31 +45,34 @@ export default function OrgChart({ data, searchQuery }) {
             : [];
           return { ...node, children };
         }
-        let children = (node.children || []).map(buildTree).filter(Boolean);
-        return { ...node, children };
-      }
-
-      // 2. 검색이 있으면: 법인/팀 노드만 이름/팀명/직책에 매치될 때만 표시
-      const nameMatch = node.이름?.toLowerCase().includes(term);
-      const titleMatch = node.직책?.toLowerCase().includes(term);
-      const teamMatch = node.팀?.toLowerCase().includes(term);
-
-      if ((isTeam(idStr) || isCorp(idStr)) && (nameMatch || titleMatch || teamMatch)) {
-        // 검색에 매치된 팀/법인만 children까지 다 보여줌
+        // 나머지(사장, 부사장, 팀장, 팀원 등)는 children 그냥 다 포함!
         const children = (node.children || []).map(buildTree).filter(Boolean);
         return { ...node, children };
       }
-
-      // 자식에서 검색 매치 팀/법인이 있으면(즉, 경로상 부모/조부모)
+  
+      // 2. 검색 시: 팀/법인 노드만 결과, 경로는 다 노출
+      const nameMatch = node.이름?.toLowerCase().includes(term);
+      const titleMatch = node.직책?.toLowerCase().includes(term);
+      const teamMatch = node.팀?.toLowerCase().includes(term);
+  
+      // 팀/법인 매치면 children까지 살림 (즉, 경로에 포함)
+      if ((isTeam(idStr) || isCorp(idStr)) && (nameMatch || titleMatch || teamMatch)) {
+        const children = (node.children || []).map(buildTree).filter(Boolean);
+        return { ...node, children };
+      }
+  
+      // 경로상에 자식이 매치되는 경우도 남겨야 함
       const children = (node.children || []).map(buildTree).filter(Boolean);
       if (children.length > 0) {
         return { ...node, children };
       }
-      // 검색결과 아님
+  
+      // 위 조건 아니면 null(트리에서 제거)
       return null;
     },
     [searchQuery, openSection]
   );
+  
 
   // 트리 적용
   const filteredRoots = useMemo(() => {
