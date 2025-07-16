@@ -67,7 +67,7 @@ export default function OrgChart({ data, searchQuery }) {
   // 최종 트리 데이터
   const filteredTree = useMemo(() => buildTree(data), [buildTree, data]);
   if (!filteredTree) {
-    return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
+    return <div style={{ padding: '2rem', color: '#888' }}>Sorry, we couldn’t find any results.</div>;
   }
 
   // 노드 렌더 함수 (툴팁 포함)

@@ -65,7 +65,18 @@ export default function App() {
     const roots = [];
     users.forEach(u => {
       if (u.id?.trim()) {
-        map[u.id] = { id: u.id, 이름: u.이름, 직책: u.직책, 팀: u.팀, 법인: u.법인, email: u.이메일, children: [] };
+        if (u.id?.trim()) {
+          map[u.id] = {
+          id: u.id,
+          이름: u.이름,
+          직책: u.직책,
+          팀: u.팀,
+          법인: u.법인,
+          // CSV 헤더가 '이메일'이든 'email'이든 둘 다 체크
+          email: u.이메일 || u.email || null,
+          children: [],
+          };
+          }
       }
     });
     users.forEach(u => {
