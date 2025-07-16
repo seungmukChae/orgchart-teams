@@ -30,49 +30,42 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // 트리 빌드 (검색, 섹션토글)
+  // 트리 빌드
   const buildTree = useCallback(
-    (node, parentMatched = false) => {
+    (node) => {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
 
-      // 1. 검색어 없을 때: 팀/법인은 펼치기, 나머지는 그냥
+      // 1. 검색이 없으면: 법인/팀 노드는 토글, 그 외는 그냥
       if (!term) {
         if (isTeam(idStr) || isCorp(idStr)) {
           const children = openSection === idStr
-            ? (node.children || []).map(child => buildTree(child)).filter(Boolean)
+            ? (node.children || []).map(buildTree).filter(Boolean)
             : [];
           return { ...node, children };
         }
-        // 직원은 그냥 children 표시
-        let children = (node.children || []).map(child => buildTree(child)).filter(Boolean);
+        let children = (node.children || []).map(buildTree).filter(Boolean);
         return { ...node, children };
       }
 
-      // 2. 검색 시: 팀/법인 노드의 상위 경로만 남김(경로 보이기)
+      // 2. 검색이 있으면: 법인/팀 노드만 이름/팀명/직책에 매치될 때만 표시
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
       const teamMatch = node.팀?.toLowerCase().includes(term);
 
-      const matched = nameMatch || titleMatch || teamMatch;
-      // 만약 자식에서 매칭이 되면 부모~팀 경로만 남겨야 함
-      let children = (node.children || []).map(child => buildTree(child, matched || parentMatched)).filter(Boolean);
-
-      // 팀/법인일 때 검색어가 직접 매치: 자식까지 다 남김
-      if ((isTeam(idStr) || isCorp(idStr)) && matched) {
-        return { ...node, children: (node.children || []).map(child => buildTree(child, true)).filter(Boolean) };
-      }
-      // 자식이 경로상 매치(하위에서 매치): 상위만 표시
-      if (children.length) {
-        // 팀/법인인 경우에만 자식 보여주기
-        if (isTeam(idStr) || isCorp(idStr)) {
-          return { ...node, children };
-        }
-        // 직원 등은 경로만 남김 (children 반환)
+      if ((isTeam(idStr) || isCorp(idStr)) && (nameMatch || titleMatch || teamMatch)) {
+        // 검색에 매치된 팀/법인만 children까지 다 보여줌
+        const children = (node.children || []).map(buildTree).filter(Boolean);
         return { ...node, children };
       }
-      // 직접 매치, 경로 매치 없으면 제외
+
+      // 자식에서 검색 매치 팀/법인이 있으면(즉, 경로상 부모/조부모)
+      const children = (node.children || []).map(buildTree).filter(Boolean);
+      if (children.length > 0) {
+        return { ...node, children };
+      }
+      // 검색결과 아님
       return null;
     },
     [searchQuery, openSection]
@@ -81,7 +74,7 @@ export default function OrgChart({ data, searchQuery }) {
   // 트리 적용
   const filteredRoots = useMemo(() => {
     if (!rootArray.length) return [];
-    return rootArray.map(node => buildTree(node)).filter(Boolean);
+    return rootArray.map(buildTree).filter(Boolean);
   }, [rootArray, buildTree]);
 
   // 렌더러
