@@ -26,7 +26,7 @@ async function main() {
     // 1️⃣ Graph API에서 최신 사용자 덤프
     const res = await client
       .api("/users")
-      .select("id,displayName,jobTitle,department")
+      .select("id,displayName,jobTitle,department,mail")
       .top(999)
       .get();
 
@@ -61,7 +61,8 @@ async function main() {
         직책: newUser.jobTitle || "",
         법인: corp,
         팀: team,
-        manager_id: manager_id
+        manager_id: manager_id,
+        이메일: newUser.mail || ""
       });
 
       idCounter++;
