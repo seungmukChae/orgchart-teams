@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data, searchQuery }) {
@@ -12,81 +12,132 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  // 법인/팀 id helpers
-  const corpIds = ['100', '101', '102'];
-  const teamIds = Array.from({ length: 199 - 103 + 1 }, (_, i) => String(103 + i));
-  const isCorp = (id) => corpIds.includes(String(id));
-  const isTeam = (id) => teamIds.includes(String(id));
+  const sectionIds = ['100', '101', '102'];
 
-  // 항상 배열로
-  const rootArray = useMemo(() => (Array.isArray(data) ? data : data ? [data] : []), [data]);
+  // 1) “가상 루트” 만들기: data가 배열이면 dummy root 생성
+  const rootData = useMemo(() => {
+    if (Array.isArray(data)) {
+      return {
+        id: 'root',
+        이름: '',
+        직책: '',
+        팀: '',
+        email: '',
+        children: data,
+      };
+    }
+    return data;
+  }, [data]);
 
-  // 클릭 핸들러
+  // 2) 윈도우 리사이즈 시 중앙 노드 유지
+  useEffect(() => {
+    const handleResize = () => {
+      if (treeRef.current?.centerNode) {
+        // 빈 검색 시 첫 번째 루트, 아니면 단일 data.id
+        const targetId = Array.isArray(data) ? data[0]?.id : data.id;
+        treeRef.current.centerNode(targetId);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize(); // 마운트 시에도 한 번 실행
+    return () => window.removeEventListener('resize', handleResize);
+  }, [data]);
+
+  // 3) 노드 클릭 핸들러: 섹션 토글 or 이메일 복사
   const handleClick = useCallback((nodeDatum) => {
-    if (isTeam(nodeDatum.id) || isCorp(nodeDatum.id)) {
-      setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
+    if (sectionIds.includes(nodeDatum.id)) {
+      setOpenSection((prev) =>
+        prev === nodeDatum.id ? null : nodeDatum.id
+      );
     } else if (nodeDatum.email) {
       navigator.clipboard.writeText(nodeDatum.email);
     }
   }, []);
 
-  // 트리 빌드
+  // 4) buildTree: 검색어 없으면 전체 렌더 + 섹션 토글만
+  //    검색어 있을 땐 이름/직책/팀 match 로직
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
-      const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
-  
-      // 1. 검색어 없을 때: 법인/팀 토글만
+
+      // (1) 자식 먼저 재귀
+      let children = (node.children || [])
+        .map(buildTree)
+        .filter(Boolean);
+
+      // (2) 검색어 없으면 항상 렌더 + 섹션 토글만
       if (!term) {
-        if (isTeam(idStr) || isCorp(idStr)) {
-          const children = openSection === idStr
-            ? (node.children || []).map(buildTree).filter(Boolean)
-            : [];
-          return { ...node, children };
+        if (sectionIds.includes(node.id)) {
+          children = openSection === node.id ? children : [];
         }
-        // 나머지(사장, 부사장, 팀장, 팀원 등)는 children 그냥 다 포함!
-        const children = (node.children || []).map(buildTree).filter(Boolean);
         return { ...node, children };
       }
-  
-      // 2. 검색 시: 팀/법인 노드만 결과, 경로는 다 노출
-      const nameMatch = node.이름?.toLowerCase().includes(term);
-      const titleMatch = node.직책?.toLowerCase().includes(term);
-      const teamMatch = node.팀?.toLowerCase().includes(term);
-  
-      // 팀/법인 매치면 children까지 살림 (즉, 경로에 포함)
-      if ((isTeam(idStr) || isCorp(idStr)) && (nameMatch || titleMatch || teamMatch)) {
-        const children = (node.children || []).map(buildTree).filter(Boolean);
+
+      // (3) 검색어 있을 때: 이름/직책/팀 match
+      const nameMatch = node.이름
+        ?.toLowerCase()
+        .includes(term);
+      const titleMatch = node.직책
+        ?.toLowerCase()
+        .includes(term);
+      const teamMatch = node.팀
+        ?.toLowerCase()
+        .includes(term);
+
+      if (nameMatch || titleMatch) {
         return { ...node, children };
       }
-  
-      // 경로상에 자식이 매치되는 경우도 남겨야 함
-      const children = (node.children || []).map(buildTree).filter(Boolean);
-      if (children.length > 0) {
+      if (teamMatch) {
+        const allDesc = (node.children || [])
+          .map(buildTree)
+          .filter(Boolean);
+        return { ...node, children: allDesc };
+      }
+      if (children.length) {
         return { ...node, children };
       }
-  
-      // 위 조건 아니면 null(트리에서 제거)
       return null;
     },
     [searchQuery, openSection]
   );
-  
 
-  // 트리 적용
-  const filteredRoots = useMemo(() => {
-    if (!rootArray.length) return [];
-    return rootArray.map(buildTree).filter(Boolean);
-  }, [rootArray, buildTree]);
+  // 5) buildTree 적용 후, 가상 루트면 children만 꺼내서 Tree에 전달
+  const treeData = useMemo(() => {
+    const fullTree = buildTree(rootData);
+    if (!fullTree) return null;
+    return fullTree.id === 'root'
+      ? fullTree.children
+      : fullTree;
+  }, [buildTree, rootData]);
 
-  // 렌더러
+  if (
+    !treeData ||
+    (Array.isArray(treeData) && treeData.length === 0)
+  ) {
+    return (
+      <div style={{ padding: '2rem', color: '#888' }}>
+        검색 결과가 없습니다.
+      </div>
+    );
+  }
+
+  // 6) 노드 커스텀 렌더러 (툴팁 포함)
   const renderNode = ({ nodeDatum }) => {
-    const idStr = String(nodeDatum.id);
-    let fill = isTeam(idStr) ? '#ffa500' : '#e0e0e0';
-    if (isCorp(idStr)) {
-      fill = idStr === '100' ? '#007bff' : idStr === '101' ? '#28a745' : '#ff9999';
+    const idNum = parseInt(nodeDatum.id, 10);
+    let fill =
+      idNum >= 100 && idNum <= 199
+        ? '#ffa500'
+        : '#e0e0e0';
+    if (sectionIds.includes(nodeDatum.id)) {
+      fill =
+        nodeDatum.id === '100'
+          ? '#007bff'
+          : nodeDatum.id === '101'
+          ? '#28a745'
+          : '#ff9999';
     }
+
     return (
       <g
         onClick={() => handleClick(nodeDatum)}
@@ -102,13 +153,25 @@ export default function OrgChart({ data, searchQuery }) {
         }}
         onMouseMove={(evt) => {
           if (tooltip.visible) {
-            setTooltip((t) => ({ ...t, x: evt.clientX + 10, y: evt.clientY + 10 }));
+            setTooltip((t) => ({
+              ...t,
+              x: evt.clientX + 10,
+              y: evt.clientY + 10,
+            }));
           }
         }}
-        onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, email: '' })}
+        onMouseLeave={() =>
+          setTooltip({
+            visible: false,
+            x: 0,
+            y: 0,
+            email: '',
+          })
+        }
         style={{
           cursor:
-            nodeDatum.email || isTeam(idStr) || isCorp(idStr)
+            nodeDatum.email ||
+            sectionIds.includes(nodeDatum.id)
               ? 'pointer'
               : 'default',
         }}
@@ -150,41 +213,57 @@ export default function OrgChart({ data, searchQuery }) {
         >
           {nodeDatum.직책}
         </text>
-        {(isTeam(idStr) || isCorp(idStr)) && (
+        {sectionIds.includes(nodeDatum.id) && (
           <text
             x={0}
             y={14}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ fontFamily: '맑은 고딕', fontSize: 10 }}
+            style={{
+              fontFamily: '맑은 고딕',
+              fontSize: 10,
+            }}
           >
-            [{openSection === idStr ? 'Collapse' : 'Expand'}]
+            [
+            {openSection === nodeDatum.id
+              ? 'Collapse'
+              : 'Expand'}
+            ]
           </text>
         )}
       </g>
     );
   };
 
-  // 결과 없으면 안내
-  if (!filteredRoots.length) {
-    return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
-  }
-
+  // 7) 최종 렌더
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+      }}
+    >
       <Tree
         ref={treeRef}
-        data={filteredRoots}
+        data={treeData}
         orientation="horizontal"
-        translate={{ x: window.innerWidth / 2, y: 100 }}
+        translate={{
+          x: window.innerWidth / 2,
+          y: 100,
+        }}
         zoomable
         collapsible={false}
         pathFunc="elbow"
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
         separation={{ siblings: 1, nonSiblings: 1 }}
-        styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
+        styles={{
+          links: { stroke: '#555', strokeWidth: 1.5 },
+        }}
       />
+
       {tooltip.visible && (
         <div
           style={{
@@ -196,7 +275,8 @@ export default function OrgChart({ data, searchQuery }) {
             padding: '4px 8px',
             borderRadius: '4px',
             pointerEvents: 'none',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            boxShadow:
+              '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
           {tooltip.email}
