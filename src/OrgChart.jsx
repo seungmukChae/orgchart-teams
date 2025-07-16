@@ -258,19 +258,7 @@ export default function OrgChart({ data, searchQuery }) {
         pathFunc="elbow"
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
-        separation={(a, b) => {
-          if (a.parent === b.parent && a.parent) {
-            const raw = Array.isArray(a.parent.children)
-              ? a.parent.children.length
-              : 1;
-            const cnt = Math.max(raw, 1);
-            return 1 + Math.log(cnt);
-          }
-          return 1;
-        }}
-        styles={{
-          links: { stroke: '#555', strokeWidth: 1.5 },
-        }}
+        separation={{ siblings: 1, nonSiblings: 1 }}
       />
 
       {tooltip.visible && (
