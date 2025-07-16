@@ -1,4 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { 
+  useState, useEffect, useRef, 
+  useCallback, useMemo 
+} from 'react';
 import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data, searchQuery }) {
@@ -14,62 +17,66 @@ export default function OrgChart({ data, searchQuery }) {
 
   const sectionIds = ['100', '101', '102'];
 
-  // 1) “가상 루트” 만들기: data가 배열이면 dummy root 생성
-  const rootData = useMemo(() => {
-    if (Array.isArray(data)) {
-      return {
-        id: 'root',
-        이름: '',
-        직책: '',
-        팀: '',
-        email: '',
-        children: data,
-      };
-    }
-    return data;
-  }, [data]);
+  // 1) data를 무조건 배열로 통일
+  const rawNodes = useMemo(
+    () => (Array.isArray(data) ? data : [data]),
+    [data]
+  );
 
-  // 2) 윈도우 리사이즈 시 중앙 노드 유지
+  // 2) 가상 루트(dummyRoot) 생성
+  const dummyRoot = useMemo(
+    () => ({
+      id: 'root',
+      이름: '',
+      직책: '',
+      팀: '',
+      email: '',
+      children: rawNodes,
+    }),
+    [rawNodes]
+  );
+
+  // 3) 리사이즈 시 현재 중앙 노드 유지
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
-        // 빈 검색 시 첫 번째 루트, 아니면 단일 data.id
-        const targetId = Array.isArray(data) ? data[0]?.id : data.id;
-        treeRef.current.centerNode(targetId);
+        // 첫 번째 실제 루트로 포커스
+        const firstId = rawNodes[0]?.id;
+        if (firstId) treeRef.current.centerNode(firstId);
       }
     };
     window.addEventListener('resize', handleResize);
-    handleResize(); // 마운트 시에도 한 번 실행
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
-  }, [data]);
+  }, [rawNodes]);
 
-  // 3) 노드 클릭 핸들러: 섹션 토글 or 이메일 복사
-  const handleClick = useCallback((nodeDatum) => {
-    if (sectionIds.includes(nodeDatum.id)) {
+  // 4) 노드 클릭: 섹션 토글 OR 이메일 복사
+  const handleClick = useCallback((node) => {
+    if (sectionIds.includes(node.id)) {
       setOpenSection((prev) =>
-        prev === nodeDatum.id ? null : nodeDatum.id
+        prev === node.id ? null : node.id
       );
-    } else if (nodeDatum.email) {
-      navigator.clipboard.writeText(nodeDatum.email);
+    } else if (node.email) {
+      navigator.clipboard.writeText(node.email);
     }
   }, []);
 
-  // 4) buildTree: 검색어 없으면 전체 렌더 + 섹션 토글만
-  //    검색어 있을 땐 이름/직책/팀 match 로직
+  // 5) 재귀로 트리 필터링 + 검색 로직
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
       const term = searchQuery.trim().toLowerCase();
 
-      // (1) 자식 먼저 재귀
+      // (1) 자식부터 재귀
       let children = (node.children || [])
         .map(buildTree)
         .filter(Boolean);
 
-      // (2) 검색어 없으면 항상 렌더 + 섹션 토글만
+      // (2) 검색어 없으면 “항상 렌더 + 섹션만 토글”
       if (!term) {
         if (sectionIds.includes(node.id)) {
-          children = openSection === node.id ? children : [];
+          children =
+            openSection === node.id ? children : [];
         }
         return { ...node, children };
       }
@@ -89,6 +96,7 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
       if (teamMatch) {
+        // 팀 매치 시 해당 노드의 전체 자손 렌더
         const allDesc = (node.children || [])
           .map(buildTree)
           .filter(Boolean);
@@ -102,19 +110,14 @@ export default function OrgChart({ data, searchQuery }) {
     [searchQuery, openSection]
   );
 
-  // 5) buildTree 적용 후, 가상 루트면 children만 꺼내서 Tree에 전달
+  // 6) 가상 루트에 buildTree ▶︎ 실제 루트 배열만 꺼내기
   const treeData = useMemo(() => {
-    const fullTree = buildTree(rootData);
-    if (!fullTree) return null;
-    return fullTree.id === 'root'
-      ? fullTree.children
-      : fullTree;
-  }, [buildTree, rootData]);
+    const full = buildTree(dummyRoot);
+    if (!full) return null;
+    return full.children; // dummyRoot.children ⇒ 실제 루트들
+  }, [buildTree, dummyRoot]);
 
-  if (
-    !treeData ||
-    (Array.isArray(treeData) && treeData.length === 0)
-  ) {
+  if (!treeData || treeData.length === 0) {
     return (
       <div style={{ padding: '2rem', color: '#888' }}>
         검색 결과가 없습니다.
@@ -122,7 +125,7 @@ export default function OrgChart({ data, searchQuery }) {
     );
   }
 
-  // 6) 노드 커스텀 렌더러 (툴팁 포함)
+  // 7) 커스텀 노드 렌더러 (툴팁 포함)
   const renderNode = ({ nodeDatum }) => {
     const idNum = parseInt(nodeDatum.id, 10);
     let fill =
@@ -224,18 +227,14 @@ export default function OrgChart({ data, searchQuery }) {
               fontSize: 10,
             }}
           >
-            [
-            {openSection === nodeDatum.id
-              ? 'Collapse'
-              : 'Expand'}
-            ]
+            [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
           </text>
         )}
       </g>
     );
   };
 
-  // 7) 최종 렌더
+  // 8) 최종 Tree 렌더
   return (
     <div
       ref={containerRef}
@@ -259,26 +258,21 @@ export default function OrgChart({ data, searchQuery }) {
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
         separation={(a, b) => {
-          // 같은 부모(형제 노드)인 경우에만 동적 간격 적용
+          // 같은 부모(형제)일 때만 동적 간격
           if (a.parent === b.parent && a.parent) {
-            // children 배열이 확실히 Array인지 확인
-            const raw = Array.isArray(a.parent.children)
-              ? a.parent.children
+            const arr = Array.isArray(a.parent.children)
+              ? a.parent.children.filter(Boolean)
               : [];
-            // null/undefined 제거
-            const valid = raw.filter(Boolean);
-            const count = valid.length;
-            // 형제 수가 1 이하일 땐 기본 1
-            if (count <= 1) return 1;
-            // 1 + log(count) 계산
-            const spacing = 1 + Math.log(count);
-            // 혹시 모를 NaN/Infinity 방어
-            return Number.isFinite(spacing) ? spacing : 1;
+            const cnt = Math.max(arr.length, 1);
+            const val = 1 + Math.log(cnt);
+            return Number.isFinite(val) ? val : 1;
           }
-          // 비-형제 노드는 기본 간격 1
+          // 비-형제 기본 간격
           return 1;
         }}
-        styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
+        styles={{
+          links: { stroke: '#555', strokeWidth: 1.5 },
+        }}
       />
 
       {tooltip.visible && (
@@ -292,8 +286,7 @@ export default function OrgChart({ data, searchQuery }) {
             padding: '4px 8px',
             borderRadius: '4px',
             pointerEvents: 'none',
-            boxShadow:
-              '0 2px 4px rgba(0,0,0,0.1)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
           {tooltip.email}
