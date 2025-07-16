@@ -12,15 +12,16 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  // 법인/팀 ID
+  // 법인/팀 id helpers
   const corpIds = ['100', '101', '102'];
   const teamIds = Array.from({ length: 199 - 103 + 1 }, (_, i) => String(103 + i));
-
-  // 팀/법인 구분 헬퍼
   const isCorp = (id) => corpIds.includes(String(id));
   const isTeam = (id) => teamIds.includes(String(id));
 
-  // 노드 클릭(팀/법인: 펼치기, 그 외: 이메일 복사)
+  // 항상 배열로
+  const rootArray = useMemo(() => (Array.isArray(data) ? data : data ? [data] : []), [data]);
+
+  // 클릭 핸들러
   const handleClick = useCallback((nodeDatum) => {
     if (isTeam(nodeDatum.id) || isCorp(nodeDatum.id)) {
       setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
@@ -29,53 +30,56 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // 항상 배열로 변환(루트가 여러 개일 때)
-  const rootArray = useMemo(() => (Array.isArray(data) ? data : data ? [data] : []), [data]);
+  // 트리 빌드 (검색, 섹션토글)
+  const buildTree = useCallback(
+    (node) => {
+      if (!node) return null;
+      const idStr = String(node.id);
+      const term = searchQuery.trim().toLowerCase();
 
-  // 트리 빌드 (팀 노드만 펼쳐지게)
-  const buildTree = useCallback((node) => {
-    if (!node) return null;
-    const idStr = String(node.id);
-    const term = searchQuery.trim().toLowerCase();
+      // 1. 검색어 없을 때: 팀/법인은 펼치기, 나머지는 그냥
+      if (!term) {
+        if (isTeam(idStr) || isCorp(idStr)) {
+          const children = openSection === idStr
+            ? (node.children || []).map(buildTree).filter(Boolean)
+            : [];
+          return { ...node, children };
+        }
+        // 직원은 그냥 children 표시
+        let children = (node.children || []).map(buildTree).filter(Boolean);
+        return { ...node, children };
+      }
 
-    // [검색어 없을 때] 팀/법인 노드는 openSection 일치 시에만 자식 펼침
-    if (!term && (isTeam(idStr) || isCorp(idStr))) {
-      const children = openSection === idStr ? (node.children || []).map(buildTree).filter(x => x !== null && x !== undefined) : [];
-      return { ...node, children };
-    }
+      // 2. 검색 시: 팀/법인만 결과로 노출 (직원/팀원 검색 결과에 직접 표시X)
+      const nameMatch = node.이름?.toLowerCase().includes(term);
+      const titleMatch = node.직책?.toLowerCase().includes(term);
+      const teamMatch = node.팀?.toLowerCase().includes(term);
 
-    // [검색어 있을 때] 기존 검색 로직 유지
-    const nameMatch = node.이름?.toLowerCase().includes(term);
-    const titleMatch = node.직책?.toLowerCase().includes(term);
-    const teamMatch = node.팀?.toLowerCase().includes(term);
+      // 법인/팀 매치: 직원 children 없이 자기 노드만 반환
+      if ((isTeam(idStr) || isCorp(idStr)) && (nameMatch || titleMatch || teamMatch)) {
+        return { ...node, children: [] };
+      }
 
-    // 매치 시 전체 자식 유지
-    let children = (node.children || []).map(buildTree).filter(Boolean);
-    if (!term) return { ...node, children };
+      // 자식 중 팀/법인 매치가 있으면 한 단계만 노출
+      let children = (node.children || []).map(buildTree).filter(Boolean);
+      if (children.length) {
+        if (isTeam(idStr) || isCorp(idStr)) {
+          return { ...node, children };
+        }
+        return null;
+      }
+      return null;
+    },
+    [searchQuery, openSection]
+  );
 
-    if (nameMatch || titleMatch) return { ...node, children };
-    if (teamMatch) {
-      // 팀명으로 검색: 자식 전체
-      const allDesc = (node.children || []).map(buildTree).filter(Boolean);
-      return { ...node, children: allDesc };
-    }
-    if (children.length) return { ...node, children };
-    if (isTeam(idStr) || isCorp(idStr)) return { ...node, children: [] };
-    return null;
-  }, [searchQuery, openSection]);
-
-  // 트리 데이터 변환
+  // 트리 적용
   const filteredRoots = useMemo(() => {
     if (!rootArray.length) return [];
     return rootArray.map(buildTree).filter(Boolean);
   }, [rootArray, buildTree]);
 
-  // 에러 방지
-  if (!filteredRoots.length) {
-    return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
-  }
-
-  // 커스텀 노드 렌더러
+  // 렌더러
   const renderNode = ({ nodeDatum }) => {
     const idStr = String(nodeDatum.id);
     let fill = isTeam(idStr) ? '#ffa500' : '#e0e0e0';
@@ -159,6 +163,11 @@ export default function OrgChart({ data, searchQuery }) {
       </g>
     );
   };
+
+  // 결과 없으면 안내
+  if (!filteredRoots.length) {
+    return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
+  }
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
