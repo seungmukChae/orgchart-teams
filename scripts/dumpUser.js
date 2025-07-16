@@ -76,6 +76,25 @@ async function main() {
      });
     });
 
+    // 3️⃣ 수기 입력된 oldUsers 중 ID 100~199번은 Graph에 없어도 그대로 보존
+    oldUsers.forEach(u => {
+      const num = parseInt(u.id, 10);
+      if (num >= 100 && num <= 199) {
+          // merged에 없으면 추가
+          if (!merged.find(m => m.id === u.id)) {
+            merged.push({
+              id:         u.id,
+              이름:       u.이름,
+              직책:       u.직책,
+              법인:       u.법인,
+              팀:         u.팀,
+              manager_id: u.manager_id,
+              이메일:     u.이메일 || u.email || ""
+            });
+          }
+        }
+      });
+      
     // 4️⃣ CSV 만들기
     const csv = Papa.unparse(merged, { header: true });
 
