@@ -69,13 +69,13 @@ export default function OrgChart({ data, searchQuery }) {
       // ----- (2) 팀 노드면(103~199) 자식 개수 기준 내림차순 정렬 -----
       const idNum = parseInt(node.id, 10);
       if (idNum >= 103 && idNum <= 199 && children.length > 1) {
-        children = [...children].sort((a, b) => {
-          // 자식 노드의 자손(팀원) 수 많은 게 뒤로
-          const countA = a.children ? a.children.length : 0;
-          const countB = b.children ? b.children.length : 0;
-          return countA - countB;
-        });
-      }
+      // 팀장 등 직계 자식의 하위 전체 자손(=팀원수)을 센다
+      const getTeamCount = (n) =>
+        n.children && n.children.length > 0
+          ? n.children.reduce((sum, c) => sum + getTeamCount(c), 0) + 1
+          : 1;
+      children = [...children].sort((a, b) => getTeamCount(a) - getTeamCount(b));
+    }
 
       // (3) 검색어 없으면 항상 렌더 + 섹션 토글만
       if (!term) {
