@@ -39,10 +39,13 @@ async function main() {
       const parsed = Papa.parse(csvData, { header: true });
       oldUsers = parsed.data.filter(u => u.id); // 빈 줄 제거
     }
+    // oldUsers를 이름(key)→레코드로 빠르게 조회할 수 있게 Map으로 변환
+    const oldMap = Object.fromEntries(
+      oldUsers.map(u => [u.이름, u])
+    );
 
     // 3️⃣ 덤프와 기존을 id로 머지
-    const merged = [];
-    let idCounter = 1;
+    const merged = [];    
 
     newUsers.forEach((newUser) => {
       // 법인, 팀 분리
@@ -51,21 +54,26 @@ async function main() {
       const corp = corpMatch ? corpMatch[1] : "";
       const team = dept.replace(/\(.*?\)/, "").trim();
 
-      // 기존에 있으면 manager_id 유지
-      const old = oldUsers.find(o => o.name === newUser.displayName);
-      const manager_id = old ? old.manager_id : "";
+    // ① 수기 입력(oldMap)에 있으면 그 값을 그대로 쓰고
+    // ② 없으면 manager_id도 없으므로 id도 빈 문자열로
+      let id, manager_id;
+      if (oldMap[newUser.displayName]) {
+        id         = oldMap[newUser.displayName].id;
+        manager_id = oldMap[newUser.displayName].manager_id;
+      } else {
+        id         = "";
+        manager_id = "";
+      }
 
       merged.push({
-        id: idCounter,
+        id,
         이름: newUser.displayName,
         직책: newUser.jobTitle || "",
         법인: corp,
         팀: team,
-        manager_id: manager_id,
-        이메일: newUser.mail || ""
-      });
-
-      idCounter++;
+        manager_id,
+        이메일: newUser.mail || "",
+     });
     });
 
     // 4️⃣ CSV 만들기

@@ -1,107 +1,543 @@
-﻿id,이름,직책,법인,팀,manager_id,email
-100,Seoul,,,,2,
-101,ETP,,,,2,
-102,BVT,,,,2,
-1,SHIN,Chairman,,Chairman,,
-2,Jongin_CEO,CEO,,CEO,1,
-3,CHA,Advisor,,고문,2,
-4,Haein_VP,Vice President,,Vice-President,100,
-103,Planning,,,,4,
-5,Jay_SPL,General Manager,Seoul,Planning,103,
-104,Material,,,,4,
-6,Chuck_SMC,Senior Manager,Seoul,Material,104,
-105,MRP,,,,4,
-7,Mira_SMRP,General Manager,Seoul,MRP,105,
-106,IT,,,,4,
-8,Kyu_SIT,Senior Manager,Seoul,IT,106,
-107,Accounting,,,,4,
-9,Jeon_SAC,General Manager,Seoul,Accounting,107,
-108,Im-Export,,,,4,
-10,Hyunjoo_STR,Manager,Seoul,Im-Export,108,
-109,HR,,,,4,
-11,Leo_SHR,Director,Seoul,HR,109,
-110,Brand Development,,,,4,
-12,Chris_SBR,Senior Manager,Seoul,Brand Development,110,
-111,Garment Development,,,,4,
-13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111,
-112,SalesKR,,,,4,
-14,Andrew_SMDK,General Manager,Seoul,SalesKR,112,
-113,Sales1,,,,4,
-15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113,
-114,Sales2,,,,4,
-16,Ciara_SMD2,Executive Director,Seoul,Sales2,114,
-115,Sales3,,,,4,
-17,Jake_SMD3,Senior Manager,Seoul,Sales3,115,
-116,Sales4,,,,4,
-18,Ken_SMD4,Executive Director,Seoul,Sales4,116,
-117,FOB,,,,4,
-19,Oliver_FOB,Director,Seoul,FOB,117,
-20,Bell_SPL,Assistant Manager,Seoul,Planning,5,
-21,Mila_SPL,Staff,Seoul,Planning,5,
-22,Rim_SPL,Senior Manager,Seoul,Planning,5,
-23,Chelsea_SMC,Senior Manager,Seoul,Material,6,
-24,Parttime1_SMC,Parttime,Seoul,Material,6,
-25,Steven_SMC,Staff,Seoul,Material,6,
-26,Sunny_SMC,Senior Manager,Seoul,Material,6,
-27,Tammy_SMC,Staff,Seoul,Material,6,
-28,Trudy_SMC,Assistant Manager,Seoul,Material,6,
-29,Khe_SMRP,General Manager,Seoul,MRP,7,
-30,Minsun_SMRP,Manager,Seoul,MRP,7,
-31,Brandon_SIT,Assistant Manager,Seoul,IT,8,brandon@shints.com
-32,Dain_SAC,Assistant Manager,Seoul,Accounting,9,
-33,Jeongyoun_SAC,Staff,Seoul,Accounting,9,
-34,Miae_SAC,Staff,Seoul,Accounting,9,
-35,Mijin_SAC,Assistant Manager,Seoul,Accounting,9,
-36,Chloe_SAC,Assistant Manager,Seoul,Accounting,9,
-37,Yugyeong_SAC,Assistant Manager,Seoul,Accounting,9,
-38,Clara_STR,Assistant Manager,Seoul,Im-Export,10,
-39,Colin_STR,Assistant Manager,Seoul,Im-Export,10,
-40,Bit_SHR,Assistant Manager,Seoul,HR,11,
-41,Zoe_SHR,Staff,Seoul,HR,11,
-42,Moon_SBR,Assistant Manager,Seoul,Brand Development,12,
-43,Ed_SBR,Manager,Seoul,Brand Development,12,
-44,Glove_SBR,Executive Director,Seoul,Brand Development,12,
-45,Parttime3_SBR,Parttime,Seoul,Brand Development,12,
-46,Hmk_SBR,Assistant Manager,Seoul,Brand Development,12,
-47,Seedgarden_SBR,Manager,Seoul,Brand Development,12,
-48,Kang_SGRM,Director,Seoul,Garment Development,13,
-49,Skmin_SGRM,Manager,Seoul,Garment Development,13,
-50,Yeeun_SGRM,Assistant Manager,Seoul,Garment Development,13,
-51,Yhkim_SGRM,Director,Seoul,Garment Development,13,
-52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,14,
-53,Becky_SMDK,General Manager,Seoul,SalesKR,14,
-54,Bella_SMDK,Manager,Seoul,SalesKR,14,
-55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,14,
-56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,14,
-57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,14,
-58,Diana_SMDK,Manager,Seoul,SalesKR,14,
-59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,14,
-60,Kylie_SMDK,Staff,Seoul,SalesKR,14,
-61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,14,
-62,Mahlet_SMDK,Staff,Seoul,SalesKR,14,
-63,Andy_SMD1,Staff,Seoul,Sales1,15,
-64,Celeste_SMD1,Staff,Seoul,Sales1,15,
-65,Dos_SMD1,General Manager,Seoul,Sales1,15,
-66,Jin_SMD1,Manager,Seoul,Sales1,15,
-67,Sewon_SMD1,Assistant Manager,Seoul,Sales1,15,
-68,Kara_FOB,,Seoul,FOB,16,
-69,Jinny_SMD2,Manager,Seoul,Sales2,16,
-70,Joon_SMD2,Staff,Seoul,Sales2,16,
-71,Matthew_SMD2,Staff,Seoul,Sales2,16,
-72,Tibka_SMD2,Staff,Seoul,Sales2,16,
-73,Tommy_SMD2,Manager,Seoul,Sales2,16,
-74,Hana_FOB,Manager,Seoul,FOB,17,
-75,Ally_SMD3,Staff,Seoul,Sales3,17,
-76,Boin_SMD3,Senior Manager,Seoul,Sales3,17,
-77,Hazel_SMD3,Assistant Manager,Seoul,Sales3,17,
-78,Jenny_SMD3,Manager,Seoul,Sales3,17,
-79,Mason_SMD3,Staff,Seoul,Sales3,17,
-80,David_FOB,Staff,Seoul,FOB,18,
-81,Jimmy_FOB,Staff,Seoul,FOB,18,
-82,Lia_SMD4,Assistant Manager,Seoul,Sales4,18,
-83,Lily_SMD4,Assistant Manager,Seoul,Sales4,18,
-84,Minji_SMD4,Assistant Manager,Seoul,Sales4,18,
-85,Yuri_SMD4,Manager,Seoul,Sales4,18,
-86,Cherie_FOB,Staff,Seoul,FOB,19,
-87,Sam_FOB,Manager,Seoul,FOB,19,
-88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14,
+﻿id,이름,직책,법인,팀,manager_id,이메일
+1,cloocustest,,,,,82728005-a312-4086-a920-2cb7a775ecbd@shints2.onmicrosoft.com
+2,"Aranda, Ana",,,,,aaranda@trangoworld.com
+3,Abyeserash_ECSR,,ETP,CSR,,abayeserash.shints@gmail.com
+4,Abebaw_EPM,,ETP,Production Managemet,,abebaw1.shints1@gmail.com
+5,Abebe_ETR,,ETP,Import&Export,,abebe1.shints@gmail.com
+6,Abebe_EMD,,ETP,Sales,,abebe2.shints@gmail.com
+7,Ababe_EPRT,,ETP,Print,,abebe3.shints@gmail.com
+8,abel.shints,,,,,abel.shints@gmail.com
+9,Abele_EMD,,ETP,sales,,abel3.shints@gmail.com
+10,Abenezer_EQA,,ETP,Quality,,abenezerbirhanu2001@gmail.com
+11,Aberash_EIE,,ETP,IE,,aberash1.shints@gmail.com
+12,Abraham_EMD,,ETP,Sales,,abraham@shintsetp.com
+13,Abrham _ECAD,,ETP,CAD,,abrehamcad1.shints@gmail.com
+14,Abreham_EAD,,ETP,Admin,,abrham2.shints@gmail.com
+15,Abrham_EQA,,ETP,Quality,,abrhamqa.shints@gmail.com
+16,Abubeker_EQA,,ETP,EQA,,abubeker@shintsetp.com
+17,Addise_ECSR,,ETP,CSR,,adis.shints@gmail.com
+18,shints_admin,,,,,admin@shints.com
+19,Agegnehu_EMD,,ETP,Sales,,agegnehu@shintsetp.com
+20,Ageritu_ECAD,,ETP,CAD,,ageritu.shints@gmail.com
+21,Ahmed_ECUT,,ETP,Cutting,,ahmed.shints@gmail.com
+22,Ahracho_SMDK,조아라 차장,Seoul,SalesKR,,ahracho@shints.com
+23,Aki_VPUR,,BVT,PUR,,aki.shintsbvt@gmail.com
+24,Aleka_EPM,,ETP,Production Management,,aleka1.shints1@gmail.com
+25,Ali_EQA,,ETP,Quality,,ali.shints@gmail.com
+26,Alice_VMD5,,BVT,Sales5,,alice@shintsbvt.com
+27,Ally_SMD3,백지원 사원,Seoul,Sales3,,ally@shints.com
+28,Amelwork_EPD,,ETP,Production store,,amelework1.shints1@gmail.com
+29,Andebet_EMD,,ETP,Sales,,andebetk.shints@gmail.com
+30,Andinet_ECI,,ETP,CI,,andinethabtamu3@gmail.com
+31,Andrew_SMDK,고재준 전무,Seoul,SalesKR,,andrew@shints.com
+32,Andy_SMD1,박성훈 사원,Seoul,Sales1,,andy@shints.com
+33,Angie_VMD2,,BVT,Sales2,,angie@shintsbvt.com
+34,Quan_VPL,,BVT,Planning,,anhnguyen.mkts@gmail.com
+35,Tho_VHR,,BVT,Nurse,,anhthoshintstn@gmail.com
+36,Animut_EMC,,ETP,Material,,animut.shints@gmail.com
+37,Anna_FOB,,BVT,FOB,,anna@shintsbvt.com
+38,Anteneh_EIE,,ETP,IE,,anteneh.shints@gmail.com
+39,Anwar_EEMB,,ETP,Embroidery,,anwar.shints@gmail.com
+40,Aram Shahir,,,,,aram.shahir@brandart.com
+41,Ararsa_EFN,,ETP,Finishing,,ararsa.shints@gmail.com
+42,Aregay_ECI,,ETP,CI,,aregay.shints@gmail.com
+43,Asfaw_EMC,,ETP,Material,,asfaw2.shints@gmail.com
+44,Ashenafi_EQA,,ETP,Quality,,ashenafiqa.shints@gmail.com
+45,Ashenafi Legesse_ECAD,,ETP,CAD,,ashubelishu@outlook.com
+46,Asmamaw_EPUR,,ETP,Purchase,,asmamaw2.shints@gmail.com
+47,Asmro_ECI,,ETP,CI,,asmro.shints@gmail.com
+48,asmrotegegento13,,,,,asmrotegegento13@gmail.com
+49,Asrat_EPM,,ETP,Production Management,,asrat2.shints@gmail.com
+50,Moon_SBR,문희수 대리,Seoul,Brand Development,,awd@shints.com
+51,Awol_EPM,,ETP,Production Management,,awol.shints@gmail.com
+52,Ayele_EHR,,ETP,HR,,ayele@shintsetp.com
+53,Ayene_EHR,,ETP,HR,,ayene.shints@gmail.com
+54,Aynalem_EMRP,,ETP,MRP,,aynalem1.shints@gmail.com
+55,Aziz_EDMS,Merchandising & Sourcing  Director,ETP,Merchandising & Sourcing  Director,,aziz@shints.com
+56,Bamlak_EFN,,ETP,Finishing,,bamlak.shints@gmail.com
+57,Bamlak_EMRP,,ETP,MRP,,bamlak1.shints@gmail.com
+58,Bantie_EMC,,ETP,Material,,bantie.shints@gmail.com
+59,Misa_VPUR,,BVT,PUR,,baoloan10011996@gmail.com
+60,Bayush_ECAD,,ETP,CAD,,bayushcad2.shints@gmail.com
+61,Becky_SMDK,형안 부장,Seoul,SalesKR,,becky@shints.com
+62,Bedasa_ECI,,ETP,Continuous Improvement,,bedasa@shintsetp.com
+63,Beka_EMC,,ETP,Material,,beka@shintsetp.com
+64,Beka_EHR,,ETP,HR,,beka2.shints@gmail.com
+65,Beker_EMRP,,ETP,MRP,,beker@shintsetp.com
+66,Belay_EMD,,ETP,Sales,,belay@shintsetp.com
+67,Belay_EQA,,ETP,Quality,,belay2.shints@gmail.com
+68,Belayset_ECAD,,ETP,CAD,,belaycad.shints@gmail.com
+69,Belete_EPM,,ETP,Production Management,,belete.shints@gmail.com
+70,Bell_SPL,박지민 대리,Seoul,Planning,,bell@shints.com
+71,Bella_SMDK,구슬 과장,Seoul,SalesKR,,bellakoo@shints.com
+72,Ben_SMDK,남궁기범 대리,Seoul,SalesKR,,ben@shints.com
+73,Berhanu_EMD,,ETP,Sales,,berhanu1.shints@gmail.com
+74,B.Bamlaku_EHR,,ETP,HR,,betelhem11.shints@gmail.com
+75,Beth_VMRP,,BVT,MRP,,beth@shintsbvt.com
+76,Betremariam_EAD,,ETP,Admin,,betremariam@shintsetp.com
+77,Bethlehem_ECI,,ETP,CI,,betty4.shints@gmail.com
+78,B.Aknaw_EHR,,ETP,HR,,betty5.shints@gmail.com
+79,Bethlehem_EPRT,,ETP,Print,,betyejigu799@gmail.com
+80,Beyene_EPM,,ETP,Production Management,,beyene1shints@gmail.com
+81,Beza_ETR,,ETP,Import&Export,,beza.shints@gmail.com
+82,Bezawit_EAC,,ETP,Accounting,,beza@shintsetp.com
+83,Beza_EMD,,ETP,Sales,,bezawit1.shints@gmail.com
+84,Biniyam_EMTN,,ETP,Maintanance,,bina.shints@gmail.com
+85,Plan-Binh,,,,,binh.dt701@gmail.com
+86,Binh_VPL,,BVT,Planning,,binhnt@shintsbvt.com
+87,Birhane_EMTN,,ETP,Maintanance,,birhanegetahun05@gmail.com
+88,Birhanu_EMRP,,ETP,MRP,,birhanu2.shints@gmail.com
+89,Birhanu_EFN,,ETP,Finishing,,birhanu3.shints@gmail.com
+90,Birhanu_EPM,,ETP,Production Management,,birhanupm.shints1@gmail.com
+91,Birtukan_ECI,,ETP,CI,,birtu64283@gmail.com
+92,Bit_SHR,김빛가람 대리,Seoul,HR,,bit@shints.com
+93,Bizu_EMRP,,ETP,MRP,,bizu.shints@gmail.com
+94,Boin_SMD3,진보인 차장,Seoul,Sales3,,boin@shints.com
+95,Bontu_EPUR,,ETP,Purchase,,bontu1.shints@gmail.com
+96,Brandon_SIT,채승묵 대리,Seoul,IT,,brandon@shints.com
+97,Linh_VPDS,,BVT,Production Support,,builinh.banpo@gmail.com
+98,Buze_EQA,,ETP,Quality,,buzetekelie21@gmail.com
+99,Bizuayehu_EHR,,ETP,HR,,buzu.shints@gmail.com
+100,Minh_VPDP,,BVT,Production Plan,,Caominh201213@gmail.com
+101,Celeste_SMD1,문채영 사원,Seoul,Sales1,,celeste@shints.com
+102,CHA,차민호 고문,,고문,,cha@shints.com
+103,Chalchisa_EIE,,ETP,IE,,chalchisa.shints@gmail.com
+104,Jeon_SAC,전창배 부장,Seoul,Accounting,,changbae.jeon@shints.com
+105,Chelsea_SMC,최재인 차장,Seoul,Material,,chelsea@shints.com
+106,Cherie_FOB,사원,Seoul,FOB,,cherie@shints.com
+107,조치범_AF,조치범,,Afroba,,chibumy@shints.com
+108,Chris_SBR,이주현 차장,Seoul,Brand Development,,chris@shints.com
+109,Chuck_SMC,한상협 차장,Seoul,Material,,chuck@shints.com
+110,Ciara_SMD2,황지영 상무,Seoul,Sales2,,ciara@shints.com
+111,Clara_STR,배지수 대리,Seoul,Im-Export,,clara@shints.com
+112,Colin_STR,문상훈 대리,Seoul,Im-Export,,Colin@shints.com
+113,test1,,,,,csm5042@gmail.com
+114,Thuy_VQC,,BVT,QC,,cuttingthuy@gmail.com
+115,Degineh_EMC,,ETP,Material,,dagineh.shints@gmail.com
+116,Dain_SAC,이다인 대리,Seoul,Accounting,,dain_lee@shints.com
+117,Khanh_VWH,,BVT,TN_Ware house,,danghienkt6k5@gmail.com
+118,Bella_VMC,,BVT,MC,,dangminhngoc3494@gmail.com
+119,Daniel_GM,General Manager,ETP,General Manager,,daniel@shintsetp.com
+120,Daniel Kim,,,,,daniel27@shints.com
+121,Daniel_EQA,,ETP,Quality,,daniel3.shints@gmail.com
+122,Daniel_EMRP,,,,,danielmrp.shints@gmail.com
+123,Daniel_SMDK,신동경 차장,Seoul,SalesKR,,danielshin@shints.com
+124,Luna_VMC,,BVT,MC,,daothilua89@gmail.com
+125,Daphne_SMDK,김나영 대리,Seoul,SalesKR,,daphne@shints.com
+126,David_FOB,사원,Seoul,FOB,,david@shints.com
+127,Dawit_EMD,,ETP,Sales,,dawit@shintsetp.com
+128,Debebe_EMC,,ETP,Material,,debebe.shints@gmail.com
+129,Degefa_ETR,,ETP,Import&Export,,degefa.shints@gmail.com
+130,Dejene_EMD,,ETP,Sales,,dejene@shintsetp.com
+131,Dejene_EFN,,ETP,Finishing,,dejuhailu89@gmail.com
+132,Demeke_ECSR,,ETP,CSR,,demeke1.shints@gmail.com
+133,Demeke_EQA,,ETP,Quality,,demeke2.shints@gmail.com
+134,Dereje_EMD,,ETP,Sales,,dereje@shintsetp.com
+135,Deriba_EMC,,ETP,Material,,deriba.shints@gmail.com
+136,Dessalegn_ETR,,ETP,Import&Export,,desie.shints@gmail.com
+137,Desie_ECI,,ETP,CI,,dessieenyew23.shints@gmail.com
+138,Diana_SMDK,박현진 과장,Seoul,SalesKR,,diana@shints.com
+139,Dinh_GM,General Manager,BVT,General Manager,,dinh@shintsbvt.com
+140,Diu_VPUR,,BVT,PUR,,diupt2023@gmail.com
+141,Chi_VMRP,,BVT,MRP,,doanthi258201@gmail.com
+142,Ly_VPRC,,BVT,Process,,Doly19872013@gmail.com
+143,Dos_SMD1,임상동 부장,Seoul,Sales1,,dos@shints.com
+144,import1.exim_VTR,,BVT,Im-Export,,dothao88@gmail.com
+145,Rachel_VMD3,,BVT,Sales3,,dotrang286hubt@gmail.com
+146,Ly_VHR,,BVT,HR,,duongly02071990@gmail.com
+147,Ed_SBR,이대형 과장,Seoul,Brand Development,,ed@shints.com
+148,Eden_EQA,,ETP,Quality,,eden1.shints@gmail.com
+149,Alysia_VPUR,,BVT,PUR,,elysianguyen1010@gmail.com
+150,Emawayish_EAC,,ETP,Accounting,,emawayish.shints@gmail.com
+151,Emily_VMD1,,BVT,Sales1,,emilyxinh90@gmail.com
+152,Enchalewu_EMD,,ETP,Sales,,enchalew.shints@gmail.com
+153,Endashaw_ECI,,ETP,Continuous Improvement,,endashaw@shintsetp.com
+154,Engda_ECUT,,ETP,Cutting,,engda.shints@gmail.com
+155,Ephrem_EWSS,,ETP,Welding&Seamseling,,ephrem0716@gmail.com
+156,Erin_VMD5,,BVT,Sales5,,erin@shintsbvt.com
+157,Ermias_EPD,,ETP,Production,,ermias1.shints@gmail.com
+158,Eshetu_EFN,,ETP,Finishing,,eshetu.shints@gmail.com
+159,Esmael_EPM,,ETP,Production Management,,esmael.shints@gmail.com
+160,Estifanos_EIE,,ETP,IE,,estifanos.shints@gmail.com
+161,Exim_VTR,,BVT,Im-Export,,exim@shintsbvt.com
+162,Zeytie_EAC,,ETP,Accounting,,eyerus.shints@gmail.com
+163,Eyob_ECI,,ETP,CI,,eyob@shintsetp.com
+164,Fanos_EMD,,ETP,Sales,,fanos@shintsetp.com
+165,Fanta_EPS,,ETP,Production Schedule,,fantaps.shints@gmail.com
+166,Fantu_EPM,,ETP,Production Management,,fantu.shints1@gmail.com
+167,Fetene_EPM,,ETP,Production Management,,fetene.shints@gmail.com
+168,Feven_ETR,,ETP,Import&Export,,feven.shints@gmail.com
+169,Feyisa_EPD,,ETP,Production,,feyisa.shints@gmail.com
+170,Fayise_EFN,,ETP,Finishing,,feyise2.shints@gmail.com
+171,Fikru_EIE,,ETP,IE,,fikiru.shints@gmail.com
+172,Fiona_VMDTN,,BVT,SalesTN,,fionamd@outlook.com.vn
+173,Firew_EPM,,ETP,Production Management,,firew1.shints@gmail.com
+174,Fithun_ETR,,ETP,Import&Export,,fithun@shintsetp.com
+175,Genanaw_EQA,,ETP,Quality,,genanaw@shintsetp.com
+176,Genet_EQA,,ETP,Quality,,genetqa.shints@gmail.com
+177,Getaneh_EMD,,ETP,Sales,,getaneh.shints@gmail.com
+178,Getnet_EQA,,ETP,Quality,,getnetyihunie2014gc@gmail.com
+179,Levis_VMD1,,BVT,Sales1,,giahaopham0312@gmail.com
+180,Girma_EFN,,ETP,Finishing,,girma5.shints@gmail.com
+181,Glove_SBR,김재학 상무,Seoul,Brand Development,,glove@shints.com
+182,Godada_EMC,,ETP,Material,,godada.shints@gmail.com
+183,Goitom_EQA,,ETP,Quality,,goitom@shintsetp.com
+184,Kane_VPUR,,BVT,PUR,,haanh149320@gmail.com
+185,Habtamu_EMC,,ETP,Material,,habtamu2.shints@gmail.com
+186,Habtamu_EFN,,ETP,Finishing,,habtamu3.shints@gmail.com
+187,habtamu_EMD,,ETP,Sales,,habtamu4.shints@gmail.com
+188,Hadush_EFN,,ETP,Finishing,,hadush.shints@gmail.com
+189,Haein_VP,차혜인 부사장,,Vice-President,,haein@shints.com
+190,Abel_EPD,,ETP,Production,,hailuabel544@gmail.com
+191,Jim_VTR,,BVT,Im-Export,,haingovn_1@yahoo.com
+192,Oanh_VMC,,BVT,MC,,haioanh@shintsbvt.com
+193,Hai_VHR,,BVT,HR,,haiphuongshintsbvt@gmail.com
+194,Serin_VMC,,BVT,MC,,haiyen113.hn@gmail.com
+195,Jolie_FOB,,BVT,FOB,,haiyen89.yd@gmail.com
+196,Hana_FOB,과장,Seoul,FOB,,hana@shints.com
+197,Hana_EHR,,ETP,HR,,hanahr.shints@gmail.com
+198,Hana_ETR,,ETP,Import&Export,,hanatr.shints@gmail.com
+199,Ivy_FOB,,BVT,FOB,,lvy@shintsbvt.com
+200,Alina_VPUR,,BVT,PUR,,hangxuyenlinh1@gmail.com
+201,Sewhareg_EFN,,ETP,Finishing,,hareg177@gmail.com
+202,Rosie_VMD5,,BVT,Sales5,,hathu910.hd@gmail.com
+203,Trang_VMC,,BVT,MC,,hautrangk6@gmail.com
+204,Hazel_SMD3,김도현 대리,Seoul,Sales3,,hazel@shints.com
+205,May_VMRP,,BVT,MRP,,hchd86188@outlook.com.vn
+206,Helen_VMD1,,BVT,Sales1,,helen@shintsbvt.com
+207,Helen_ETR,,ETP,Import&Export,,helen@shintsetp.com
+208,Hibiste_EMC,,ETP,Material,,hibist1.shints@gmail.com
+209,Hien_VPDS,,BVT,Production Support,,hientt2025@outlook.com.vn
+210,Hilina_EMD,,ETP,Sales,,hilina1.shints@gmail.com
+211,Hilina_ETRN,,ETP,Translator,,hilinabenyam@gmail.com
+212,Hldana_ETRN,,ETP,Translator,,hldana.shints@gmail.com
+213,Hoa_VHR,,BVT,HR,,hoakhai2401@gmail.com
+214,Sally_VMDTN,,BVT,SalesTN,,hoang.mien2@outlook.com.vn
+215,Eri_VMD3,,BVT,Sales3,,hoangkhanhchi99@gmail.com
+216,Len_VPUR,,BVT,PUR,,hoanglenhd@gmail.com
+217,Huong_VHR,,BVT,HR,,hoangthihuong01dt@gmail.com
+218,Hoa_VMC,,BVT,MC,,hoatran078079@gmail.com
+219,Sunny_VPUR,,BVT,PUR,,homthutronghd@gmail.com
+220,Hong_VPUR,,BVT,PUR,,hongtranbvt@gmail.com
+221,Maile_VTR,,BVT,Im-Export,,hothanhthu095@gmail.com
+222,Hue_VPRC,,BVT,Proccess,,hue19012002@outlook.com
+223,Hulager_EAC,,ETP,Accounting,,hulagereshetu2020@gmail.com
+224,Loanptt_VTR,,BVT,Im-Export,,hung_xlm@yahoo.com
+225,Huong_VMRP,,BVT,MRP,,huongk5a5@gmail.com
+226,Aviv_VMD,,BVT,Sales,,huongnthd2012@gmail.com
+227,Quynh_VPDS,,BVT,Production Support,,huongquynh1902@gmail.com
+228,Annie_VMD4,,BVT,Sales4,,huyentrang18111998@gmail.com
+229,hyeonjin22,,,,,hyeonjin22@gmail.com
+230,Hyungwoon_BVT,,BVT,,,hyungwoon@shintsbvt.com
+231,Jake_SMD3,권태형 차장,Seoul,Sales3,,jake@shints.com
+232,Janny_VPUR,,BVT,PUR,,janny@shintsbvt.com
+233,Jay_SPL,정재영 부장,Seoul,Planning,,jay.jung@shints.com
+234,Jay_EFD,Factory Director,ETP,Factory Director,,jay@shintsetp.com
+235,Jeff_EFD,Quality & Merchandising Director,ETP,Factory Director,,jeffchoi@shints.com
+236,Jena_VMD5,,BVT,Sales5,,jenayena769@gmail.com
+237,Jenny_SMD3,김희진 과장,Seoul,Sales3,,jenny@shints.com
+238,Jessi_FOB,,BVT,FOB,,jessi@shintsbvt.com
+239,Jhoen_SMD1,김혜영 상무,Seoul,Sales1,,jhoen@shints.com
+240,Jimmy_FOB,사원,Seoul,FOB,,jimmy@shints.com
+241,Jin_SMD1,박지현 과장,Seoul,Sales1,,jin.park@shints.com
+242,Jinny_SMD2,정지혜 과장,Seoul,Sales2,,jinny@shints.com
+243,Leo_SHR,이종민 이사,Seoul,HR,,jmlee@shints.com
+244,Jongin_CEO,CEO,,CEO,,jongin.cha@shints.com
+245,Joon_SMD2,채연준 사원,Seoul,Sales2,,joon@shints.com
+246,Joy_SMDK,김주영 대리,Seoul,SalesKR,,joy@shints.com
+247,Judy_VMDTN,,BVT,SalesTN,,judymdtn@outlook.com.vn
+248,Hanh_VGA,,BVT,GA,,julianguyen113@gmail.com
+249,Junia_FOB,,BVT,FOB,,junia@shintsbvt.com
+250,Jeongyoun_SAC,장정윤 사원,Seoul,Accounting,,jy.j@shints.com
+251,Kabyinad_EPS,,ETP,Production Schedule,,kabyinad@shintsetp.com
+252,Kachew_EPM,,ETP,Production Management,,Kachew@shintsetp.com
+253,Kalab_EIT,,ETP,IT,,kalab.shints@gmail.com
+254,Kalkidan_EMRP,,ETP,MRP,,kalkidan.shints3@gmail.com
+255,Kalkidan_EHR,,ETP,HR,,kalnati.shints@gmail.com
+256,Kang_SGRM,강정석 이사,Seoul,Garment Development,,kang@shints.com
+257,Kara_FOB,,Seoul,FOB,,kara@shints.com
+258,Karen_VMD4,,BVT,Sales4,,karen@shintsbvt.com
+259,Kasahun_EMD,,ETP,Sales,,kasahun.shints@gmail.com
+260,Kate_FOB,,BVT,FOB,,kate@shintsbvt.com
+261,Ken_SMD4,김봉규 상무,Seoul,Sales4,,ken@shints.com
+262,Kenna_VMDTN,,BVT,SalesTN,,kennamdtn@outlook.com
+263,Kenubsh_EQA,,ETP,Quality,,kenu.shints@gmail.com
+264,Khe_SMRP,김향은 부장,Seoul,MRP,,khe@shints.com
+265,Kibrnesh_EQA,,ETP,Quality,,kibernesh.shints@gmail.com
+266,Kidus_EPRT,,ETP,Print,,kidus7.shints@gmail.com
+267,Kimyh_BVT,,BVT,,,kimyh@shintsbvt.com
+268,Kira_VMD6,,BVT,Sales6,,kira@shintsbvt.com
+269,Kjjeong_SGRM,정갑진 상무,Seoul,Garment Development,,kjjeong@shints.com
+270,Quy_VMC,,BVT,MC,,ksnbcn.g84@hoasengroup.vn
+271,Kuba_EMC,,ETP,Material,,kubamc.shints@gmail.com
+272,Kylie_SMDK,김명재 사원,Seoul,SalesKR,,kylie@shints.com
+273,Lalinda_ECUT,,ETP,Cutting,,lalinda1.shints@gmail.com
+274,Lan_VPDS,,BVT,Production Support,,lanbvt@outlook.com.vn
+275,Latika_VMD4,,BVT,Sales4,,latika@shintsbvt.com
+276,Kayla_VMRP,,BVT,MRP,,lehuong25987@gmail.com
+277,Sophie_VMC,,BVT,MC,,lehuyen11798@gmail.com
+278,Lemma_EPD,,ETP,Production,,lemmayeziera@gmail.com
+279,Leta_EPS,,ETP,Production Schedule,,leta@shintsetp.com
+280,Maria_VMC,,BVT,MC,,lethihoaiangl8112002@gmail.com
+281,Le Thuy_VMC,Manager,BVT,MC,,lethuy@shintsbvt.com
+282,Lia_SMD4,성주경 대리,Seoul,Sales4,,lia@shints.com
+283,Lien_VCUT,,BVT,TN_Cutting,,liencut@outlook.com
+284,Ruby_VMD3,,BVT,Sales3,,lienp6439@gmail.com
+285,이일희_AF,이일희,,Afroba,,lih7912@shints.com
+286,Lily_SMD4,이수정 대리,Seoul,Sales4,,lily@shints.com
+287,Lina_SMDK,곽다은 대리,Seoul,SalesKR,,lina@shints.com
+288,Linda_FOB,,BVT,FOB,,linda@shintsbvt.com
+289,Violet_VMD2,,BVT,Sales2,,linhhanna694@gmail.com
+290,Linh_VPL,,BVT,Planning,,linhnt.shintsbvt@gmail.com
+291,Son_VHR,,BVT,HR,,lixao05@hotmail.com
+292,Liyuwork_ETR,,ETP,Import&Export,,liyuwork.shints@gmail.com
+293,Kyu_SIT,이규정 차장,Seoul,IT,,lkj83@shints.com
+294,lkj8383,,,,,lkj8383@outlook.com
+295,Loan_VPL,,BVT,Planning,,loandp@shintsbvt.com
+296,Loan_VPDS,,BVT,Production Support,,loanvpx@outlook.com
+297,Luan_VWH,,BVT,WareHouse,,luanpham28091995@gmail.com
+298,Mint.ha_VTR,,BVT,Im-Export,,luckyhd85@gmail.com
+299,Lucy_FOB,,BVT,FOB,,lucy@shintsbvt.com
+300,lunacy0070,,,,,lunacy0070@dhglobal.co.kr
+301,Theu_VPRC,,BVT,Proccess,,luongtheuqt11@gmail.com
+302,Huyen_VQC,,BVT,QC,,luongthuongqcshints@gmail.com
+303,nguyenly_VHR,,BVT,HR,,ly89tn@gmail.com
+304,Lyly_VMD6,,BVT,Sales6,,lyly@shintsbvt.com
+305,Mahlet_SMDK,Mahlet 사원,Seoul,SalesKR,,mahlet@shints.com
+306,Miae_SAC,이미애 사원,Seoul,Accounting,,malee@shints.com
+307,Mamaru_EIE,,ETP,IE,,mamru.shints@gmail.com
+308,Manjula,,,,,manjula@shints.com
+309,Mary_VMD3,,BVT,Sales3,,mary@shintsbvt.com
+310,Mason_SMD3,이정환 사원,Seoul,Sales3,,mason@shints.com
+311,Mi_VMC,,BVT,MC,,mathingocmidhkt@gmail.com
+312,Matthew_SMD2,허승원 사원,Seoul,Sales2,,matthew@shints.com
+313,Woinshet_EMC,,ETP,Material,,mcwoinshet.shints@gmail.com
+314,Zakir_ECAD,,ETP,CAD,,md.zakirh86@yahoo.com
+315,Meggie_VPDP,,BVT,Production Plan,,meggie.shintsbvt@gmail.com
+316,Mehret_EAD,,ETP,Admin,,meheret.shints@gmail.com
+317,Mira_SMRP,김미라 부장,Seoul,MRP,,meiluo@shints.com
+318,Mokenin_EFN,,ETP,Finishing,,mekonen.shints@gmail.com
+319,Maron_EPS,,ETP,Production Schedule,,meron2.shints@gmail.com
+320,Mesi_ETR,,ETP,Import&Export,,mesi@shintsetp.com
+321,Mesir_ECUT,,ETP,Cutting,,mesir.shints@gmail.com
+322,Mihret_EAD,,ETP,Admin,,mihiretad.shints@gmail.com
+323,Mihret_ESPM,,ETP,Sample,,mihret.shints@gmail.com
+324,Mila_SPL,한희주 사원,Seoul,Planning,,mila@shints.com
+325,김민하,사원,,인사총무팀_퇴사,,minha@shints.com
+326,Tam_VHR,,BVT,HR,,minhtam.pmt@gmail.com
+327,Trang_VCSR,,BVT,CSR,,minhtrang4692@gmail.com
+328,Wendy_VMD3,,BVT,Sales3,,minhtrangpdu498@gmail.com
+329,Minji_SMD4,김민지 대리,Seoul,Sales4,,minji@shints.com
+330,Minsun_SMRP,김민선 과장,Seoul,MRP,,minsun@shints.com
+331,Mijin_SAC,심미진 대리,Seoul,Accounting,,mjshim@shints.com
+332,Moges_EQA,,ETP,Quality,,moges2.shints@gmail.com
+333,Muditha_EME,,ETP,Mending,,muditha.shints@gmail.com
+334,Mulat_EMC,,ETP,Material,,mulat1.shints@gmail.com
+335,Mulugeta_EIE,,ETP,IE,,mulie.shints@gmail.com
+336,Muluken_EIE,,ETP,IE,,muluken.shint@gmail.com
+337,Mussie_EQA,,ETP,Quality,,mussie@shintsetp.com
+338,Nadia_SMDK,안민지 사원,Seoul,SalesKR,,nadia@shints.com
+339,Nam_VCAD,,BVT,TN_Cad,,namcad86@outlook.com
+340,Natinael_EMD,,ETP,Sales,,nati4.shints@gmail.com
+341,Nazim_ECAD,,ETP,CAD,,nazim.shints@gmail.com
+342,Nebyu_EQA,,ETP,Quality,,nebiyugetu24@gmail.com
+343,Nega_EAD,,ETP,Admin,,nega2.shints@gmail.com
+344,nfleisig,,,,,nfleisig@outerstuff.com
+345,Nghia_VGA,,BVT,GA,,nghiaga82@gmail.com
+346,Macy_FOB,,BVT,FOB,,ngoc1297@outlook.com.vn
+347,Thuy_VHR,,BVT,HR_Factory3,,ngocthuybanpo@gmail.com
+348,Huong_VAC,Manager,BVT,Accounting,,ngohuong@shintsbvt.com
+349,Dao_VAC,,BVT,Accounting,,nguyendao2010@gmail.com
+350,Monica_VPUR,,BVT,PUR,,nguyenhaitrang0412@gmail.com
+351,Hau_VHR,,BVT,HR,,nguyenhau89@outlook.com
+352,Hien_VMRP,,BVT,MRP,,nguyenhien.shints@gmail.com
+353,Hien_VPRC,,BVT,Process,,nguyenhien030987@gmail.com
+354,Chichi_VMRP,,BVT,MRP,,nguyenhoac1@gmail.com
+355,Hilary_VMD6,,BVT,Sales6,,nguyenhoaitrang6393@gmail.com
+356,Hung_VHR,,BVT,HR,,nguyenhung83@outlook.com
+357,Nguyen_VCSR,,BVT,CSR,,nguyennt@shintsbvt.com
+358,Phucnt_VTR,,BVT,Im-Export,,nguyenphuc584@gmail.com
+359,Tham_VMDTN,,BVT,SalesTN,,nguyenthamkt1989@outlook.com
+360,Emma_FOB,,BVT,FOB,,nguyenthao030701@gmail.com
+361,Thao_VMRP,,BVT,MRP,,nguyenthienthao2509@gmail.com
+362,Hoan_VMRP,,BVT,MRP,,nguyenthihoan241186@gmail.com
+363,Lua_VPDS,,BVT,Production Support,,nguyenthilua1305@gmail.com
+364,Oanh_VPDS,,BVT,Production Support,,nguyenthioanhtkhd@gmail.com
+365,Stella_FOB,,BVT,FOB,,nguyenthuhien021298@gmail.com
+366,Keva_VPUR,,BVT,PUR,,nguyenthuyha14@gmail.com
+367,Thyha_VTR,,BVT,Im-Export,,nguyenthyha1983@gmail.com
+368,Gloria_VPUR,,BVT,PUR,,nguyentrang81103@gmail.com
+369,Nhung_VMRP,,BVT,MRP,,nhungdang242884@gmail.com
+370,Nguyen_VFNS,,BVT,TN_Finishing,,nhunghoanthien@outlook.com
+371,Nhung_VPUR,,BVT,PUR,,nhungnguyen.shintsbvt@gmail.com
+372,Nguyennhung_VMRP,,BVT,MRP,,nhungtphd@gmail.com
+373,Lyn_VMC,,BVT,MC,,nhuquynhns1996@gmail.com
+374,Nigus_ECSR,,ETP,CSR,,nigus.csr@shintsetp.com
+375,Nigusie_EQA,,ETP,Quality,,nigus1.shints@gmail.com
+376,niyaz,,,,,niyaz@iccoffprice.com
+377,Nuguse_EFN,,ETP,Finishing,,nmitiku.shints@gmail.com
+378,Ngoc_VPUR,,BVT,PUR,,ntngocsilicat@gmail.com
+379,Myta_VMD2,,BVT,Sales2,,ntquynh0909@gmail.com
+380,Tu_VEMB,,BVT,Embroidery,,ntu.088153@gmail.com
+381,Oliver_FOB,이사,Seoul,FOB,,oliver@shints.com
+382,Paikhy_BVT,이사,BVT,CAD,,paikhy@shintsbvt.com
+383,Yen_VPDP,,BVT,Production Plan,,panda.fvn@gmail.com
+384,Parkjh_BVT,,BVT,TN,,parkjh@shintsbvt.com
+385,Parttime1_SMC,사무보조원,Seoul,Material,,parttime1@shints.com
+386,Parttime3_SBR,사무보조원,Seoul,Brand Development,,parttime3@shints.com
+387,Peter_FOB,,BVT,FOB,,peter@shintsbvt.com
+388,Hang_VMRP,,BVT,MRP,,phamhang26032001@gmail.com
+389,Nancy_VMD1,,BVT,Sales1,,phamhongnhung.biotech@gmail.com
+390,Tessa_VMC,,BVT,MC,,phamphuongthao120602@gmail.com
+391,Dora_VPUR,,BVT,PUR,,phamthithuhai1707@gmail.com
+392,Gil_VMC,,BVT,MC,,phamthuong10h@gmail.com
+393,Eli_VMC,,BVT,MC,,phthao11042001@gmail.com
+394,Hai_VAC,,BVT,Accounting,,phuonghai02011990@gmail.com
+395,Dani_VPUR,,BVT,PUR,,phuonghuyen8687@gmail.com
+396,Phuong_VHR,,BVT,HR,,phuonguyen85bia@gmail.com
+397,Hmk_SBR,한현목 대리,Seoul,Brand Development,,pm@shints.com
+398,Brkti_EPM,,ETP,Production Management,,pmdata1.shints@gmail.com
+399,Prasad_EPD,,ETP,Production,,Prasad@shintsetp.com
+400,Joy_VMD5,,BVT,Sales5,,purpleline590@gmail.com
+401,Jisoo_VMD3,,BVT,Sales3,,qanh95202@gmail.com
+402,Lia_VMRP,,BVT,MRP,,quynh.hip.96@gmail.com
+403,mia_VMC,,BVT,MC,,quynhanhphanhy@gmail.com
+404,Lina_VMRP,,BVT,MRP,,quynhkun201299@gmail.com
+405,Rahel_EMRP,,ETP,MRP,,rahel1.shints@gmail.com
+406,Rana_ECAD,,ETP,CAD,,rana@shintsetp.com
+407,Rediat_EPM,,ETP,Production Management,,rediat1.shints@gmail.com
+408,Rewina_EPUR,,ETP,Purchase,,rewina@shintsetp.com
+409,Rim_SPL,한정림 차장,Seoul,Planning,,rim.han@shints.com
+410,김 리라,,,,,rira@shints.com
+411,Rosa_FOB,,BVT,FOB1,,rosa.shintsbvt@gmail.com
+412,rvasquez,,,,,rvasquez@outerstuff.com
+413,Sally_SBR,구하나 대리,,구하나 퇴사자,,sally@shints.com
+414,Sam_FOB,과장,Seoul,FOB,,sam@shints.com
+415,Sampath_EPD,,ETP,Production,,Sampath.shints@gmail.com
+416,Samrawit_EMD,,ETP,Sales,,samrawit3.shints@gmail.com
+417,Saokat_EWSS,,ETP,Welding&Seamseling,,saokat1@gmail.com
+418,Saron_ETRN,,ETP,Translator,,saron12.shints@gmail.com
+419,Scarlet,사원,,영업2팀_퇴사,,scarlet@shints.com
+420,Seada_ECAD,,ETP,CAD,,seadacad.shints@gmail.com
+421,Seedgarden_SBR,박주영 과장,Seoul,Brand Development,,seedgarden@shints.com
+422,Selamawit_EHR,,ETP,HR,,selamawit.shints@gmail.com
+423,Solomon_EPRT,,ETP,Print,,selomon.shints@gmail.com
+424,Semi_EMD,,ETP,Sales,,semi@shintsetp.com
+425,Sewon_SMD1,김세원 대리,Seoul,Sales1,,sewon@shints.com
+426,Shahadat_EPD,Deputy Factory Director,ETP,Production,,shahadat@shintsetp.com
+427,Shadat_EPM,,ETP,Production Management,,shahdat1.shints@gmail.com
+428,Shewaye_EHR,,ETP,HR,,shewithr.shints@gmail.com
+429,shin@shints.com,회장,,회장,,shin@shints.com
+430,SHINTS_KOR,,,,,shints_kor@shints.com
+431,BVT-Meeting,,,,,shintsbvt.meeting@gmail.com
+432,Sine_EMD,,ETP,Sales,,sine@shintsetp.com
+433,sine11.shints,,,,,sine11.shints@gmail.com
+434,Sinwork_EMD,,ETP,Sales,,sine2.shints@gmail.com
+435,Sinka_ECUT,,ETP,Cutting,,sinike1.shints@gmail.com
+436,Sintayehu_EAC,,ETP,Accounting,,sinte1.shints@gmail.com
+437,Skmin_SGRM,민상기 과장,Seoul,Garment Development,,skmin@shints.com
+438,Solomon_ECSR,,ETP,CSR,,solomon2.shints@gmail.com
+439,Solomon_ETR,,ETP,Import&Export,,solomon5.shints@gmail.com
+440,Solomon_ECUT,,ETP,Cutting,,solomon6.shints@gmail.com
+441,Hao_VAC,,BVT,Accounting,,songha1904@gmail.com
+442,Steven_SMC,윤호현 사원,Seoul,Material,,steven@shints.com
+443,Sugan_EMEC,,ETP,Mechanic,,sugan@shintsetp.com
+444,Suka_VMD2,,BVT,Sales2,,suka@shintsbvt.com
+445,Sunny_SMC,강선미 차장,Seoul,Material,,sunnykang@shints.com
+446,Surafel_EHR,,ETP,HR,,surafel.shints@gmail.com
+447,Tadael_ETR,,ETP,Import&Export,,tada2.shints@gmail.com
+448,Tadele_ETR,,ETP,Import&Export,,tadele.shints@gmail.com
+449,Tadele_EAC,,ETP,Accounting,,tadelehosiso@gmail.com
+450,Tadele_EPUR,,ETP,Purchase,,tadelep.shints@gmail.com
+451,Tadesse_EAD,,ETP,Admin,,tadese1.shints@gmail.com
+452,Tamiru_EMD,,ETP,Sales,,tamiru@shintsetp.com
+453,Tammy_SMC,공인영 사원,Seoul,Material,,tammy@shints.com
+454,Yinn_VMD2,,BVT,Sales2,,tangngan.mkt@gmail.com
+455,Lien_VPRC,,BVT,Process,,tangthilien.adhd@outlook.com
+456,Thuy_VMRP,,BVT,MRP,,tangthuy7394@gmail.com
+457,Mai_VAC,,BVT,Accounting,,tanmai1989@gmail.com
+458,Teddy_EMC,,ETP,Material,,teddy@shintsetp.com
+459,Teddy_EMEC,,ETP,Mechanic,,tedetadese34@gamil.com
+460,Tegenu_EWSS,,ETP,Welding&Seamseling,,tegen.shints@gmail.com
+461,Tekalign_EMC,,ETP,Material,,tekalign.shints@gmail.com
+462,Temesgen_EIE,,ETP,IE,,temesgen1.shints@gmail.com
+463,Tesfaye aklog_ECAD,,ETP,CAD,,tesfayecad.shints@gmail.com
+464,Tesfu_EMD,,ETP,Sales,,tesfu@shintsetp.com
+465,Teshager_EMD,,ETP,Sales,,teshager.shints@gmail.com
+466,test,,ETP,TEST,,
+467,test_etp,,,,,test_etp@shintsetp.com
+468,Ngoc_VPRC,,BVT,Process,,thanhngochd95@gmail.com
+469,Xuan_VHR,,BVT,HR,,thanhxuan@shintsbvt.com
+470,Export1_VTR,,BVT,Im-Export,,thaohien0711@gmail.com
+471,Tharaka_EIE,,ETP,IE,,tharaka@shintsetp.com
+472,Sonnt_VPDS,,BVT,Production Support,,thiensonst@outlook.com
+473,phuong_VPDS,,BVT,Production Support,,thiphuong277@outlook.com.vn
+474,Thomas_EFD,Factory Director,ETP,Factory Director,,thomas@shintsetp.com
+475,Thom_VPRC,,BVT,Process,,thomdao20@gmail.com
+476,Moon_VMD6,,BVT,Sales6,,thunguyenhd1992@gmail.com
+477,Cindy_FOB,,BVT,Sales,,Thuuyen.haui@gmail.com
+478,Kim_VPUR,,BVT,PUR,,thuykimhd@gmail.com
+479,Winnie_VMD4,,BVT,Sales4,,thuyquynhcnmk13@gmail.com
+480,Tibka_SMD2,Tibka 사원,Seoul,Sales2,,tibka@shints.com
+481,Tigist_ETR,,ETP,Import&Export,,tigi.shints@gmail.com
+482,T.Mesfin_EHR,,ETP,HR,,tigist21.shints@gmail.com
+483,T.Fante_EHR,,ETP,HR,,tigist5.shints@gmail.com
+484,Tigist_EWSS,,ETP,Welding&Seamseling,,tigistamarezegeye@gmail.com
+485,Tilahun_EPUR,,ETP,Purchase,,tilahun.shints@gmail.com
+486,Tina_VMD3,,BVT,Sales3,,tina@shintsbvt.com
+487,Tiruwork_EMC,,ETP,Material,,tiruwork.shints@gmail.com
+488,Tizeta_ETRN,,ETP,Translator,,tizeta.shints@gmail.com
+489,Tommy_SMD2,이건우 과장,Seoul,Sales2,,tommy@shints.com
+490,Tracy_VMD,Sales Director,BVT,Sales,,tracy@shintsbvt.com
+491,Chloe_SAC,고소정 대리,Seoul,Accounting,,trade1@shints.com
+492,Jennie_VMD1,,BVT,Sales1,,trangnghiemtt@gmail.com
+493,Daisy_VMD5,,BVT,Sales5,,trangthutran0503@gmail.com
+494,Tiffany_VMD6,,BVT,Sales6,,tranthuyluyenhd123@gmail.com
+495,Tirngo_EAC,,ETP,Accounting,,tringo.shints@gmail.com
+496,Hung_VGA,,BVT,GA,,trinhquochung36579@gmail.com
+497,Rosy_VPL,,BVT,Planning,,trinhthuong1105@gmail.com
+498,Trudy_SMC,조은주 대리,Seoul,Material,,trudy@shints.com
+499,Tseganesh_EHR,,ETP,HR,,tsega.shints@gmail.com
+500,Tsige_EMRP,,ETP,MRP,,tsige1.shints@gmail.com
+501,Tuyen_VSEW,,BVT,Sewing line,,tuyentran1978@hotmail.com
+502,Van_VMD1,,BVT,Sales1,,van@shintsbvt.com
+503,Suri_VMD4,,BVT,Sales4,,Vanchi89.hd@gmail.com
+504,Mabel_VMC,,BVT,MC,,vanmit01041999@gmail.com
+505,Amy_VMRP,,BVT,MRP,,vannguyen3a@gmail.com
+506,Van_VMRP,,BVT,MRP,,vanpham241510@gmail.com
+507,Victoria_FOB,,BVT,FOB,,victoria@shintsbvt.com
+508,Lan_VMRP,,BVT,MRP,,vivimio89@gmail.com
+509,Tho_VMRP,,BVT,MRP,,vutho602@gmail.com
+510,Thuy Vu_VPUR,,BVT,PUR,,vuthuyanp@gmail.com
+511,Wakuma_EIE,,ETP,IE,,wakumadiriba213@gmail.com
+512,Wasihun_EMD,,ETP,Sales,,wasihun@shintsetp.com
+513,Hyunjoo_STR,왕현주 과장,Seoul,Im-Export,,whj84@shints.com
+514,Mai_VHR,,BVT,HR,,winnie86hd@gmail.com
+515,원용봉_AF,원용봉,,Afroba,,won21kr@shints.com
+516,Wondimu_EMTN,,ETP,Maintanance,,wondeb.shints@gmail.com
+517,Workneh_EIT,,ETP,IT,,workneh.shints@gmail.com
+518,Yahikob_EFN,,ETP,Finishing,,yahikob.shints@gmail.com
+519,Yeeun_SGRM,송예은 대리,Seoul,Garment Development,,yeeun@shints.com
+520,Yemane_EDGM,,ETP,Admin,,yemane@shintsetp.com
+521,Yemsrach_ETR,,ETP,Import&Export,,yemeserach1.shints@gmail.com
+522,Yeshialem_ETR,,ETP,Import&Export,,yeshi1.shints@gmail.com
+523,Yezihalem_ECAD,,ETP,CAD,,yezihalem.shints@gmail.com
+524,Yhkim_SGRM,김용환 이사,Seoul,Garment Development,,yhkim@shints.com
+525,Yibeltal_EQA,,ETP,Quality,,yibeltal.shints@gmail.com
+526,Yirga_EPD,,ETP,Production,,yirga1.shints@gmail.com
+527,Yitbarek_EHR,,ETP,HR,,yitbarek@shintsetp.com
+528,Yohanes_EMD,,ETP,Sales,,yohanes.shints@gmail.com
+529,yohannes_EMD,,ETP,Sales,,yohannes2.shints@gmail.com
+530,Yonas_EIT,,ETP,IT,,yonas@shintsetp.com
+531,Yugyeong_SAC,송유경 대리,Seoul,Accounting,,yugyeong@shints.com
+532,Yuna_SMD1,이유나 사원,,영업1팀 퇴사자,,yuna@shints.com
+533,Yuri_SMD4,홍유리 과장,Seoul,Sales4,,yuri@shints.com
+534,Zelalem_EPS,,ETP,Production Schedule,,zelalem@shintsetp.com
+535,Zelalem_ETRN,,ETP,Translator,,zelalem99.shints@gmail.com
+536,전영배_AF,전영배,,Afroba,,zeon77@shints.com
+537,Zerihun_EIT,,ETP,IT,,zersh54@gmail.com
+538,Zertihun_ECAD,,ETP,CAD,,zerthun.shints@gmail.com
+539,Zewditu_ECUT,,ETP,Cutting,,zewditu.shints@gmail.com
+540,Zigeju_EIE,,ETP,IE,,zigeju.shints@gmail.com
+541,Zinaw_ECAD,,ETP,CAD,,zinaw.shints@gmail.com
+542,Zoe_SHR,오성하 사원,Seoul,HR,,Zoe@shints.com
