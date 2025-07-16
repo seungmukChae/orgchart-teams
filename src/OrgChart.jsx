@@ -5,6 +5,8 @@ import React, {
 import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data, searchQuery }) {
+  console.log('── OrgChart treeData ──', treeData);
+
   const containerRef = useRef(null);
   const treeRef = useRef(null);
   const [openSection, setOpenSection] = useState(null);
@@ -259,16 +261,20 @@ export default function OrgChart({ data, searchQuery }) {
         nodeSize={{ x: 200, y: 80 }}
         separation={(a, b) => {
           // 같은 부모(형제)일 때만 동적 간격
-          if (a.parent === b.parent && a.parent) {
-            const arr = Array.isArray(a.parent.children)
-              ? a.parent.children.filter(Boolean)
-              : [];
-            const cnt = Math.max(arr.length, 1);
-            const val = 1 + Math.log(cnt);
-            return Number.isFinite(val) ? val : 1;
-          }
-          // 비-형제 기본 간격
-          return 1;
+          
+  // 1) a.parent가 있고, 그 부모가 '팀 루트' 레벨(예: sectionIds에 포함된 id)일 때만 동적 spacing
+  const pd = a.parent && a.parent.data;
+  if (pd && sectionIds.includes(pd.id)) {
+    // D3 hierarchy의 children 배열
+    const sibs = Array.isArray(a.parent.children)
+      ? a.parent.children.filter(Boolean)
+      : [];
+    const count = Math.max(sibs.length, 1);      // 항상 최소 1
+    const spacing = 1 + Math.log(count);         // 원하는 스케일
+    return Number.isFinite(spacing) ? spacing : 1;
+  }
+  // 그 외에는 절대 NaN이 나올 일이 없도록 기본 간격 1
+  return 1;
         }}
         styles={{
           links: { stroke: '#555', strokeWidth: 1.5 },
@@ -294,4 +300,6 @@ export default function OrgChart({ data, searchQuery }) {
       )}
     </div>
   );
+  
 }
+
