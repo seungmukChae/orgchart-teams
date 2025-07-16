@@ -163,13 +163,16 @@ export default function OrgChart({ data, searchQuery }) {
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
         separation={(a, b) => {
-          if (a.depth === 1 && b.depth === 1 && a.parent) {
-            const siblingCount = a.parent.children?.length || 0;
-            return 1 + siblingCount / 3;
-          }
-          return 1;
-        }}
-        styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
+          const siblingCount = Array.isArray(a.parent?.children)
+          ? a.parent.children.length
+          : 0;
+        if (a.depth === 1 && b.depth === 1 && siblingCount > 0) {
+          const sep = 1 + siblingCount / 3;
+          return Math.max(1, Math.min(4, sep)); // 1~4 사이
+        }
+        return 1;
+      }}
+      styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
       {tooltip.visible && (
         <div
