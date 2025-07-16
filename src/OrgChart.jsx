@@ -156,13 +156,17 @@ export default function OrgChart({ data, searchQuery }) {
 
         {/* 수정된 separation */}
         separation={(a, b) => {
+          // 형제 노드 간격만 동적 조절
           if (a.parent === b.parent && a.parent) {
-            const count = a.parent.children.length;
-            // count가 1 이하일 땐 기본 1, 클 때만 로그 사용
-            return count > 1 ? 1 + Math.log(count) : 1;
+            // children 배열이 없거나 길이가 0이면 최소 1로 치환
+            const raw = Array.isArray(a.parent.children) ? a.parent.children.length : 1;
+            const cnt = Math.max(raw, 1);
+            // 1 + log(cnt) 방식 (cnt=1일 땐 1)
+            return 1 + Math.log(cnt);
           }
-          return 1;
-        }}
+            // 비형제 노드는 기본 간격 1
+            return 1;
+    }}
 
         styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
