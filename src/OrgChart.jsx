@@ -5,8 +5,6 @@ import React, {
 import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data, searchQuery }) {
-  console.log('── OrgChart treeData ──', treeData);
-
   const containerRef = useRef(null);
   const treeRef = useRef(null);
   const [openSection, setOpenSection] = useState(null);
