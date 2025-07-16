@@ -258,7 +258,27 @@ export default function OrgChart({ data, searchQuery }) {
         pathFunc="elbow"
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
-        separation={{ siblings: 1, nonSiblings: 1 }}
+        separation={(a, b) => {
+          // 같은 부모(형제 노드)인 경우에만 동적 간격 적용
+          if (a.parent === b.parent && a.parent) {
+            // children 배열이 확실히 Array인지 확인
+            const raw = Array.isArray(a.parent.children)
+              ? a.parent.children
+              : [];
+            // null/undefined 제거
+            const valid = raw.filter(Boolean);
+            const count = valid.length;
+            // 형제 수가 1 이하일 땐 기본 1
+            if (count <= 1) return 1;
+            // 1 + log(count) 계산
+            const spacing = 1 + Math.log(count);
+            // 혹시 모를 NaN/Infinity 방어
+            return Number.isFinite(spacing) ? spacing : 1;
+          }
+          // 비-형제 노드는 기본 간격 1
+          return 1;
+        }}
+        styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
 
       {tooltip.visible && (
