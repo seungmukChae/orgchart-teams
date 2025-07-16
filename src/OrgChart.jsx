@@ -231,7 +231,6 @@ export default function OrgChart({ data, searchQuery }) {
         }}
         styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
-console.log('── OrgChart treeData ──', treeData);
       {tooltip.visible && (
         <div
           style={{
