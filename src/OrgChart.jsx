@@ -89,7 +89,7 @@ export default function OrgChart({ data, searchQuery }) {
               visible: true,
               x: evt.clientX + 10,
               y: evt.clientY + 10,
-              email: `Business mail: ${nodeDatum.email}`,
+              email: `Business Mail : ${nodeDatum.email}`,
             });
           }
         }}
