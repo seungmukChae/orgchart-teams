@@ -12,45 +12,56 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
   const sectionIds = ['100', '101', '102'];
- // 노드 클릭(섹션 토글, 이메일 복사)
- const handleClick = useCallback((nodeDatum) => {
-  if (sectionIds.includes(nodeDatum.id)) {
-    setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
-  } else if (nodeDatum.email) {
-    navigator.clipboard.writeText(nodeDatum.email);
-  }
-}, []);
 
+  // 노드 클릭(섹션 토글, 이메일 복사)
+  const handleClick = useCallback((nodeDatum) => {
+    if (sectionIds.includes(nodeDatum.id)) {
+      setOpenSection((prev) => (prev === nodeDatum.id ? null : nodeDatum.id));
+    } else if (nodeDatum.email) {
+      navigator.clipboard.writeText(nodeDatum.email);
+    }
+  }, []);
 
   // 데이터 → 항상 배열 형태로 변환
   const rootArray = useMemo(() => (Array.isArray(data) ? data : data ? [data] : []), [data]);
 
-  // buildTree: 검색, 섹션 토글 등 반영
+  // buildTree: 검색/정렬/섹션 토글 반영
   const buildTree = useCallback((node) => {
     if (!node) return null;
     const term = searchQuery.trim().toLowerCase();
+
     let children = (node.children || []).map(buildTree).filter(Boolean);
 
+    // === [추가] 팀/법인 정렬 ===
+    const idNum = Number(node.id);
+    // 팀 노드: 103~199
+    if (idNum >= 103 && idNum <= 199) {
+      children = children.sort((a, b) => (a.이름 || '').localeCompare(b.이름 || ''));
+    }
+    // 법인 노드: 100~102
+    if (sectionIds.includes(node.id)) {
+      children = children.sort((a, b) => (b.children?.length || 0) - (a.children?.length || 0));
+    }
+
+    // === 검색/토글 기존 로직 ===
     if (!term) {
       if (sectionIds.includes(node.id)) {
         children = openSection === node.id ? children : [];
       }
       return { ...node, children };
     }
-
     const nameMatch = node.이름?.toLowerCase().includes(term);
     const titleMatch = node.직책?.toLowerCase().includes(term);
     const teamMatch = node.팀?.toLowerCase().includes(term);
 
     if (nameMatch || titleMatch) return { ...node, children };
     if (teamMatch) {
-      // 팀 매치: 전체 자손
       const allDesc = (node.children || []).map(buildTree).filter(Boolean);
       return { ...node, children: allDesc };
     }
     if (children.length) return { ...node, children };
     return null;
-  }, [searchQuery, openSection]);
+  }, [searchQuery, openSection, sectionIds]);
 
   // 트리 데이터(검색 반영)
   const filteredRoots = useMemo(() => {
@@ -58,7 +69,6 @@ export default function OrgChart({ data, searchQuery }) {
     return rootArray.map(buildTree).filter(Boolean);
   }, [rootArray, buildTree]);
 
-  // 에러 방지: 트리 데이터가 비었으면 렌더X
   if (!filteredRoots.length) {
     return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
   }
@@ -148,8 +158,6 @@ export default function OrgChart({ data, searchQuery }) {
     );
   };
 
- 
-
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Tree
@@ -164,15 +172,15 @@ export default function OrgChart({ data, searchQuery }) {
         nodeSize={{ x: 200, y: 80 }}
         separation={(a, b) => {
           const siblingCount = Array.isArray(a.parent?.children)
-          ? a.parent.children.length
-          : 0;
-        if (a.depth === 1 && b.depth === 1 && siblingCount > 0) {
-          const sep = 1 + siblingCount / 3;
-          return Math.max(1, Math.min(4, sep)); // 1~4 사이
-        }
-        return 1;
-      }}
-      styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
+            ? a.parent.children.length
+            : 0;
+          if (a.depth === 1 && b.depth === 1 && siblingCount > 0) {
+            const sep = 1 + siblingCount / 3;
+            return Math.max(1, Math.min(4, sep)); // 1~4 사이
+          }
+          return 1;
+        }}
+        styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
       {tooltip.visible && (
         <div
