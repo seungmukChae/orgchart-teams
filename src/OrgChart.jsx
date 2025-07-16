@@ -1,3 +1,4 @@
+// OrgChart.jsx
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Tree from 'react-d3-tree';
 
@@ -9,7 +10,6 @@ export default function OrgChart({ data, searchQuery }) {
 
   const sectionIds = ['100','101','102'];
 
-  // 윈도우 리사이즈 시 중앙 노드 유지
   useEffect(() => {
     const handleResize = () => {
       treeRef.current?.centerNode?.(data.id);
@@ -18,7 +18,6 @@ export default function OrgChart({ data, searchQuery }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
-  // 노드 클릭: 섹션 토글 or 이메일 복사
   const handleClick = (nodeDatum) => {
     if (sectionIds.includes(nodeDatum.id)) {
       setOpenSection(prev => prev === nodeDatum.id ? null : nodeDatum.id);
@@ -27,15 +26,11 @@ export default function OrgChart({ data, searchQuery }) {
     }
   };
 
-  // 트리 생성 로직: 검색어 없을 때 전체, 있으면 이름/직책/팀 match
   const buildTree = useCallback((node) => {
     if (!node) return null;
     const term = searchQuery.trim().toLowerCase();
-
-    // 자식 먼저 재귀
     let children = (node.children || []).map(buildTree).filter(Boolean);
 
-    // 검색어 없으면 섹션 토글만 적용, 항상 렌더
     if (!term) {
       if (sectionIds.includes(node.id)) {
         children = openSection === node.id ? children : [];
@@ -43,7 +38,6 @@ export default function OrgChart({ data, searchQuery }) {
       return { ...node, children };
     }
 
-    // 검색어 있을 때
     const isNameMatch  = node.이름?.toLowerCase().includes(term);
     const isTitleMatch = node.직책?.toLowerCase().includes(term);
     const isTeamMatch  = node.팀?.toLowerCase().includes(term);
@@ -52,7 +46,6 @@ export default function OrgChart({ data, searchQuery }) {
       return { ...node, children };
     }
     if (isTeamMatch) {
-      // 팀 매치 시, 해당 노드 자식 전체 포함
       const allDescendants = (node.children || []).map(buildTree).filter(Boolean);
       return { ...node, children: allDescendants };
     }
@@ -67,7 +60,6 @@ export default function OrgChart({ data, searchQuery }) {
     return <div style={{ padding: '2rem', color: '#888' }}>검색 결과가 없습니다.</div>;
   }
 
-  // 노드 렌더 함수 (툴팁, 복사, 섹션 텍스트)
   const renderNode = ({ nodeDatum }) => {
     const idNum = parseInt(nodeDatum.id, 10);
     let fill = idNum >= 100 && idNum <= 199 ? '#ffa500' : '#e0e0e0';
@@ -161,14 +153,17 @@ export default function OrgChart({ data, searchQuery }) {
         pathFunc="elbow"
         renderCustomNodeElement={renderNode}
         nodeSize={{ x: 200, y: 80 }}
-        // 동적 separation: 같은 부모 형제 수에 따라 간격 조절
+
+        {/* 수정된 separation */}
         separation={(a, b) => {
           if (a.parent === b.parent && a.parent) {
-            const siblingCount = a.parent.children.length;
-            return 1 + Math.log(siblingCount);
+            const count = a.parent.children.length;
+            // count가 1 이하일 땐 기본 1, 클 때만 로그 사용
+            return count > 1 ? 1 + Math.log(count) : 1;
           }
           return 1;
         }}
+
         styles={{ links: { stroke: '#555', strokeWidth: 1.5 } }}
       />
 
