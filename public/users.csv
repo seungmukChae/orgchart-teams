@@ -1,107 +1,107 @@
-﻿id,이름,직책,법인,팀,manager_id
-100,Seoul,,,,2
-101,ETP,,,,2
-102,BVT,,,,2
-1,SHIN,Chairman,,Chairman,
-2,Jongin_CEO,CEO,,CEO,1
-3,CHA,Advisor,,고문,2
-4,Haein_VP,Vice President,,Vice-President,100
-103,Planning,,,,4
-5,Jay_SPL,General Manager,Seoul,Planning,103
-104,Material,,,,4
-6,Chuck_SMC,Senior Manager,Seoul,Material,104
-105,MRP,,,,4
-7,Mira_SMRP,General Manager,Seoul,MRP,105
-106,IT,,,,4
-8,Kyu_SIT,Senior Manager,Seoul,IT,106
-107,Accounting,,,,4
-9,Jeon_SAC,General Manager,Seoul,Accounting,107
-108,Im-Export,,,,4
-10,Hyunjoo_STR,Manager,Seoul,Im-Export,108
-109,HR,,,,4
-11,Leo_SHR,Director,Seoul,HR,109
-110,Brand Development,,,,4
-12,Chris_SBR,Senior Manager,Seoul,Brand Development,110
-111,Garment Development,,,,4
-13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111
-112,SalesKR,,,,4
-14,Andrew_SMDK,General Manager,Seoul,SalesKR,112
-113,Sales1,,,,4
-15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113
-114,Sales2,,,,4
-16,Ciara_SMD2,Executive Director,Seoul,Sales2,114
-115,Sales3,,,,4
-17,Jake_SMD3,Senior Manager,Seoul,Sales3,115
-116,Sales4,,,,4
-18,Ken_SMD4,Executive Director,Seoul,Sales4,116
-117,FOB,,,,4
-19,Oliver_FOB,Director,Seoul,FOB,117
-20,Bell_SPL,Assistant Manager,Seoul,Planning,5
-21,Mila_SPL,Staff,Seoul,Planning,5
-22,Rim_SPL,Senior Manager,Seoul,Planning,5
-23,Chelsea_SMC,Senior Manager,Seoul,Material,6
-24,Parttime1_SMC,Parttime,Seoul,Material,6
-25,Steven_SMC,Staff,Seoul,Material,6
-26,Sunny_SMC,Senior Manager,Seoul,Material,6
-27,Tammy_SMC,Staff,Seoul,Material,6
-28,Trudy_SMC,Assistant Manager,Seoul,Material,6
-29,Khe_SMRP,General Manager,Seoul,MRP,7
-30,Minsun_SMRP,Manager,Seoul,MRP,7
-31,Brandon_SIT,Assistant Manager,Seoul,IT,8
-32,Dain_SAC,Assistant Manager,Seoul,Accounting,9
-33,Jeongyoun_SAC,Staff,Seoul,Accounting,9
-34,Miae_SAC,Staff,Seoul,Accounting,9
-35,Mijin_SAC,Assistant Manager,Seoul,Accounting,9
-36,Chloe_SAC,Assistant Manager,Seoul,Accounting,9
-37,Yugyeong_SAC,Assistant Manager,Seoul,Accounting,9
-38,Clara_STR,Assistant Manager,Seoul,Im-Export,10
-39,Colin_STR,Assistant Manager,Seoul,Im-Export,10
-40,Bit_SHR,Assistant Manager,Seoul,HR,11
-41,Zoe_SHR,Staff,Seoul,HR,11
-42,Moon_SBR,Assistant Manager,Seoul,Brand Development,12
-43,Ed_SBR,Manager,Seoul,Brand Development,12
-44,Glove_SBR,Executive Director,Seoul,Brand Development,12
-45,Parttime3_SBR,Parttime,Seoul,Brand Development,12
-46,Hmk_SBR,Assistant Manager,Seoul,Brand Development,12
-47,Seedgarden_SBR,Manager,Seoul,Brand Development,12
-48,Kang_SGRM,Director,Seoul,Garment Development,13
-49,Skmin_SGRM,Manager,Seoul,Garment Development,13
-50,Yeeun_SGRM,Assistant Manager,Seoul,Garment Development,13
-51,Yhkim_SGRM,Director,Seoul,Garment Development,13
-52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,14
-53,Becky_SMDK,General Manager,Seoul,SalesKR,14
-54,Bella_SMDK,Manager,Seoul,SalesKR,14
-55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,14
-56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,14
-57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,14
-58,Diana_SMDK,Manager,Seoul,SalesKR,14
-59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,14
-60,Kylie_SMDK,Staff,Seoul,SalesKR,14
-61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,14
-62,Mahlet_SMDK,Staff,Seoul,SalesKR,14
-63,Andy_SMD1,Staff,Seoul,Sales1,15
-64,Celeste_SMD1,Staff,Seoul,Sales1,15
-65,Dos_SMD1,General Manager,Seoul,Sales1,15
-66,Jin_SMD1,Manager,Seoul,Sales1,15
-67,Sewon_SMD1,Assistant Manager,Seoul,Sales1,15
-68,Kara_FOB,,Seoul,FOB,16
-69,Jinny_SMD2,Manager,Seoul,Sales2,16
-70,Joon_SMD2,Staff,Seoul,Sales2,16
-71,Matthew_SMD2,Staff,Seoul,Sales2,16
-72,Tibka_SMD2,Staff,Seoul,Sales2,16
-73,Tommy_SMD2,Manager,Seoul,Sales2,16
-74,Hana_FOB,Manager,Seoul,FOB,17
-75,Ally_SMD3,Staff,Seoul,Sales3,17
-76,Boin_SMD3,Senior Manager,Seoul,Sales3,17
-77,Hazel_SMD3,Assistant Manager,Seoul,Sales3,17
-78,Jenny_SMD3,Manager,Seoul,Sales3,17
-79,Mason_SMD3,Staff,Seoul,Sales3,17
-80,David_FOB,Staff,Seoul,FOB,18
-81,Jimmy_FOB,Staff,Seoul,FOB,18
-82,Lia_SMD4,Assistant Manager,Seoul,Sales4,18
-83,Lily_SMD4,Assistant Manager,Seoul,Sales4,18
-84,Minji_SMD4,Assistant Manager,Seoul,Sales4,18
-85,Yuri_SMD4,Manager,Seoul,Sales4,18
-86,Cherie_FOB,Staff,Seoul,FOB,19
-87,Sam_FOB,Manager,Seoul,FOB,19
-88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14
+﻿id,이름,직책,법인,팀,manager_id,email
+100,Seoul,,,,2,
+101,ETP,,,,2,
+102,BVT,,,,2,
+1,SHIN,Chairman,,Chairman,,
+2,Jongin_CEO,CEO,,CEO,1,
+3,CHA,Advisor,,고문,2,
+4,Haein_VP,Vice President,,Vice-President,100,
+103,Planning,,,,4,
+5,Jay_SPL,General Manager,Seoul,Planning,103,
+104,Material,,,,4,
+6,Chuck_SMC,Senior Manager,Seoul,Material,104,
+105,MRP,,,,4,
+7,Mira_SMRP,General Manager,Seoul,MRP,105,
+106,IT,,,,4,
+8,Kyu_SIT,Senior Manager,Seoul,IT,106,
+107,Accounting,,,,4,
+9,Jeon_SAC,General Manager,Seoul,Accounting,107,
+108,Im-Export,,,,4,
+10,Hyunjoo_STR,Manager,Seoul,Im-Export,108,
+109,HR,,,,4,
+11,Leo_SHR,Director,Seoul,HR,109,
+110,Brand Development,,,,4,
+12,Chris_SBR,Senior Manager,Seoul,Brand Development,110,
+111,Garment Development,,,,4,
+13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111,
+112,SalesKR,,,,4,
+14,Andrew_SMDK,General Manager,Seoul,SalesKR,112,
+113,Sales1,,,,4,
+15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113,
+114,Sales2,,,,4,
+16,Ciara_SMD2,Executive Director,Seoul,Sales2,114,
+115,Sales3,,,,4,
+17,Jake_SMD3,Senior Manager,Seoul,Sales3,115,
+116,Sales4,,,,4,
+18,Ken_SMD4,Executive Director,Seoul,Sales4,116,
+117,FOB,,,,4,
+19,Oliver_FOB,Director,Seoul,FOB,117,
+20,Bell_SPL,Assistant Manager,Seoul,Planning,5,
+21,Mila_SPL,Staff,Seoul,Planning,5,
+22,Rim_SPL,Senior Manager,Seoul,Planning,5,
+23,Chelsea_SMC,Senior Manager,Seoul,Material,6,
+24,Parttime1_SMC,Parttime,Seoul,Material,6,
+25,Steven_SMC,Staff,Seoul,Material,6,
+26,Sunny_SMC,Senior Manager,Seoul,Material,6,
+27,Tammy_SMC,Staff,Seoul,Material,6,
+28,Trudy_SMC,Assistant Manager,Seoul,Material,6,
+29,Khe_SMRP,General Manager,Seoul,MRP,7,
+30,Minsun_SMRP,Manager,Seoul,MRP,7,
+31,Brandon_SIT,Assistant Manager,Seoul,IT,8,brandon@shints.com
+32,Dain_SAC,Assistant Manager,Seoul,Accounting,9,
+33,Jeongyoun_SAC,Staff,Seoul,Accounting,9,
+34,Miae_SAC,Staff,Seoul,Accounting,9,
+35,Mijin_SAC,Assistant Manager,Seoul,Accounting,9,
+36,Chloe_SAC,Assistant Manager,Seoul,Accounting,9,
+37,Yugyeong_SAC,Assistant Manager,Seoul,Accounting,9,
+38,Clara_STR,Assistant Manager,Seoul,Im-Export,10,
+39,Colin_STR,Assistant Manager,Seoul,Im-Export,10,
+40,Bit_SHR,Assistant Manager,Seoul,HR,11,
+41,Zoe_SHR,Staff,Seoul,HR,11,
+42,Moon_SBR,Assistant Manager,Seoul,Brand Development,12,
+43,Ed_SBR,Manager,Seoul,Brand Development,12,
+44,Glove_SBR,Executive Director,Seoul,Brand Development,12,
+45,Parttime3_SBR,Parttime,Seoul,Brand Development,12,
+46,Hmk_SBR,Assistant Manager,Seoul,Brand Development,12,
+47,Seedgarden_SBR,Manager,Seoul,Brand Development,12,
+48,Kang_SGRM,Director,Seoul,Garment Development,13,
+49,Skmin_SGRM,Manager,Seoul,Garment Development,13,
+50,Yeeun_SGRM,Assistant Manager,Seoul,Garment Development,13,
+51,Yhkim_SGRM,Director,Seoul,Garment Development,13,
+52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,14,
+53,Becky_SMDK,General Manager,Seoul,SalesKR,14,
+54,Bella_SMDK,Manager,Seoul,SalesKR,14,
+55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,14,
+56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,14,
+57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,14,
+58,Diana_SMDK,Manager,Seoul,SalesKR,14,
+59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,14,
+60,Kylie_SMDK,Staff,Seoul,SalesKR,14,
+61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,14,
+62,Mahlet_SMDK,Staff,Seoul,SalesKR,14,
+63,Andy_SMD1,Staff,Seoul,Sales1,15,
+64,Celeste_SMD1,Staff,Seoul,Sales1,15,
+65,Dos_SMD1,General Manager,Seoul,Sales1,15,
+66,Jin_SMD1,Manager,Seoul,Sales1,15,
+67,Sewon_SMD1,Assistant Manager,Seoul,Sales1,15,
+68,Kara_FOB,,Seoul,FOB,16,
+69,Jinny_SMD2,Manager,Seoul,Sales2,16,
+70,Joon_SMD2,Staff,Seoul,Sales2,16,
+71,Matthew_SMD2,Staff,Seoul,Sales2,16,
+72,Tibka_SMD2,Staff,Seoul,Sales2,16,
+73,Tommy_SMD2,Manager,Seoul,Sales2,16,
+74,Hana_FOB,Manager,Seoul,FOB,17,
+75,Ally_SMD3,Staff,Seoul,Sales3,17,
+76,Boin_SMD3,Senior Manager,Seoul,Sales3,17,
+77,Hazel_SMD3,Assistant Manager,Seoul,Sales3,17,
+78,Jenny_SMD3,Manager,Seoul,Sales3,17,
+79,Mason_SMD3,Staff,Seoul,Sales3,17,
+80,David_FOB,Staff,Seoul,FOB,18,
+81,Jimmy_FOB,Staff,Seoul,FOB,18,
+82,Lia_SMD4,Assistant Manager,Seoul,Sales4,18,
+83,Lily_SMD4,Assistant Manager,Seoul,Sales4,18,
+84,Minji_SMD4,Assistant Manager,Seoul,Sales4,18,
+85,Yuri_SMD4,Manager,Seoul,Sales4,18,
+86,Cherie_FOB,Staff,Seoul,FOB,19,
+87,Sam_FOB,Manager,Seoul,FOB,19,
+88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14,

@@ -21,7 +21,7 @@ export default function OrgChart({ data, searchQuery }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 트리 빌드: 검색 필터 + 섹션 토글 반영
+  // 트리 빌드: 이름, 직책, 팀 검색 + 섹션 토글
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
@@ -29,12 +29,22 @@ export default function OrgChart({ data, searchQuery }) {
       const match =
         !term ||
         node.이름?.toLowerCase().includes(term) ||
-        node.직책?.toLowerCase().includes(term);
+        node.직책?.toLowerCase().includes(term) ||
+        node.팀?.toLowerCase().includes(term);
 
+      // 자식 재귀 처리
       let children = (node.children || []).map(buildTree).filter(Boolean);
+
+      // 팀명으로 검색했을 때, 해당 팀에 속한 모든 자식 노드 포함
+      if (term && node.팀?.toLowerCase().includes(term)) {
+        children = (node.children || []).map((child) => buildTree({ ...child, children: child.children }));
+      }
+
+      // 섹션 토글 로직: 검색어 없을 때만
       if (sectionIds.includes(node.id) && !term) {
         children = openSection === node.id ? children : [];
       }
+
       if (node === data) return { ...node, children };
       if (match || children.length) return { ...node, children };
       return null;
@@ -52,7 +62,7 @@ export default function OrgChart({ data, searchQuery }) {
     }
   };
 
-  // 검색 후 포커스 이동
+  // 검색 후 포커스 이동 (이름·직책·팀)
   useEffect(() => {
     const term = searchQuery.trim().toLowerCase();
     if (!term || !treeRef.current || !treeData) return;
@@ -60,10 +70,9 @@ export default function OrgChart({ data, searchQuery }) {
       if (!node) return null;
       if (
         node.이름?.toLowerCase().includes(term) ||
-        node.직책?.toLowerCase().includes(term)
-      ) {
-        return node;
-      }
+        node.직책?.toLowerCase().includes(term) ||
+        node.팀?.toLowerCase().includes(term)
+      ) return node;
       if (node.children) {
         for (let child of node.children) {
           const found = findNode(child);
@@ -78,7 +87,7 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, [searchQuery, treeData, data]);
 
-  // 검색 취소 시 루트 재중앙 정렬
+  // 검색 초기화 시 루트 중앙
   useEffect(() => {
     if (searchQuery.trim() === '' && treeRef.current?.centerNode) {
       treeRef.current.centerNode(data.id);
@@ -125,43 +134,15 @@ export default function OrgChart({ data, searchQuery }) {
         onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, email: '' })}
         style={{ cursor: nodeDatum.email ? 'pointer' : 'default' }}
       >
-        <rect
-          x={-80}
-          y={-30}
-          width={160}
-          height={60}
-          rx={8}
-          ry={8}
-          fill={fill}
-          stroke="#444"
-          strokeWidth={1.5}
-        />
-        <text
-          x={0}
-          y={-6}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          style={{ ...baseText, fontSize: 13 }}
-        >
+        <rect x={-80} y={-30} width={160} height={60} rx={8} ry={8} fill={fill} stroke="#444" strokeWidth={1.5} />
+        <text x={0} y={-6} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 13 }}>
           {nodeDatum.이름}
         </text>
-        <text
-          x={0}
-          y={14}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          style={{ ...baseText, fontSize: 11, fill: '#555' }}
-        >
+        <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 11, fill: '#555' }}>
           {nodeDatum.직책}
         </text>
         {sectionIds.includes(nodeDatum.id) && (
-          <text
-            x={0}
-            y={14}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            style={{ ...baseText, fontSize: 10 }}
-          >
+          <text x={0} y={14} textAnchor="middle" dominantBaseline="middle" style={{ ...baseText, fontSize: 10 }}>
             [{openSection === nodeDatum.id ? 'Collapse' : 'Expand'}]
           </text>
         )}
@@ -172,7 +153,7 @@ export default function OrgChart({ data, searchQuery }) {
   return (
     <div
       className="orgchart-container"
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', position: 'relative' }}
       ref={containerRef}
     >
       {treeData ? (
@@ -195,20 +176,12 @@ export default function OrgChart({ data, searchQuery }) {
         </div>
       )}
       {tooltip.visible && (
-        <div
-          style={{
-            position: 'absolute',
-            top: tooltip.y,
-            left: tooltip.x,
-            background: '#fff',
-            border: '1px solid #ccc',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            pointerEvents: 'none',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          }}
-        >
+        <div style={{
+          position: 'absolute', top: tooltip.y, left: tooltip.x,
+          background: '#fff', border: '1px solid #ccc', padding: '4px 8px',
+          borderRadius: '4px', pointerEvents: 'none', whiteSpace: 'nowrap',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
           {tooltip.email}
         </div>
       )}
