@@ -195,7 +195,7 @@ export default function OrgChart({ data, searchQuery }) {
         {isSection && (
           <text
             x={0}
-            y={24}
+            y={14}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ fontFamily: '맑은 고딕', fontSize: 10 }}
