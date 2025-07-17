@@ -4,7 +4,17 @@ import Tree from 'react-d3-tree';
 export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
-  const [openSection, setOpenSection] = useState([]);
+
+  // [1] 법인 ID만 openSection에 포함 (초기값)
+  const CORP_IDS = ['100', '101', '102'];
+  const isCorp = (id) => CORP_IDS.includes(String(id));
+  const isTeam = (id) => {
+    const n = Number(id);
+    return n >= 103 && n <= 199;
+  };
+
+  // openSection: 열린 법인/팀 id (법인만 기본 open)
+  const [openSection, setOpenSection] = useState(CORP_IDS);
   const [tooltip, setTooltip] = useState({
     visible: false,
     x: 0,
@@ -12,14 +22,7 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  // 법인/팀 헬퍼
-  const isCorp = (id) => ['100', '101', '102'].includes(String(id));
-  const isTeam = (id) => {
-    const n = Number(id);
-    return n >= 103 && n <= 199;
-  };
-
-  // 가상 루트
+  // 가상 루트 처리
   const rootData = useMemo(() => {
     if (Array.isArray(data)) {
       return {
@@ -34,7 +37,7 @@ export default function OrgChart({ data, searchQuery }) {
     return data;
   }, [data]);
 
-  // 트리 중앙 정렬
+  // 트리 중앙정렬
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
@@ -61,33 +64,45 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // *** 핵심: buildTree ***
+  // buildTree: collapse/expand 지원 + 검색 UX 개선
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
+
       const originalChildren = node.children || [];
       let children = originalChildren.map(buildTree).filter(Boolean);
 
-      // [1] 검색어 없으면 기존 collapse
+      // [A] 검색어가 없으면: 법인만 open, 나머지 모두 close
       if (!term) {
-        if (isCorp(idStr) || isTeam(idStr)) {
-          if (!openSection.includes(idStr)) return { ...node }; // children X
+        if (isCorp(idStr)) {
+          children = openSection.includes(idStr) ? children : [];
+          return { ...node, children };
+        }
+        if (isTeam(idStr)) {
+          children = openSection.includes(idStr) ? children : [];
           return { ...node, children };
         }
         return { ...node, children };
       }
 
-      // [2] 팀명/법인명 매치: children을 보여줄지 여부만 제어
+      // [B] 팀명 검색 (매치되는 팀만 보여주고, 초기 상태는 collapse)
       const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
-      const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
-      if (teamMatch || corpMatch) {
-        if (!openSection.includes(idStr)) return { ...node }; // children X
+      if (teamMatch) {
+        // 팀 클릭 시 openSection에 추가, 아니면 닫힌 상태(children 없음)
+        if (!openSection.includes(idStr)) return { ...node }; // children 속성 제거
         return { ...node, children };
       }
 
-      // [3] 이름/직책 매치
+      // [C] 법인명 검색 (법인도 collapse/expand 지원)
+      const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
+      if (corpMatch) {
+        children = openSection.includes(idStr) ? children : [];
+        return { ...node, children };
+      }
+
+      // [D] 이름/직책 검색: 경로 전체 표시, collapse/expand 지원
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
 
@@ -98,7 +113,7 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // [4] 하위에 매치되는 자식 있으면 collapse/expand
+      // [E] 하위에 매치되는 자식 있으면: collapse/expand 지원
       if (children.length) {
         if ((isCorp(idStr) || isTeam(idStr)) && !openSection.includes(idStr)) {
           return { ...node };
@@ -106,13 +121,13 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // [5] 아무것도 없으면 null
+      // [F] 매치 안되면 null
       return null;
     },
     [searchQuery, openSection]
   );
 
-  // 트리 데이터
+  // 트리 데이터 생성
   const treeData = useMemo(() => {
     const fullTree = buildTree(rootData);
     if (!fullTree) return null;
