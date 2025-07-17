@@ -153,7 +153,7 @@ export default function OrgChart({ data, searchQuery }) {
   if (!treeData || (Array.isArray(treeData) && treeData.length === 0)) {
     return (
       <div style={{ padding: '2rem', color: '#888' }}>
-        검색 결과가 없습니다.
+        Sorry, we couldn’t find any results.
       </div>
     );
   }

@@ -110,7 +110,7 @@ export default function App() {
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Enter a name"
+            placeholder="Enter a Name or Team"
             style={{ marginLeft: '0.5rem' }}
           />
         </label>
