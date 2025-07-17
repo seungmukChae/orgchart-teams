@@ -12,14 +12,14 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  // 법인/팀 판별 헬퍼
+  // 법인/팀 헬퍼
   const isCorp = (id) => ['100', '101', '102'].includes(String(id));
   const isTeam = (id) => {
     const n = Number(id);
     return n >= 103 && n <= 199;
   };
 
-  // 가상 루트 처리
+  // 가상 루트
   const rootData = useMemo(() => {
     if (Array.isArray(data)) {
       return {
@@ -63,13 +63,13 @@ export default function OrgChart({ data, searchQuery }) {
 
   // buildTree(★ 핵심) - collapse/expand & 검색 로직
   const buildTree = useCallback(
-    (node, rawChildren = node.children) => {
+    (node) => {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
 
-      // 항상 원본 children로 재귀(=collapse 토글을 위해)
-      let children = (rawChildren || []).map(child => buildTree(child, child.children)).filter(Boolean);
+      // 항상 원본 children 기준으로 재귀
+      let children = (node.children || []).map(buildTree).filter(Boolean);
 
       // 1. 검색어 없으면: 법인은 항상, 팀은 openSection만 펼침
       if (!term) {
@@ -80,17 +80,19 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // 2. 팀/법인명 매치: collapse/expand 토글 지원
+      // 2. 팀/법인명 매치: collapse/expand 토글 지원 + children 항상 원본
       const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
       const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
       if (teamMatch || corpMatch) {
-        children = openSection.includes(idStr)
-          ? (node.children || []).map(child => buildTree(child, child.children)).filter(Boolean)
-          : [];
-        return { ...node, children };
+        return {
+          ...node,
+          children: openSection.includes(idStr)
+            ? (node.children || []).map(buildTree).filter(Boolean)
+            : [],
+        };
       }
 
-      // 3. 이름/직책 매치: 경로 + collapse/expand 지원
+      // 3. 이름/직책 검색: 경로 + collapse/expand 지원
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
 
@@ -102,7 +104,7 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // 4. 하위에 매치되는 자식이 있으면 상위 collapse/expand 지원
+      // 4. 하위에 매치되는 자식 있으면 상위 collapse/expand 지원
       if (children.length) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
