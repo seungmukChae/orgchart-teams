@@ -218,7 +218,7 @@ export default function OrgChart({ data, searchQuery }) {
           style={{
             fontFamily: '맑은 고딕',
             fontSize: 13,
-            fontWeight: 'lighter',
+            fontWeight: 'normal',
           }}
         >
           {nodeDatum.이름}
@@ -232,7 +232,7 @@ export default function OrgChart({ data, searchQuery }) {
             fontFamily: '맑은 고딕',
             fontSize: 11,
             fill: '#555',
-            fontWeight: 'lighter',
+            fontWeight: 'normal',
           }}
         >
           {nodeDatum.직책}
@@ -243,7 +243,7 @@ export default function OrgChart({ data, searchQuery }) {
             y={12}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ fontFamily: '맑은 고딕', fontSize: 10, fontWeight: 'lighter', }}
+            style={{ fontFamily: '맑은 고딕', fontSize: 10, fontWeight: 'normal', }}
           >
             [{openSection.includes(idStr) ? 'Collapse' : 'Expand'}]
           </text>

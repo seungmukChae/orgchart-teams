@@ -7,6 +7,17 @@ export default function App() {
   const [treeData, setTreeData] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  <div
+  className="orgchart-container"  // 👈 반드시!
+  style={{ marginTop: '80px', width: '100vw', height: 'calc(100vh - 80px)' }}
+>
+  {treeData ? (
+    <OrgChart data={treeData} searchQuery={searchQuery} />
+  ) : (
+    <p style={{ padding: '2rem' }}>Organization chart data is missing...</p>
+  )}
+</div>
+
   useEffect(() => {
     loadData();
   }, []);
