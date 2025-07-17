@@ -48,14 +48,22 @@
   font-family: '맑은 고딕', Arial, sans-serif !important;
 }
 
-.orgchart-container g text {
+/* 기존보다 더 강하게 모든 text, label, title, subtitle에 적용 */
+.orgchart-container svg text,
+.orgchart-container .rd3t-label__title,
+.orgchart-container .rd3t-label__subTitle,
+.orgchart-container .rd3t-node text,
+.orgchart-container .rd3t-node--highlighted text,
+.orgchart-container .rd3t-node--expanded text {
   font-family: '맑은 고딕', Arial, sans-serif !important;
-  font-weight: normal              !important;
-  fill: #000                       !important;
+  font-weight: normal !important;
+  fill: #000 !important;
+  letter-spacing: 0 !important;
 }
 
+/* 링크(선) */
 .orgchart-container .rd3t-link path {
-  stroke: #555     !important;
+  stroke: #555 !important;
   stroke-width: 1.5px !important;
 }
 
