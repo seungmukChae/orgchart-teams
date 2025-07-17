@@ -61,17 +61,18 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // ** 핵심 수정: buildTree에 rawChildren 사용 **
+  // 핵심! buildTree: children 구조 보호하며 collapse/expand 지원
   const buildTree = useCallback(
-    (node, rawChildren = node.children) => {
+    (node, rawChildren) => {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
 
-      // 자식 먼저 재귀(원본 children 활용)
-      let children = (rawChildren || []).map((child) => buildTree(child, child.children)).filter(Boolean);
+      // children 기준값 (재귀마다 원본 children 유지)
+      const baseChildren = rawChildren !== undefined ? rawChildren : node.children;
+      let children = (baseChildren || []).map(child => buildTree(child)).filter(Boolean);
 
-      // 1. 검색어 없으면 기존 collapse 로직 (팀/법인만 접힘)
+      // 1. collapse/expand only (검색X)
       if (!term) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -80,20 +81,19 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // 2. 팀/법인명 매치: 팀/법인은 노출, 토글 가능
+      // 2. 팀/법인명 매치: collapse/expand 지원
       const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
       const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
       if (teamMatch || corpMatch) {
         children = openSection.includes(idStr)
-          ? (node.children || []).map(child => buildTree(child, child.children)).filter(Boolean)
+          ? (node.children || []).map(child => buildTree(child)).filter(Boolean)
           : [];
         return { ...node, children };
       }
 
-      // 3. 이름/직책 매치: 해당 직원까지 트리 경로 표시(상위 collapse 적용)
+      // 3. 이름/직책 매치: collapse/expand 지원
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
-
       if (nameMatch || titleMatch) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -102,7 +102,7 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // 4. 하위에 매치되는 자식이 있으면 표시 (상위 collapse 적용)
+      // 4. 하위에 매치되는 자식 있으면(팀/법인 collapse/expand)
       if (children.length) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -254,7 +254,6 @@ export default function OrgChart({ data, searchQuery }) {
           links: { stroke: '#555', strokeWidth: 1.5 },
         }}
       />
-
       {tooltip.visible && (
         <div
           style={{
