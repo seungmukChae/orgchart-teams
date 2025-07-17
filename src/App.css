@@ -66,3 +66,9 @@
   font-family: '맑은 고딕', Arial, sans-serif !important;
   font-weight: normal                         !important;
 }
+
+.rd3t-label__title,
+.rd3t-label__attributes,
+.rd3t-label {
+  font-weight: normal !important;
+}
