@@ -4,8 +4,7 @@ import Tree from 'react-d3-tree';
 export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
-  const [openSection, setOpenSection] = useState([]);
-  const [autoExpandTeam, setAutoExpandTeam] = useState([]);
+  const [openSection, setOpenSection] = useState([]);  
   const [tooltip, setTooltip] = useState({
     visible: false,
     x: 0,
@@ -35,7 +34,7 @@ export default function OrgChart({ data, searchQuery }) {
     return data;
   }, [data]);
 
-  // 미니맵 및 트리 중앙 정렬
+  // 트리 중앙 정렬
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
@@ -48,45 +47,10 @@ export default function OrgChart({ data, searchQuery }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
-  // 팀명으로 검색시 자동 open, 클릭시 collapse로 전환
-  useEffect(() => {
-    const term = searchQuery.trim().toLowerCase();
-    if (!term) {
-      setAutoExpandTeam([]);
-      return;
-    }
-    // 트리 전체에서 팀명 매치되는 팀 id 추출
-    const teamIds = [];
-    function findTeam(node) {
-      if (!node) return;
-      if (
-        isTeam(node.id) &&
-        node.팀 &&
-        node.팀.toLowerCase().includes(term)
-      ) {
-        teamIds.push(String(node.id));
-      }
-      (node.children || []).forEach(findTeam);
-    }
-    if (Array.isArray(data)) data.forEach(findTeam);
-    else findTeam(data);
-    setAutoExpandTeam(teamIds);
-  }, [searchQuery, data]);
-
-  // 팀/법인 클릭 핸들러
+  // 노드 클릭 핸들러 (팀/법인: 토글, 직원: 이메일 복사)
   const handleClick = useCallback((nodeDatum) => {
     const idStr = String(nodeDatum.id);
-    // 팀이 검색으로 자동 펼쳐진 상태일 때 클릭하면 openSection에 넣고 autoExpandTeam에서 제거
-    if (isTeam(idStr)) {
-      setOpenSection((prev) =>
-        prev.includes(idStr)
-          ? prev.filter((id) => id !== idStr)
-          : [...prev, idStr]
-      );
-      setAutoExpandTeam((prev) =>
-        prev.includes(idStr) ? prev.filter((id) => id !== idStr) : prev
-      );
-    } else if (isCorp(idStr)) {
+    if (isTeam(idStr) || isCorp(idStr)) {
       setOpenSection((prev) =>
         prev.includes(idStr)
           ? prev.filter((id) => id !== idStr)
@@ -104,45 +68,51 @@ export default function OrgChart({ data, searchQuery }) {
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
 
+      // 자식 먼저 재귀
       let children = (node.children || []).map(buildTree).filter(Boolean);
 
+      // 1. 검색어 없으면 기존 collapse 로직 (팀/법인만 접힘)
       if (!term) {
-        if (isCorp(idStr)) {
-          children = openSection.includes(idStr) ? children : [];
-          return { ...node, children };
-        }
-        if (isTeam(idStr)) {
+        if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
           return { ...node, children };
         }
         return { ...node, children };
       }
 
-      // 팀명으로 검색 시: 자동 open(팀만 노출), 클릭하면 팀원(children) 표시
-      const teamMatch = node.팀?.toLowerCase().includes(term);
-      if (isTeam(idStr) && teamMatch) {
-        // 검색 시 팀만 보이고, 클릭하면 팀원(children) 노출
-        children = autoExpandTeam.includes(idStr) && !openSection.includes(idStr)
-          ? []
-          : children;
+      // 2. 팀/법인명 매치: 팀/법인은 노출, 토글 가능
+      const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
+      const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
+      if (teamMatch || corpMatch) {
+        children = openSection.includes(idStr) ? (node.children || []).map(buildTree).filter(Boolean) : [];
         return { ...node, children };
       }
-      // 법인명 검색(같은 방식)
-      const corpMatch = node.이름?.toLowerCase().includes(term) && isCorp(idStr);
 
-      if (corpMatch) {
-        children = openSection.includes(idStr) ? children : [];
-        return { ...node, children };
-      }
-      // 이름/직책으로 검색은 기존 방식
+      // 3. 이름/직책 매치: 해당 직원까지 트리 경로 표시(상위 collapse 적용)
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
 
-      if (nameMatch || titleMatch) return { ...node, children };
-      if (children.length) return { ...node, children };
+      if (nameMatch || titleMatch) {
+        if (isCorp(idStr) || isTeam(idStr)) {
+          children = openSection.includes(idStr) ? children : [];
+          return { ...node, children };
+        }
+        return { ...node, children };
+      }
+
+      // 4. 하위에 매치되는 자식이 있으면 표시 (상위 collapse 적용)
+      if (children.length) {
+        if (isCorp(idStr) || isTeam(idStr)) {
+          children = openSection.includes(idStr) ? children : [];
+          return { ...node, children };
+        }
+        return { ...node, children };
+      }
+
+      // 5. 아무것도 없으면 null
       return null;
     },
-    [searchQuery, openSection, autoExpandTeam]
+    [searchQuery, openSection]
   );
 
   // 트리 데이터
@@ -281,8 +251,7 @@ export default function OrgChart({ data, searchQuery }) {
         styles={{
           links: { stroke: '#555', strokeWidth: 1.5 },
         }}
-      >
-      </Tree>
+      />
 
       {tooltip.visible && (
         <div
