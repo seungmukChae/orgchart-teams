@@ -50,7 +50,7 @@
 
 .orgchart-container g text {
   font-family: '맑은 고딕', Arial, sans-serif !important;
-  font-weight: normal              !important;
+  font-weight: lighter              !important;
   fill: #000                       !important;
 }
 
@@ -64,11 +64,11 @@
 .orgchart-container .rd3t-node--highlighted text,
 .orgchart-container .rd3t-node--expanded text {
   font-family: '맑은 고딕', Arial, sans-serif !important;
-  font-weight: normal                         !important;
+  font-weight: lighter                         !important;
 }
 
 .rd3t-label__title,
 .rd3t-label__attributes,
 .rd3t-label {
-  font-weight: normal !important;
+  font-weight: lighter !important;
 }

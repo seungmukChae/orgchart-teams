@@ -218,7 +218,7 @@ export default function OrgChart({ data, searchQuery }) {
           style={{
             fontFamily: 'Arial, Helvetica, sans-serif',
             fontSize: 13,
-            fontWeight: 'normal',
+            fontWeight: 'lighter',
           }}
         >
           {nodeDatum.이름}
@@ -232,7 +232,7 @@ export default function OrgChart({ data, searchQuery }) {
             fontFamily: 'Arial, Helvetica, sans-serif',
             fontSize: 11,
             fill: '#555',
-            fontWeight: 'normal',
+            fontWeight: 'lighter',
           }}
         >
           {nodeDatum.직책}
@@ -243,7 +243,7 @@ export default function OrgChart({ data, searchQuery }) {
             y={12}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: 10, fontWeight: 'normal', }}
+            style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: 10, fontWeight: 'normlighteral', }}
           >
             [{openSection.includes(idStr) ? 'Collapse' : 'Expand'}]
           </text>
