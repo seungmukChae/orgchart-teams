@@ -4,7 +4,7 @@ import Tree from 'react-d3-tree';
 export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
-  const [openSection, setOpenSection] = useState([]);  
+  const [openSection, setOpenSection] = useState([]);
   const [tooltip, setTooltip] = useState({
     visible: false,
     x: 0,
@@ -61,15 +61,15 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // 트리 빌드
+  // ** 핵심 수정: buildTree에 rawChildren 사용 **
   const buildTree = useCallback(
-    (node) => {
+    (node, rawChildren = node.children) => {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
 
-      // 자식 먼저 재귀
-      let children = (node.children || []).map(buildTree).filter(Boolean);
+      // 자식 먼저 재귀(원본 children 활용)
+      let children = (rawChildren || []).map((child) => buildTree(child, child.children)).filter(Boolean);
 
       // 1. 검색어 없으면 기존 collapse 로직 (팀/법인만 접힘)
       if (!term) {
@@ -84,7 +84,9 @@ export default function OrgChart({ data, searchQuery }) {
       const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
       const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
       if (teamMatch || corpMatch) {
-        children = openSection.includes(idStr) ? (node.children || []).map(buildTree).filter(Boolean) : [];
+        children = openSection.includes(idStr)
+          ? (node.children || []).map(child => buildTree(child, child.children)).filter(Boolean)
+          : [];
         return { ...node, children };
       }
 
