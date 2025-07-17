@@ -12,14 +12,14 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  // 법인/팀 헬퍼
+  // 법인/팀 판별 헬퍼
   const isCorp = (id) => ['100', '101', '102'].includes(String(id));
   const isTeam = (id) => {
     const n = Number(id);
     return n >= 103 && n <= 199;
   };
 
-  // 가상 루트
+  // 가상 루트 처리
   const rootData = useMemo(() => {
     if (Array.isArray(data)) {
       return {
@@ -61,18 +61,17 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // 핵심! buildTree: children 구조 보호하며 collapse/expand 지원
+  // buildTree(★ 핵심) - collapse/expand & 검색 로직
   const buildTree = useCallback(
-    (node, rawChildren) => {
+    (node, rawChildren = node.children) => {
       if (!node) return null;
       const idStr = String(node.id);
       const term = searchQuery.trim().toLowerCase();
 
-      // children 기준값 (재귀마다 원본 children 유지)
-      const baseChildren = rawChildren !== undefined ? rawChildren : node.children;
-      let children = (baseChildren || []).map(child => buildTree(child)).filter(Boolean);
+      // 항상 원본 children로 재귀(=collapse 토글을 위해)
+      let children = (rawChildren || []).map(child => buildTree(child, child.children)).filter(Boolean);
 
-      // 1. collapse/expand only (검색X)
+      // 1. 검색어 없으면: 법인은 항상, 팀은 openSection만 펼침
       if (!term) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -81,19 +80,20 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // 2. 팀/법인명 매치: collapse/expand 지원
+      // 2. 팀/법인명 매치: collapse/expand 토글 지원
       const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
       const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
       if (teamMatch || corpMatch) {
         children = openSection.includes(idStr)
-          ? (node.children || []).map(child => buildTree(child)).filter(Boolean)
+          ? (node.children || []).map(child => buildTree(child, child.children)).filter(Boolean)
           : [];
         return { ...node, children };
       }
 
-      // 3. 이름/직책 매치: collapse/expand 지원
+      // 3. 이름/직책 매치: 경로 + collapse/expand 지원
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
+
       if (nameMatch || titleMatch) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -102,7 +102,7 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // 4. 하위에 매치되는 자식 있으면(팀/법인 collapse/expand)
+      // 4. 하위에 매치되는 자식이 있으면 상위 collapse/expand 지원
       if (children.length) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -133,7 +133,7 @@ export default function OrgChart({ data, searchQuery }) {
     );
   }
 
-  // 커스텀 노드 렌더러
+  // 커스텀 노드 렌더러 (툴팁 포함)
   const renderNode = ({ nodeDatum }) => {
     const idStr = String(nodeDatum.id);
     let fill =
@@ -254,6 +254,7 @@ export default function OrgChart({ data, searchQuery }) {
           links: { stroke: '#555', strokeWidth: 1.5 },
         }}
       />
+
       {tooltip.visible && (
         <div
           style={{
