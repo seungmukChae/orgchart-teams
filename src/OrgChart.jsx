@@ -5,7 +5,6 @@ export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
 
-  // [1] 법인 ID만 openSection에 포함 (초기값)
   const CORP_IDS = ['100', '101', '102'];
   const isCorp = (id) => CORP_IDS.includes(String(id));
   const isTeam = (id) => {
@@ -13,8 +12,8 @@ export default function OrgChart({ data, searchQuery }) {
     return n >= 103 && n <= 199;
   };
 
-  // openSection: 열린 법인/팀 id (법인만 기본 open)
-  const [openSection, setOpenSection] = useState(CORP_IDS);
+  // [수정!] openSection 기본값: 모두 닫힘(초기 빈 배열)
+  const [openSection, setOpenSection] = useState([]);
   const [tooltip, setTooltip] = useState({
     visible: false,
     x: 0,
@@ -22,7 +21,6 @@ export default function OrgChart({ data, searchQuery }) {
     email: '',
   });
 
-  // 가상 루트 처리
   const rootData = useMemo(() => {
     if (Array.isArray(data)) {
       return {
@@ -37,7 +35,6 @@ export default function OrgChart({ data, searchQuery }) {
     return data;
   }, [data]);
 
-  // 트리 중앙정렬
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
@@ -50,7 +47,6 @@ export default function OrgChart({ data, searchQuery }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
-  // 노드 클릭 핸들러 (팀/법인: 토글, 직원: 이메일 복사)
   const handleClick = useCallback((nodeDatum) => {
     const idStr = String(nodeDatum.id);
     if (isTeam(idStr) || isCorp(idStr)) {
@@ -64,7 +60,6 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // buildTree: collapse/expand 지원 + 검색 UX 개선
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
@@ -74,13 +69,9 @@ export default function OrgChart({ data, searchQuery }) {
       const originalChildren = node.children || [];
       let children = originalChildren.map(buildTree).filter(Boolean);
 
-      // [A] 검색어가 없으면: 법인만 open, 나머지 모두 close
+      // [A] 검색어가 없으면: 법인/팀 모두 collapse(닫힘)
       if (!term) {
-        if (isCorp(idStr)) {
-          children = openSection.includes(idStr) ? children : [];
-          return { ...node, children };
-        }
-        if (isTeam(idStr)) {
+        if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
           return { ...node, children };
         }
@@ -90,19 +81,18 @@ export default function OrgChart({ data, searchQuery }) {
       // [B] 팀명 검색 (매치되는 팀만 보여주고, 초기 상태는 collapse)
       const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
       if (teamMatch) {
-        // 팀 클릭 시 openSection에 추가, 아니면 닫힌 상태(children 없음)
-        if (!openSection.includes(idStr)) return { ...node }; // children 속성 제거
+        if (!openSection.includes(idStr)) return { ...node };
         return { ...node, children };
       }
 
-      // [C] 법인명 검색 (법인도 collapse/expand 지원)
+      // [C] 법인명 검색
       const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
       if (corpMatch) {
         children = openSection.includes(idStr) ? children : [];
         return { ...node, children };
       }
 
-      // [D] 이름/직책 검색: 경로 전체 표시, collapse/expand 지원
+      // [D] 이름/직책 검색
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
 
@@ -121,20 +111,17 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // [F] 매치 안되면 null
       return null;
     },
     [searchQuery, openSection]
   );
 
-  // 트리 데이터 생성
   const treeData = useMemo(() => {
     const fullTree = buildTree(rootData);
     if (!fullTree) return null;
     return fullTree.id === 'root' ? fullTree.children : fullTree;
   }, [buildTree, rootData]);
 
-  // 결과 없음 처리
   if (!treeData || (Array.isArray(treeData) && treeData.length === 0)) {
     return (
       <div style={{ padding: '2rem', color: '#888' }}>
@@ -143,7 +130,6 @@ export default function OrgChart({ data, searchQuery }) {
     );
   }
 
-  // 커스텀 노드 렌더러
   const renderNode = ({ nodeDatum }) => {
     const idStr = String(nodeDatum.id);
     let fill =
