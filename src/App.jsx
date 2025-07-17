@@ -11,7 +11,7 @@ export default function App() {
     loadData();
   }, []);
 
-  // IndexedDB에서 데이터 불러오기
+  // IndexedDB에서 데이터 불러오기 //
   async function loadData() {
     const db = await openDB('OrgChartDB', 1, {
       upgrade(db) {
