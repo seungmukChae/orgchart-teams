@@ -216,7 +216,7 @@ export default function OrgChart({ data, searchQuery }) {
           textAnchor="middle"
           dominantBaseline="middle"
           style={{
-            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontFamily: '맑은 고딕',
             fontSize: 13,
             fontWeight: 'lighter',
           }}
@@ -229,7 +229,7 @@ export default function OrgChart({ data, searchQuery }) {
           textAnchor="middle"
           dominantBaseline="middle"
           style={{
-            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontFamily: '맑은 고딕',
             fontSize: 11,
             fill: '#555',
             fontWeight: 'lighter',
@@ -243,7 +243,7 @@ export default function OrgChart({ data, searchQuery }) {
             y={12}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: 10, fontWeight: 'normlighteral', }}
+            style={{ fontFamily: '맑은 고딕', fontSize: 10, fontWeight: 'lighter', }}
           >
             [{openSection.includes(idStr) ? 'Collapse' : 'Expand'}]
           </text>
