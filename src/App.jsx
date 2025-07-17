@@ -114,9 +114,6 @@ export default function App() {
             style={{ marginLeft: '0.5rem' }}
           />
         </label>
-        <button onClick={() => setSearchQuery('')} style={{ padding: '0.5rem 1rem', marginRight: '1rem' }}>
-          Reset
-        </button>
         <button onClick={resetData} style={{ padding: '0.5rem 1rem' }}>
           🔄 Data Reset
         </button>
