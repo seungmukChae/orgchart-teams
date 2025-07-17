@@ -5,6 +5,7 @@ export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
   const treeRef = useRef(null);
 
+  // 법인/팀 헬퍼
   const CORP_IDS = ['100', '101', '102'];
   const isCorp = (id) => CORP_IDS.includes(String(id));
   const isTeam = (id) => {
@@ -12,15 +13,11 @@ export default function OrgChart({ data, searchQuery }) {
     return n >= 103 && n <= 199;
   };
 
-  // [수정!] openSection 기본값: 모두 닫힘(초기 빈 배열)
-  const [openSection, setOpenSection] = useState([]);
-  const [tooltip, setTooltip] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    email: '',
-  });
+  // --- 핵심 상태 ---
+  const [openSection, setOpenSection] = useState([]); // 항상 닫힘이 default
+  const [autoTeamMatch, setAutoTeamMatch] = useState(null); // 팀명 검색 시 "자동 expand"팀 id
 
+  // 가상 루트 생성
   const rootData = useMemo(() => {
     if (Array.isArray(data)) {
       return {
@@ -35,6 +32,7 @@ export default function OrgChart({ data, searchQuery }) {
     return data;
   }, [data]);
 
+  // 중앙 정렬
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
@@ -47,6 +45,32 @@ export default function OrgChart({ data, searchQuery }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
+  // --- 팀명 검색 시, 자동으로 해당 팀만 open, 다른 모든 openSection은 닫기 ---
+  useEffect(() => {
+    const term = searchQuery.trim().toLowerCase();
+    if (!term) {
+      setAutoTeamMatch(null);
+      return;
+    }
+    // 오직 "팀명 완전 일치"만 자동 매치
+    let foundId = null;
+    function findTeam(node) {
+      if (!node) return;
+      if (
+        isTeam(node.id) &&
+        node.팀 &&
+        node.팀.toLowerCase() === term // 완전일치만!
+      ) {
+        foundId = String(node.id);
+      }
+      (node.children || []).forEach(findTeam);
+    }
+    if (Array.isArray(data)) data.forEach(findTeam);
+    else findTeam(data);
+    setAutoTeamMatch(foundId); // 찾은 팀 ID만 자동 오픈
+  }, [searchQuery, data]);
+
+  // 노드 클릭: 팀/법인 expand/collapse
   const handleClick = useCallback((nodeDatum) => {
     const idStr = String(nodeDatum.id);
     if (isTeam(idStr) || isCorp(idStr)) {
@@ -55,11 +79,14 @@ export default function OrgChart({ data, searchQuery }) {
           ? prev.filter((id) => id !== idStr)
           : [...prev, idStr]
       );
+      // 팀 클릭 시, 자동 open은 해제(사용자 제어 우선)
+      setAutoTeamMatch((prev) => (prev === idStr ? null : prev));
     } else if (nodeDatum.email) {
       navigator.clipboard.writeText(nodeDatum.email);
     }
   }, []);
 
+  // --- buildTree 핵심: 팀명 검색이면 그 팀만 보이고, 클릭 시 팀원 open ---
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
@@ -69,7 +96,7 @@ export default function OrgChart({ data, searchQuery }) {
       const originalChildren = node.children || [];
       let children = originalChildren.map(buildTree).filter(Boolean);
 
-      // [A] 검색어가 없으면: 법인/팀 모두 collapse(닫힘)
+      // [1] 검색어 없으면: 법인, 팀만 openSection에 따라 open
       if (!term) {
         if (isCorp(idStr) || isTeam(idStr)) {
           children = openSection.includes(idStr) ? children : [];
@@ -78,32 +105,29 @@ export default function OrgChart({ data, searchQuery }) {
         return { ...node, children };
       }
 
-      // [B] 팀명 검색 (매치되는 팀만 보여주고, 초기 상태는 collapse)
-      const teamMatch = isTeam(idStr) && node.팀?.toLowerCase().includes(term);
-      if (teamMatch) {
-        if (!openSection.includes(idStr)) return { ...node };
-        return { ...node, children };
-      }
-
-      // [C] 법인명 검색
-      const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
-      if (corpMatch) {
+      // [2] "팀명 완전일치 검색"이면 해당 팀만 보이게, 클릭시 팀원 표시
+      const teamMatch = isTeam(idStr) && node.팀?.toLowerCase() === term;
+      if (autoTeamMatch && idStr === autoTeamMatch) {
+        // 사용자가 expand 했으면 children 표시, 아니면 팀만
         children = openSection.includes(idStr) ? children : [];
         return { ...node, children };
       }
+      // 그 외 팀은 숨김
+      if (autoTeamMatch && isTeam(idStr)) return null;
 
-      // [D] 이름/직책 검색
+      // [3] 법인명/이름/직책 일반 검색(경로 expand)
+      const corpMatch = isCorp(idStr) && node.이름?.toLowerCase().includes(term);
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
 
-      if (nameMatch || titleMatch) {
+      if (corpMatch || nameMatch || titleMatch) {
         if ((isCorp(idStr) || isTeam(idStr)) && !openSection.includes(idStr)) {
           return { ...node };
         }
         return { ...node, children };
       }
 
-      // [E] 하위에 매치되는 자식 있으면: collapse/expand 지원
+      // [4] 하위 매치 있으면 표시
       if (children.length) {
         if ((isCorp(idStr) || isTeam(idStr)) && !openSection.includes(idStr)) {
           return { ...node };
@@ -113,7 +137,7 @@ export default function OrgChart({ data, searchQuery }) {
 
       return null;
     },
-    [searchQuery, openSection]
+    [searchQuery, openSection, autoTeamMatch]
   );
 
   const treeData = useMemo(() => {
@@ -122,6 +146,7 @@ export default function OrgChart({ data, searchQuery }) {
     return fullTree.id === 'root' ? fullTree.children : fullTree;
   }, [buildTree, rootData]);
 
+  // "검색 결과 없음" 처리
   if (!treeData || (Array.isArray(treeData) && treeData.length === 0)) {
     return (
       <div style={{ padding: '2rem', color: '#888' }}>
@@ -130,6 +155,7 @@ export default function OrgChart({ data, searchQuery }) {
     );
   }
 
+  // 노드 렌더
   const renderNode = ({ nodeDatum }) => {
     const idStr = String(nodeDatum.id);
     let fill =
@@ -145,28 +171,6 @@ export default function OrgChart({ data, searchQuery }) {
     return (
       <g
         onClick={() => handleClick(nodeDatum)}
-        onMouseEnter={(evt) => {
-          if (nodeDatum.email) {
-            setTooltip({
-              visible: true,
-              x: evt.clientX + 10,
-              y: evt.clientY + 10,
-              email: `Business Mail: ${nodeDatum.email}`,
-            });
-          }
-        }}
-        onMouseMove={(evt) => {
-          if (tooltip.visible) {
-            setTooltip((t) => ({
-              ...t,
-              x: evt.clientX + 10,
-              y: evt.clientY + 10,
-            }));
-          }
-        }}
-        onMouseLeave={() =>
-          setTooltip({ visible: false, x: 0, y: 0, email: '' })
-        }
         style={{
           cursor: nodeDatum.email || isSection ? 'pointer' : 'default',
         }}
@@ -223,6 +227,7 @@ export default function OrgChart({ data, searchQuery }) {
     );
   };
 
+  // 최종 렌더
   return (
     <div
       ref={containerRef}
@@ -250,24 +255,6 @@ export default function OrgChart({ data, searchQuery }) {
           links: { stroke: '#555', strokeWidth: 1.5 },
         }}
       />
-
-      {tooltip.visible && (
-        <div
-          style={{
-            position: 'fixed',
-            top: tooltip.y,
-            left: tooltip.x,
-            background: '#fff',
-            border: '1px solid #ccc',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            pointerEvents: 'none',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          }}
-        >
-          {tooltip.email}
-        </div>
-      )}
     </div>
   );
 }
