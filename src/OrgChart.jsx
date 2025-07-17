@@ -119,46 +119,31 @@ export default function OrgChart({ data, searchQuery }) {
       }
 
       // 팀명으로 검색 시: 자동 open(팀만 노출), 클릭하면 팀원(children) 표시
-      const buildTree = useCallback(
-        (node) => {
-          if (!node) return null;
-          const term = searchQuery.trim().toLowerCase();
-      
-          let children = (node.children || []).map(buildTree).filter(Boolean);
-      
-          // 팀/법인 펼치기(검색 X)
-          if (!term) {
-            if (isCorp(node.id)) return { ...node, children };
-            if (isTeam(node.id)) {
-              children = openSection === node.id ? children : [];
-              return { ...node, children };
-            }
-            return { ...node, children };
-          }
-      
-          // ***팀명으로 검색한 경우***
-          const nameMatch = node.이름?.toLowerCase().includes(term);
-          const titleMatch = node.직책?.toLowerCase().includes(term);
-          const teamMatch = node.팀?.toLowerCase().includes(term);
-      
-          // 팀 노드가 검색에 걸리면
-          if (isTeam(node.id) && teamMatch) {
-            // [1] 펼쳐진 상태면 실제 팀원까지 보여주고,
-            // [2] 아니면(=처음엔 닫혀있음) 자식 없이 보여주기
-            if (openSection === node.id) {
-              // ***자식 포함해서 반환***
-              return { ...node, children };
-            }
-            // ***자식 없이 반환***
-            return { ...node, children: [] };
-          }
-      
-          if (nameMatch || titleMatch) return { ...node, children };
-          if (children.length) return { ...node, children };
-          return null;
-        },
-        [searchQuery, openSection]
-      );
+      const teamMatch = node.팀?.toLowerCase().includes(term);
+      if (isTeam(idStr) && teamMatch) {
+        // 검색 시 팀만 보이고, 클릭하면 팀원(children) 노출
+        children = autoExpandTeam.includes(idStr) && !openSection.includes(idStr)
+          ? []
+          : children;
+        return { ...node, children };
+      }
+      // 법인명 검색(같은 방식)
+      const corpMatch = node.이름?.toLowerCase().includes(term) && isCorp(idStr);
+
+      if (corpMatch) {
+        children = openSection.includes(idStr) ? children : [];
+        return { ...node, children };
+      }
+      // 이름/직책으로 검색은 기존 방식
+      const nameMatch = node.이름?.toLowerCase().includes(term);
+      const titleMatch = node.직책?.toLowerCase().includes(term);
+
+      if (nameMatch || titleMatch) return { ...node, children };
+      if (children.length) return { ...node, children };
+      return null;
+    },
+    [searchQuery, openSection, autoExpandTeam]
+  );
 
   // 트리 데이터
   const treeData = useMemo(() => {
@@ -258,7 +243,7 @@ export default function OrgChart({ data, searchQuery }) {
         {isSection && (
           <text
             x={0}
-            y={14}
+            y={12}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ fontFamily: '맑은 고딕', fontSize: 10 }}
@@ -319,4 +304,3 @@ export default function OrgChart({ data, searchQuery }) {
     </div>
   );
 }
-//
