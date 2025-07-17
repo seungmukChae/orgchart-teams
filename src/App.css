@@ -61,6 +61,10 @@
   letter-spacing: 0 !important;
 }
 
+.orgchart-container .rd3t-node-collapsed text {
+  font-weight: normal !important;
+}
+
 /* 링크(선) */
 .orgchart-container .rd3t-link path {
   stroke: #555 !important;
