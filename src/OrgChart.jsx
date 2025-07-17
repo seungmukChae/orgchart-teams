@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import Tree from 'react-d3-tree';
+import Tree, { MiniMap } from 'react-d3-tree';
 
 export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
@@ -34,7 +34,7 @@ export default function OrgChart({ data, searchQuery }) {
     return data;
   }, [data]);
 
-  // 윈도우 리사이즈시 중앙정렬
+  // 미니맵 및 트리 중앙 정렬
   useEffect(() => {
     const handleResize = () => {
       if (treeRef.current?.centerNode) {
@@ -47,7 +47,39 @@ export default function OrgChart({ data, searchQuery }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [data]);
 
-  // 클릭 시 펼침/접힘
+  // ---- 팀명 검색시 자동 Open 기능 ----
+  const [autoExpandTeam, setAutoExpandTeam] = useState(null);
+
+  useEffect(() => {
+    const teamIds = [];
+    const term = searchQuery.trim().toLowerCase();
+    if (!term) {
+      setAutoExpandTeam(null);
+      return;
+    }
+    function findTeamId(node) {
+      if (!node) return;
+      if (
+        isTeam(node.id) &&
+        node.팀 &&
+        node.팀.toLowerCase().includes(term)
+      ) {
+        teamIds.push(String(node.id));
+      }
+      (node.children || []).forEach(findTeamId);
+    }
+    if (Array.isArray(data)) data.forEach(findTeamId);
+    else findTeamId(data);
+
+    setAutoExpandTeam(teamIds.length ? teamIds : null);
+  }, [searchQuery, data]);
+
+  const openSectionAll = useMemo(() => {
+    if (autoExpandTeam && autoExpandTeam.length) return autoExpandTeam;
+    return openSection;
+  }, [autoExpandTeam, openSection]);
+
+  // 클릭 핸들러
   const handleClick = useCallback((nodeDatum) => {
     const idStr = String(nodeDatum.id);
     if (isTeam(idStr) || isCorp(idStr)) {
@@ -61,7 +93,7 @@ export default function OrgChart({ data, searchQuery }) {
     }
   }, []);
 
-  // 트리 빌드: 법인, 팀 모두 접힘/펼침
+  // 트리 빌드
   const buildTree = useCallback(
     (node) => {
       if (!node) return null;
@@ -71,29 +103,25 @@ export default function OrgChart({ data, searchQuery }) {
       let children = (node.children || []).map(buildTree).filter(Boolean);
 
       if (!term) {
-        // 법인/팀: openSection에 있으면 펼침, 아니면 닫힘
         if (isCorp(idStr) || isTeam(idStr)) {
-          children = openSection.includes(idStr) ? children : [];
+          children = openSectionAll.includes(idStr) ? children : [];
           return { ...node, children };
         }
-        // 일반노드: 항상 children
         return { ...node, children };
       }
 
-      // 검색어 있을 때는 원래대로
       const nameMatch = node.이름?.toLowerCase().includes(term);
       const titleMatch = node.직책?.toLowerCase().includes(term);
       const teamMatch = node.팀?.toLowerCase().includes(term);
 
-      if (nameMatch || titleMatch) return { ...node, children };
-      if (teamMatch) {
-        const allDesc = (node.children || []).map(buildTree).filter(Boolean);
-        return { ...node, children: allDesc };
+      if (teamMatch && isTeam(idStr)) {
+        return { ...node, children: (node.children || []).map(buildTree).filter(Boolean) };
       }
+      if (nameMatch || titleMatch) return { ...node, children };
       if (children.length) return { ...node, children };
       return null;
     },
-    [searchQuery, openSection]
+    [searchQuery, openSectionAll]
   );
 
   // 트리 데이터
@@ -123,7 +151,6 @@ export default function OrgChart({ data, searchQuery }) {
         ? '#ffa500'
         : '#e0e0e0';
 
-    // 펼침 여부 표시
     const isSection = isCorp(idStr) || isTeam(idStr);
 
     return (
@@ -195,19 +222,18 @@ export default function OrgChart({ data, searchQuery }) {
         {isSection && (
           <text
             x={0}
-            y={14}
+            y={24}
             textAnchor="middle"
             dominantBaseline="middle"
             style={{ fontFamily: '맑은 고딕', fontSize: 10 }}
           >
-            [{openSection.includes(idStr) ? 'Collapse' : 'Expand'}]
+            [{openSectionAll.includes(idStr) ? 'Collapse' : 'Expand'}]
           </text>
         )}
       </g>
     );
   };
 
-  // 최종 렌더
   return (
     <div
       ref={containerRef}
@@ -234,7 +260,18 @@ export default function OrgChart({ data, searchQuery }) {
         styles={{
           links: { stroke: '#555', strokeWidth: 1.5 },
         }}
-      />
+      >
+        {/* 미니맵 적용! */}
+        <MiniMap
+          position="bottom-right"
+          nodeStroke="#333"
+          nodeFill="#eee"
+          nodeRadius={7}
+          highlight="viewport"
+          width={200}
+          height={120}
+        />
+      </Tree>
 
       {tooltip.visible && (
         <div
