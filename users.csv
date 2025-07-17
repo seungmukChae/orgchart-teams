@@ -2,7 +2,7 @@
 1,SHIN,Chairman,,Chairman,,shin@shints.com
 2,Jongin_CEO,CEO,,CEO,1,jongin.cha@shints.com
 3,CHA,Advisor,,고문,2,cha@shints.com
-4,Haein_VP,Vice President,,Vice-President,100,haein@shints.com
+4,Haein_VP,Vice President,,Vice-President,147,haein@shints.com
 5,Jay_SPL,General Manager,Seoul,Planning,103,jay.jung@shints.com
 6,Chuck_SMC,Senior Manager,Seoul,Material,104,chuck@shints.com
 7,Mira_SMRP,General Manager,Seoul,MRP,105,meiluo@shints.com
@@ -12,7 +12,7 @@
 11,Leo_SHR,Director,Seoul,HR,109,jmlee@shints.com
 12,Chris_SBR,Senior Manager,Seoul,Brand Development,110,chris@shints.com
 13,Kjjeong_SGRM,Executive Director,Seoul,Garment Development,111,kjjeong@shints.com
-14,Andrew_SMDK,General Manager,Seoul,SalesKR,112,andrew@shints.com
+14,Andrew_SMDK,General Manager,Seoul,SalesKR,148,andrew@shints.com
 15,Jhoen_SMD1,Executive Director,Seoul,Sales1,113,jhoen@shints.com
 16,Ciara_SMD2,Executive Director,Seoul,Sales2,114,ciara@shints.com
 17,Jake_SMD3,Senior Manager,Seoul,Sales3,115,jake@shints.com
@@ -50,17 +50,17 @@
 49,Skmin_SGRM,Manager,Seoul,Garment Development,13,skmin@shints.com
 50,Yeeun_SGRM,Assistant Manager,Seoul,Garment Development,13,yeeun@shints.com
 51,Yhkim_SGRM,Director,Seoul,Garment Development,13,yhkim@shints.com
-52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,14,ahracho@shints.com
-53,Becky_SMDK,General Manager,Seoul,SalesKR,14,becky@shints.com
-54,Bella_SMDK,Manager,Seoul,SalesKR,14,bellakoo@shints.com
-55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,14,ben@shints.com
-56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,14,danielshin@shints.com
-57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,14,daphne@shints.com
-58,Diana_SMDK,Manager,Seoul,SalesKR,14,diana@shints.com
-59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,14,joy@shints.com
-60,Kylie_SMDK,Staff,Seoul,SalesKR,14,kylie@shints.com
-61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,14,lina@shints.com
-62,Mahlet_SMDK,Staff,Seoul,SalesKR,14,mahlet@shints.com
+52,Ahracho_SMDK,Senior Manager,Seoul,SalesKR,89,ahracho@shints.com
+53,Becky_SMDK,General Manager,Seoul,SalesKR,89,becky@shints.com
+54,Bella_SMDK,Manager,Seoul,SalesKR,89,bellakoo@shints.com
+55,Ben_SMDK,Assistant Manager,Seoul,SalesKR,89,ben@shints.com
+56,Daniel_SMDK,Senior Manager,Seoul,SalesKR,89,danielshin@shints.com
+57,Daphne_SMDK,Assistant Manager,Seoul,SalesKR,89,daphne@shints.com
+58,Diana_SMDK,Manager,Seoul,SalesKR,89,diana@shints.com
+59,Joy_SMDK,Assistant Manager,Seoul,SalesKR,89,joy@shints.com
+60,Kylie_SMDK,Staff,Seoul,SalesKR,89,kylie@shints.com
+61,Lina_SMDK,Assistant Manager,Seoul,SalesKR,89,lina@shints.com
+62,Mahlet_SMDK,Staff,Seoul,SalesKR,89,mahlet@shints.com
 63,Andy_SMD1,Staff,Seoul,Sales1,15,andy@shints.com
 64,Celeste_SMD1,Staff,Seoul,Sales1,15,celeste@shints.com
 65,Dos_SMD1,General Manager,Seoul,Sales1,15,dos@shints.com
@@ -86,7 +86,8 @@
 85,Yuri_SMD4,Manager,Seoul,Sales4,18,yuri@shints.com
 86,Cherie_FOB,Staff,Seoul,FOB,19,cherie@shints.com
 87,Sam_FOB,Manager,Seoul,FOB,19,sam@shints.com
-88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,14,nadia@shints.com
+88,Nadia_SMDK,Assistant Manager,Seoul,SalesKR,89,nadia@shints.com
+89,Andrew_SMDK,General Manager,Seoul,SalesKR,112,andrew@shints.com
 100,Seoul,,,,2,
 101,ETP,,,,2,
 102,BVT,,,,2,
@@ -98,13 +99,13 @@
 108,Im-Export,,,,4,
 109,HR,,,,4,
 110,Brand Development,,,,4,
-111,Garment Development,,,,4,
-112,SalesKR,,,,4,
-113,Sales1,,,,4,
-114,Sales2,,,,4,
-115,Sales3,,,,4,
-116,Sales4,,,,4,
-117,FOB,,,,4,
+111,Garment Development,,,,14,
+112,SalesKR,,,,14,
+113,Sales1,,,,14,
+114,Sales2,,,,14,
+115,Sales3,,,,14,
+116,Sales4,,,,14,
+117,FOB,,,,14,
 118,Factory Director,,,,200,
 119,Production,,,,200,
 120,Production Management,,,,200,
@@ -134,6 +135,8 @@
 144,Maintanance,,,,200,
 145,Mechanic,,,,200,
 146,Translator,,,,200,
+147,Business Support Division,,,,100,
+148,Sales Division,,,,100,
 200,Daniel_GM,General Manager,ETP,General Manager,101,daniel@shintsetp.com
 201,Jay_EFD,Factory Director,ETP,Factory Director,118,jay@shintsetp.com
 202,Jeff_EFD,Quality & Merchandising Director,ETP,Factory Director,118,jeffchoi@shints.com
