@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import Tree, { MiniMap } from 'react-d3-tree';
+import Tree from 'react-d3-tree';
 
 export default function OrgChart({ data, searchQuery }) {
   const containerRef = useRef(null);
@@ -282,16 +282,6 @@ export default function OrgChart({ data, searchQuery }) {
           links: { stroke: '#555', strokeWidth: 1.5 },
         }}
       >
-        {/* 미니맵 적용 */}
-        <MiniMap
-          position="bottom-right"
-          nodeStroke="#333"
-          nodeFill="#eee"
-          nodeRadius={7}
-          highlight="viewport"
-          width={200}
-          height={120}
-        />
       </Tree>
 
       {tooltip.visible && (
